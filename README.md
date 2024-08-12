@@ -7,4 +7,8 @@ Se debe crear un pull request a `main` para agregar o modificar código.
 ## Estilo de codigo
 Se debe anteponer a cada algoritmo o subalgoritmo una nomenclatura que refiera al módulo
 ejemplo:
-Modulo pomodoro = pom_pomodoro.
+```
+SubAlgoritmo pom_pomodoro(argumentos)
+    /// algoritmo
+FinSubAlgoritmo
+```
