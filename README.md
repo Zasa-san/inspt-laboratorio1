@@ -5,8 +5,7 @@ Repositorio para el proyecto de Laboratorio 1
 Se debe crear un pull request a `main` para agregar o modificar código.
 
 ## Estilo de codigo
-Se debe anteponer a cada algoritmo o subalgoritmo una nomenclatura que refiera al módulo
-ejemplo:
+Se debe anteponer a cada algoritmo o subalgoritmo una nomenclatura que refiera al módulo, por ejemplo:
 ```
 SubAlgoritmo pom_pomodoro(argumentos)
     /// algoritmo
@@ -15,7 +14,7 @@ FinSubAlgoritmo
 
 ## Tipos de dato
 
-### Usuarios
+### Contactos
 ```
 [
     [nombre, apellido, telefono, email, dirección],
