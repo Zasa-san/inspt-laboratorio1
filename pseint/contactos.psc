@@ -9,7 +9,7 @@ Algoritmo Contactos
 FinAlgoritmo
 
 //ALGORITMOS Y FUNCIONES ESPECÍFICAS DEL MÓDULO
-SubAlgoritmo con_ContactosMain(con_agenda)
+SubAlgoritmo con_ContactosMain(agenda)
 	Definir seleccion Como Entero
 	
 	Escribir "*Agenda de contactos*"
@@ -18,7 +18,7 @@ SubAlgoritmo con_ContactosMain(con_agenda)
 	
 	Segun seleccion Hacer
 		1:
-			Escribir "Ver contactos por apellido"
+			con_VerPorApellido(agenda)
 		2:
 			Escribir "Ver contactos por nombre"
 		3:
@@ -27,6 +27,21 @@ SubAlgoritmo con_ContactosMain(con_agenda)
 			Escribir "Saliendo..."
 	Fin Segun
 	
+FinSubAlgoritmo
+
+SubAlgoritmo con_VerPorApellido(agenda)
+	Definir indiceAlfabeto Como Entero	
+	Escribir "Vista por apellido"	
+	Repetir	
+		Escribir "Eliga la letra para ver todos los contactos agendados"
+		Escribir "Para salir, escriba 0"
+		con_mostrarAlfabeto()				
+		Leer indiceAlfabeto			
+		Si indiceAlfabeto < 0 O indiceAlfabeto > 27 Entonces
+			Escribir "Debe elegir un índice válido"
+			indiceAlfabeto = 27
+		FinSi
+	Mientras Que indiceAlfabeto >= 27	
 FinSubAlgoritmo
 
 Funcion seleccion = con_MenuPrincipal
@@ -46,6 +61,15 @@ Funcion seleccion = con_MenuPrincipal
 			seleccion = opcion_elegida
 		FinSi
 	Mientras Que opcion_elegida >= 4
+FinFuncion
+
+Funcion con_mostrarAlfabeto
+	Escribir " 1 - a    2 - b    3 - c    4 - d    5 - e"
+	Escribir " 6 - f    7 - g    8 - h    9 - i   10 - j"
+	Escribir "11 - k   12 - l   13 - m   14 - n   15 - ñ"
+	Escribir "16 - o   17 - p   18 - q   19 - r   20 - s"
+	Escribir "21 - t   22 - u   23 - v   24 - w   25 - x"
+	Escribir "26 - y   27 - z"		
 FinFuncion
 
 Funcion con_poblarContactos(matriz)
