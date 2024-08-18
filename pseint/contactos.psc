@@ -1,32 +1,80 @@
-Algoritmo Contactos
+Algoritmo MAIN
 	//ESPACIO GLOBAL
+	//VAIRABLES GLOBALES DE CONFIGURACION
+	Definir AGENDA_MAX Como Entero
+	AGENDA_MAX = 1000
+	
+	//VARIABLES GLOBALES PARA MODULOS
 	Definir con_agenda Como Caracter
-	Dimensionar con_agenda[1000,5]
+	Dimensionar con_agenda[AGENDA_MAX,5]
 	
+	//ALGORITMOS DEL MODULO CONTACTO
 	con_poblarContactos(con_agenda)
-	con_ContactosMain(con_agenda)
-	
+	con_ContactosMain(con_agenda, AGENDA_MAX)	
 FinAlgoritmo
 
 //ALGORITMOS Y FUNCIONES ESPECÍFICAS DEL MÓDULO
-SubAlgoritmo con_ContactosMain(agenda)
-	Definir seleccion Como Entero
+SubAlgoritmo con_ContactosMain(agenda, AGENDA_MAX)
+	Definir seleccion, indiceApellidos Como Entero
+	
+	con_ordenarPorApellido(agenda, AGENDA_MAX)
 	
 	Escribir "*Agenda de contactos*"
 	
+	//Mostrar menu principal del módulo
 	seleccion = con_MenuPrincipal
 	
 	Segun seleccion Hacer
 		1:
 			con_VerPorApellido(agenda)
 		2:
-			Escribir "Ver contactos por nombre"
-		3:
 			Escribir "Buscar por nombre o apellido"
 		De Otro Modo:
 			Escribir "Saliendo..."
 	Fin Segun
 	
+FinSubAlgoritmo
+
+SubAlgoritmo con_ordenarPorApellido(agenda, AGENDA_MAX)
+	Definir iterador, ordenador Como Entero
+	Definir vectorAux Como Caracter
+	Dimension vectorAux[5]
+	iterador = 0
+	
+	Mientras iterador <  AGENDA_MAX Hacer
+		ordenador = iterador + 1
+		Mientras ordenador <  AGENDA_MAX Hacer
+			Si agenda[ordenador, 1] = "" Entonces
+				ordenador = AGENDA_MAX
+			SiNo
+				Si agenda[iterador, 1] > agenda[ordenador, 1] Entonces
+					vectorAux[0] = agenda[iterador, 0]
+					vectorAux[1] = agenda[iterador, 1]
+					vectorAux[2] = agenda[iterador, 2]
+					vectorAux[3] = agenda[iterador, 3]
+					vectorAux[4] = agenda[iterador, 4]
+					
+					agenda[iterador, 0] = agenda[ordenador, 0]
+					agenda[iterador, 1] = agenda[ordenador, 1]
+					agenda[iterador, 2] = agenda[ordenador, 2]
+					agenda[iterador, 3] = agenda[ordenador, 3]
+					agenda[iterador, 4] = agenda[ordenador, 4]
+					
+					agenda[ordenador, 0] = vectorAux[0]
+					agenda[ordenador, 1] = vectorAux[1]
+					agenda[ordenador, 2] = vectorAux[2]
+					agenda[ordenador, 3] = vectorAux[3]
+					agenda[ordenador, 4] = vectorAux[4]
+				FinSi
+				ordenador = ordenador + 1
+			FinSi		
+		FinMientras		
+		Si agenda[iterador, 1] = "" Entonces
+			iterador = AGENDA_MAX
+		SiNo
+			iterador = iterador + 1
+		FinSi	
+	Fin Mientras	
 FinSubAlgoritmo
 
 Funcion seleccion = con_MenuPrincipal
@@ -35,15 +83,13 @@ Funcion seleccion = con_MenuPrincipal
 	Repetir
 		Si opcion_elegida < 0 O opcion_elegida > 3 Entonces
 			Escribir "**Debe elegir una opción válida**"
-		FinSi			
-		opcion_elegida = 4
+		FinSi
 		Escribir "Opciones de navegación:"
 		Escribir "1 - Ver por apellido"
-		Escribir "2 - Ver por nombre"
-		Escribir "3 - Buscar por nombre o apellido"
+		Escribir "2 - Buscar por nombre o apellido"
 		Escribir "0 - Para salir de la agenda"
 		Leer opcion_elegida		
-		Si opcion_elegida < 0 O opcion_elegida > 3 Entonces
+		Si opcion_elegida < 0 O opcion_elegida > 2 Entonces
 			invalido = 1
 		SiNo
 			invalido = 0
@@ -64,7 +110,7 @@ Funcion con_mostrarAlfabeto
 FinFuncion
 
 SubAlgoritmo con_VerPorApellido(agenda)
-	Definir indiceAlfabeto, invalido Como Entero		
+	Definir indiceAlfabeto, invalido, iterador Como Entero		
 	invalido = 0	
 	Escribir "Vista por apellido"	
 	Repetir
@@ -81,7 +127,17 @@ SubAlgoritmo con_VerPorApellido(agenda)
 			invalido = 0
 		FinSi
 		Limpiar Pantalla
-	Mientras Que invalido = 1	
+	Mientras Que invalido = 1
+	
+	//*************************************
+	//TEMPORAL PARA MOSTRAR AGENDA ORDENADA
+	iterador = 0
+	Mientras agenda[iterador, 1] <> "" Hacer
+		Escribir agenda[iterador, 1], " ", agenda[iterador, 0]
+		iterador = iterador + 1
+	FinMientras
+	//BORRAR PARA CONTINUAR Y QUITAR ITERADOR DE LAS DEFINICIONES
+	//*************************************
 FinSubAlgoritmo
 
 Funcion con_poblarContactos(matriz)
