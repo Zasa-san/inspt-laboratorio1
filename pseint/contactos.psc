@@ -29,38 +29,29 @@ SubAlgoritmo con_ContactosMain(agenda)
 	
 FinSubAlgoritmo
 
-SubAlgoritmo con_VerPorApellido(agenda)
-	Definir indiceAlfabeto Como Entero	
-	Escribir "Vista por apellido"	
-	Repetir	
-		Escribir "Eliga la letra para ver todos los contactos agendados"
-		Escribir "Para salir, escriba 0"
-		con_mostrarAlfabeto()				
-		Leer indiceAlfabeto			
-		Si indiceAlfabeto < 0 O indiceAlfabeto > 27 Entonces
-			Escribir "Debe elegir un índice válido"
-			indiceAlfabeto = 27
-		FinSi
-	Mientras Que indiceAlfabeto >= 27	
-FinSubAlgoritmo
-
 Funcion seleccion = con_MenuPrincipal
-	Definir opcion_elegida Como Entero	
+	Definir opcion_elegida, invalido Como Entero
+	invalido = 0
 	Repetir
+		Si opcion_elegida < 0 O opcion_elegida > 3 Entonces
+			Escribir "**Debe elegir una opción válida**"
+		FinSi			
 		opcion_elegida = 4
 		Escribir "Opciones de navegación:"
 		Escribir "1 - Ver por apellido"
 		Escribir "2 - Ver por nombre"
 		Escribir "3 - Buscar por nombre o apellido"
 		Escribir "0 - Para salir de la agenda"
-		Leer opcion_elegida
-		
+		Leer opcion_elegida		
 		Si opcion_elegida < 0 O opcion_elegida > 3 Entonces
-			Escribir "Debe elegir una opción válida"
+			invalido = 1
 		SiNo
+			invalido = 0
 			seleccion = opcion_elegida
 		FinSi
-	Mientras Que opcion_elegida >= 4
+		Limpiar Pantalla
+	Mientras Que invalido = 1
+	Limpiar Pantalla
 FinFuncion
 
 Funcion con_mostrarAlfabeto
@@ -71,6 +62,27 @@ Funcion con_mostrarAlfabeto
 	Escribir "21 - t   22 - u   23 - v   24 - w   25 - x"
 	Escribir "26 - y   27 - z"		
 FinFuncion
+
+SubAlgoritmo con_VerPorApellido(agenda)
+	Definir indiceAlfabeto, invalido Como Entero		
+	invalido = 0	
+	Escribir "Vista por apellido"	
+	Repetir
+		Si invalido = 1 Entonces
+			Escribir "**Debe elegir un índice válido**"
+		FinSi
+		Escribir "Eliga la letra para ver todos los contactos agendados"
+		Escribir "Para salir, escriba 0"
+		con_mostrarAlfabeto()				
+		Leer indiceAlfabeto			
+		Si indiceAlfabeto < 0 O indiceAlfabeto > 27 Entonces
+			invalido = 1			
+		SiNo
+			invalido = 0
+		FinSi
+		Limpiar Pantalla
+	Mientras Que invalido = 1	
+FinSubAlgoritmo
 
 Funcion con_poblarContactos(matriz)
 	// Inicializar contactos
