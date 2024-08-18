@@ -35,53 +35,11 @@ SubAlgoritmo con_ContactosMain(agenda, AGENDA_MAX)
 	
 FinSubAlgoritmo
 
-SubAlgoritmo con_ordenarPorApellido(agenda, AGENDA_MAX)
-	Definir iterador, ordenador Como Entero
-	Definir vectorAux Como Caracter
-	Dimension vectorAux[5]
-	iterador = 0
-	
-	Mientras iterador <  AGENDA_MAX Hacer
-		ordenador = iterador + 1
-		Mientras ordenador <  AGENDA_MAX Hacer
-			Si agenda[ordenador, 1] = "" Entonces
-				ordenador = AGENDA_MAX
-			SiNo
-				Si agenda[iterador, 1] > agenda[ordenador, 1] Entonces
-					vectorAux[0] = agenda[iterador, 0]
-					vectorAux[1] = agenda[iterador, 1]
-					vectorAux[2] = agenda[iterador, 2]
-					vectorAux[3] = agenda[iterador, 3]
-					vectorAux[4] = agenda[iterador, 4]
-					
-					agenda[iterador, 0] = agenda[ordenador, 0]
-					agenda[iterador, 1] = agenda[ordenador, 1]
-					agenda[iterador, 2] = agenda[ordenador, 2]
-					agenda[iterador, 3] = agenda[ordenador, 3]
-					agenda[iterador, 4] = agenda[ordenador, 4]
-					
-					agenda[ordenador, 0] = vectorAux[0]
-					agenda[ordenador, 1] = vectorAux[1]
-					agenda[ordenador, 2] = vectorAux[2]
-					agenda[ordenador, 3] = vectorAux[3]
-					agenda[ordenador, 4] = vectorAux[4]
-				FinSi
-				ordenador = ordenador + 1
-			FinSi		
-		FinMientras		
-		Si agenda[iterador, 1] = "" Entonces
-			iterador = AGENDA_MAX
-		SiNo
-			iterador = iterador + 1
-		FinSi	
-	Fin Mientras	
-FinSubAlgoritmo
-
 Funcion seleccion = con_MenuPrincipal
 	Definir opcion_elegida, invalido Como Entero
 	invalido = 0
 	Repetir
-		Si opcion_elegida < 0 O opcion_elegida > 3 Entonces
+		Si opcion_elegida < 0 O opcion_elegida > 2 Entonces
 			Escribir "**Debe elegir una opción válida**"
 		FinSi
 		Escribir "Opciones de navegación:"
@@ -138,6 +96,48 @@ SubAlgoritmo con_VerPorApellido(agenda)
 	FinMientras
 	//BORRAR PARA CONTINUAR Y QUITAR ITERADOR DE LAS DEFINICIONES
 	//*************************************
+FinSubAlgoritmo
+
+SubAlgoritmo con_ordenarPorApellido(agenda, AGENDA_MAX)
+	Definir iterador, ordenador Como Entero
+	Definir vectorAux Como Caracter
+	Dimension vectorAux[5]
+	iterador = 0
+	
+	Mientras iterador <  AGENDA_MAX Hacer
+		ordenador = iterador + 1
+		Mientras ordenador <  AGENDA_MAX Hacer
+			Si agenda[ordenador, 1] = "" Entonces
+				ordenador = AGENDA_MAX
+			SiNo
+				Si agenda[iterador, 1] > agenda[ordenador, 1] Entonces
+					vectorAux[0] = agenda[iterador, 0]
+					vectorAux[1] = agenda[iterador, 1]
+					vectorAux[2] = agenda[iterador, 2]
+					vectorAux[3] = agenda[iterador, 3]
+					vectorAux[4] = agenda[iterador, 4]
+					
+					agenda[iterador, 0] = agenda[ordenador, 0]
+					agenda[iterador, 1] = agenda[ordenador, 1]
+					agenda[iterador, 2] = agenda[ordenador, 2]
+					agenda[iterador, 3] = agenda[ordenador, 3]
+					agenda[iterador, 4] = agenda[ordenador, 4]
+					
+					agenda[ordenador, 0] = vectorAux[0]
+					agenda[ordenador, 1] = vectorAux[1]
+					agenda[ordenador, 2] = vectorAux[2]
+					agenda[ordenador, 3] = vectorAux[3]
+					agenda[ordenador, 4] = vectorAux[4]
+				FinSi
+				ordenador = ordenador + 1
+			FinSi		
+		FinMientras		
+		Si agenda[iterador, 1] = "" Entonces
+			iterador = AGENDA_MAX
+		SiNo
+			iterador = iterador + 1
+		FinSi	
+	Fin Mientras	
 FinSubAlgoritmo
 
 Funcion con_poblarContactos(matriz)
