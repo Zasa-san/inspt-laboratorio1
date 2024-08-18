@@ -4,12 +4,49 @@ Algoritmo Contactos
 	Dimensionar con_agenda[1000,5]
 	
 	con_poblarContactos(con_agenda)
+	con_ContactosMain(con_agenda)
 	
 FinAlgoritmo
 
 //ALGORITMOS Y FUNCIONES ESPECÍFICAS DEL MÓDULO
-SubAlgoritmo con_contactos	
+SubAlgoritmo con_ContactosMain(con_agenda)
+	Definir seleccion Como Entero
+	
+	Escribir "*Agenda de contactos*"
+	
+	seleccion = con_MenuPrincipal
+	
+	Segun seleccion Hacer
+		1:
+			Escribir "Ver contactos por apellido"
+		2:
+			Escribir "Ver contactos por nombre"
+		3:
+			Escribir "Buscar por nombre o apellido"
+		De Otro Modo:
+			Escribir "Saliendo..."
+	Fin Segun
+	
 FinSubAlgoritmo
+
+Funcion seleccion = con_MenuPrincipal
+	Definir opcion_elegida Como Entero	
+	Repetir
+		opcion_elegida = 4
+		Escribir "Opciones de navegación:"
+		Escribir "1 - Ver por apellido"
+		Escribir "2 - Ver por nombre"
+		Escribir "3 - Buscar por nombre o apellido"
+		Escribir "0 - Para salir de la agenda"
+		Leer opcion_elegida
+		
+		Si opcion_elegida < 0 O opcion_elegida > 3 Entonces
+			Escribir "Debe elegir una opción válida"
+		SiNo
+			seleccion = opcion_elegida
+		FinSi
+	Mientras Que opcion_elegida >= 4
+FinFuncion
 
 Funcion con_poblarContactos(matriz)
 	// Inicializar contactos
