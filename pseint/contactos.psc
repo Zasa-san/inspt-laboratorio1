@@ -5,7 +5,7 @@ Algoritmo MAIN
 	AGENDA_MAX = 1000
 	
 	//VARIABLES GLOBALES PARA MODULOS
-	Definir con_agenda Como Caracter
+	Definir con_agenda, con_indicePorApellido Como Caracter
 	Dimensionar con_agenda[AGENDA_MAX,5]
 	
 	//ALGORITMOS DEL MODULO CONTACTO
@@ -17,8 +17,9 @@ FinAlgoritmo
 //ALGORITMOS Y FUNCIONES ESPECÍFICAS DEL MÓDULO
 SubAlgoritmo con_ContactosMain(agenda, AGENDA_MAX)
 	Definir seleccion, indiceApellidos Como Entero
+	Dimensionar indiceApellidos[AGENDA_MAX,3]
 	
-	con_ordenarPorApellido(agenda, AGENDA_MAX)	
+	con_ordenarPorApellido(agenda, indiceApellidos, AGENDA_MAX)	
 	Repetir
 		Escribir "*Agenda de contactos*"		
 		//Mostrar menu principal del módulo
@@ -62,46 +63,68 @@ SubAlgoritmo con_VerPorApellido(agenda)
 	Mientras Que invalido = 1
 FinSubAlgoritmo
 
-SubAlgoritmo con_ordenarPorApellido(agenda, AGENDA_MAX)
-	Definir iterador, ordenador Como Entero
-	Definir vectorAux Como Caracter
+SubAlgoritmo con_ordenarPorApellido(agenda, indice, AGENDA_MAX)
+	Definir i, j Como Entero
+	Definir vectorAux, letraAnterior, letraSiguiente Como Caracter
 	Dimension vectorAux[5]
-	iterador = 0
 	
-	Mientras iterador <  AGENDA_MAX Hacer
-		ordenador = iterador + 1
-		Mientras ordenador <  AGENDA_MAX Hacer
-			Si agenda[ordenador, 1] = "" Entonces
-				ordenador = AGENDA_MAX
+	i = 0	
+	Mientras i <  AGENDA_MAX Hacer
+		j = i + 1
+		Mientras j <  AGENDA_MAX Hacer
+			Si agenda[j, 1] = "" Entonces
+				j = AGENDA_MAX
 			SiNo
-				Si agenda[iterador, 1] > agenda[ordenador, 1] Entonces
-					vectorAux[0] = agenda[iterador, 0]
-					vectorAux[1] = agenda[iterador, 1]
-					vectorAux[2] = agenda[iterador, 2]
-					vectorAux[3] = agenda[iterador, 3]
-					vectorAux[4] = agenda[iterador, 4]
+				Si agenda[i, 1] > agenda[j, 1] Entonces
+					vectorAux[0] = agenda[i, 0]
+					vectorAux[1] = agenda[i, 1]
+					vectorAux[2] = agenda[i, 2]
+					vectorAux[3] = agenda[i, 3]
+					vectorAux[4] = agenda[i, 4]
 					
-					agenda[iterador, 0] = agenda[ordenador, 0]
-					agenda[iterador, 1] = agenda[ordenador, 1]
-					agenda[iterador, 2] = agenda[ordenador, 2]
-					agenda[iterador, 3] = agenda[ordenador, 3]
-					agenda[iterador, 4] = agenda[ordenador, 4]
+					agenda[i, 0] = agenda[j, 0]
+					agenda[i, 1] = agenda[j, 1]
+					agenda[i, 2] = agenda[j, 2]
+					agenda[i, 3] = agenda[j, 3]
+					agenda[i, 4] = agenda[j, 4]
 					
-					agenda[ordenador, 0] = vectorAux[0]
-					agenda[ordenador, 1] = vectorAux[1]
-					agenda[ordenador, 2] = vectorAux[2]
-					agenda[ordenador, 3] = vectorAux[3]
-					agenda[ordenador, 4] = vectorAux[4]
+					agenda[j, 0] = vectorAux[0]
+					agenda[j, 1] = vectorAux[1]
+					agenda[j, 2] = vectorAux[2]
+					agenda[j, 3] = vectorAux[3]
+					agenda[j, 4] = vectorAux[4]
 				FinSi
-				ordenador = ordenador + 1
+				j = j + 1
 			FinSi		
-		FinMientras		
-		Si agenda[iterador, 1] = "" Entonces
-			iterador = AGENDA_MAX
+		FinMientras
+		Si agenda[i, 1] = "" Entonces
+			i = AGENDA_MAX
 		SiNo
-			iterador = iterador + 1
-		FinSi	
-	Fin Mientras	
+			i = i + 1			
+		FinSi			
+	Fin Mientras
+	
+	i = 0
+	j = 0
+	Mientras i <  AGENDA_MAX Hacer
+		Si agenda[i, 1] = "" Entonces
+			i = AGENDA_MAX
+		SiNo
+			letraAnterior = Subcadena(agenda[i, 1],0,0)
+			letraSiguiente = Subcadena(agenda[i+1, 1],0,0)
+			Si letraAnterior = letraSiguiente Entonces
+				indice[j, 0] = con_obtenerIndicie(letraAnterior)
+				indice[j, 1] = j
+				indice[j, 2] = i
+			SiNo				
+				indice[j, 0] = con_obtenerIndicie(letraAnterior)
+				indice[j, 1] = j
+				indice[j, 2] = i
+				j = j + 1
+			FinSi			
+			i = i + 1			
+		FinSi
+	FinMientras
 FinSubAlgoritmo
 
 Funcion indice = con_obtenerIndicie(letra)
