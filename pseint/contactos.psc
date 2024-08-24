@@ -10,92 +10,56 @@ Algoritmo MAIN
 	
 	//ALGORITMOS DEL MODULO CONTACTO
 	con_poblarContactos(con_agenda)
-	con_ContactosMain(con_agenda, AGENDA_MAX)	
+	con_ContactosMain(con_agenda, AGENDA_MAX)
+	Escribir "Se ha regresado al main..."
 FinAlgoritmo
 
 //ALGORITMOS Y FUNCIONES ESPECÍFICAS DEL MÓDULO
 SubAlgoritmo con_ContactosMain(agenda, AGENDA_MAX)
 	Definir seleccion, indiceApellidos Como Entero
 	
-	con_ordenarPorApellido(agenda, AGENDA_MAX)
-	
-	Escribir "*Agenda de contactos*"
-	
-	//Mostrar menu principal del módulo
-	seleccion = con_MenuPrincipal
-	
-	Segun seleccion Hacer
-		1:
-			con_VerPorApellido(agenda)
-		2:
-			Escribir "Buscar por nombre o apellido"
-		De Otro Modo:
-			Escribir "Saliendo..."
-	Fin Segun
-	
+	con_ordenarPorApellido(agenda, AGENDA_MAX)	
+	Repetir
+		Escribir "*Agenda de contactos*"		
+		//Mostrar menu principal del módulo
+		seleccion = con_MenuPrincipal		
+		Segun seleccion Hacer
+			1:
+				con_VerPorApellido(agenda)
+			2:
+				Escribir "Buscar por nombre o apellido (no hecho aún)"
+			De Otro Modo:
+				Escribir "Saliendo..."
+		Fin Segun
+		Limpiar Pantalla
+	Mientras Que seleccion <> 0	
 FinSubAlgoritmo
 
-Funcion seleccion = con_MenuPrincipal
-	Definir opcion_elegida, invalido Como Entero
-	invalido = 0
-	Repetir
-		Si opcion_elegida < 0 O opcion_elegida > 2 Entonces
-			Escribir "**Debe elegir una opción válida**"
-		FinSi
-		Escribir "Opciones de navegación:"
-		Escribir "1 - Ver por apellido"
-		Escribir "2 - Buscar por nombre o apellido"
-		Escribir "0 - Para salir de la agenda"
-		Leer opcion_elegida		
-		Si opcion_elegida < 0 O opcion_elegida > 2 Entonces
-			invalido = 1
-		SiNo
-			invalido = 0
-			seleccion = opcion_elegida
-		FinSi
-		Limpiar Pantalla
-	Mientras Que invalido = 1
-	Limpiar Pantalla
-FinFuncion
-
-Funcion con_mostrarAlfabeto
-	Escribir " 1 - a    2 - b    3 - c    4 - d    5 - e"
-	Escribir " 6 - f    7 - g    8 - h    9 - i   10 - j"
-	Escribir "11 - k   12 - l   13 - m   14 - n   15 - ñ"
-	Escribir "16 - o   17 - p   18 - q   19 - r   20 - s"
-	Escribir "21 - t   22 - u   23 - v   24 - w   25 - x"
-	Escribir "26 - y   27 - z"		
-FinFuncion
-
 SubAlgoritmo con_VerPorApellido(agenda)
-	Definir indiceAlfabeto, invalido, iterador Como Entero		
-	invalido = 0	
+	Definir indiceAlfabeto, iterador, invalido Como Entero		
+	Definir letraElegida Como Caracter
+	invalido = 0
+	
 	Escribir "Vista por apellido"	
 	Repetir
-		Si invalido = 1 Entonces
-			Escribir "**Debe elegir un índice válido**"
+		Si invalido = 0 Entonces
+			Escribir "Eliga la letra para ver todos los contactos agendados"
+			Escribir "Para salir, escriba 0"		
+			Leer letraElegida
 		FinSi
-		Escribir "Eliga la letra para ver todos los contactos agendados"
-		Escribir "Para salir, escriba 0"
-		con_mostrarAlfabeto()				
-		Leer indiceAlfabeto			
-		Si indiceAlfabeto < 0 O indiceAlfabeto > 27 Entonces
-			invalido = 1			
-		SiNo
-			invalido = 0
+		Si letraElegida <> "0" Entonces			
+			indiceAlfabeto = con_obtenerIndicie(letraElegida)
+			Si indiceAlfabeto = -1 Entonces
+				Limpiar Pantalla
+				invalido = 1
+				Escribir "**No se ha podido reconocer la letra ingresada**"
+				Escribir "Ingrese nuevamente una letra, o 0 para salir"
+				Leer letraElegida
+			SiNo
+				invalido = 0
+			FinSi
 		FinSi
-		Limpiar Pantalla
 	Mientras Que invalido = 1
-	
-	//*************************************
-	//TEMPORAL PARA MOSTRAR AGENDA ORDENADA
-	iterador = 0
-	Mientras agenda[iterador, 1] <> "" Hacer
-		Escribir agenda[iterador, 1], " ", agenda[iterador, 0]
-		iterador = iterador + 1
-	FinMientras
-	//BORRAR PARA CONTINUAR Y QUITAR ITERADOR DE LAS DEFINICIONES
-	//*************************************
 FinSubAlgoritmo
 
 SubAlgoritmo con_ordenarPorApellido(agenda, AGENDA_MAX)
@@ -139,6 +103,90 @@ SubAlgoritmo con_ordenarPorApellido(agenda, AGENDA_MAX)
 		FinSi	
 	Fin Mientras	
 FinSubAlgoritmo
+
+Funcion indice = con_obtenerIndicie(letra)
+	Segun letra Hacer
+		'a' O 'A' O 'á' O 'Á':
+			indice = 0
+		'b' O 'B':
+			indice = 1
+		'c' O 'C':
+			indice = 2
+		'd' O 'D':
+			indice = 3
+		'e' O 'E' O 'é' O 'É':
+			indice = 4
+		'f' O 'F':
+			indice = 5
+		'g' O 'G':
+			indice = 6
+		'h' O 'H':
+			indice = 7
+		'i' O 'I' O 'í' O 'Í':
+			indice = 8
+		'j' O 'J':
+			indice = 9
+		'k' O 'K':
+			indice = 10
+		'l' O 'L':
+			indice = 11
+		'm' O 'M':
+			indice = 12
+		'n' O 'N':
+			indice = 13
+		'ñ' O 'Ñ':
+			indice = 14
+		'o' O 'O' O 'ó' O 'Ó':
+			indice = 15
+		'p' O 'P':
+			indice = 16
+		'q' O 'Q':
+			indice = 17
+		'r' O 'R':
+			indice = 18
+		's' O 'S':
+			indice = 19
+		't' O 'T':
+			indice = 20
+		'u' O 'U' O 'ú' O 'Ú':
+			indice = 21
+		'v' O 'V':
+			indice = 22
+		'w' O 'W':
+			indice = 23
+		'x' O 'X':
+			indice = 24
+		'y' O 'Y':
+			indice = 25
+		'z' O 'Z':
+			indice = 26
+		De Otro Modo:
+			indice = -1
+	Fin Segun
+FinFuncion
+
+Funcion seleccion = con_MenuPrincipal
+	Definir opcion_elegida, invalido Como Entero
+	invalido = 0
+	Repetir
+		Si opcion_elegida < 0 O opcion_elegida > 2 Entonces
+			Escribir "**Debe elegir una opción válida**"
+		FinSi
+		Escribir "Opciones de navegación:"
+		Escribir "1 - Ver por apellido"
+		Escribir "2 - Buscar por nombre o apellido"
+		Escribir "0 - Para salir de la agenda"
+		Leer opcion_elegida		
+		Si opcion_elegida < 0 O opcion_elegida > 2 Entonces
+			invalido = 1
+		SiNo
+			invalido = 0
+			seleccion = opcion_elegida
+		FinSi
+		Limpiar Pantalla
+	Mientras Que invalido = 1
+	Limpiar Pantalla
+FinFuncion
 
 Funcion con_poblarContactos(matriz)
 	// Inicializar contactos
