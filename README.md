@@ -29,17 +29,15 @@ FinSubAlgoritmo
 | `dirección`      | Cadena de caracteres   | Si
 
 ### Índice alfabético 
-#### (NO ESTA SEGURO QUE USEMOS ESTO ES PARA NO OLVIDARLO)
 ```
 [
-    [letra, limite_bajo, limite_alto],
+    [limite_bajo, limite_alto],
 ]
 ```
 | Nombre del dato  | Tipo de dato   | ¿Vacio?
 | -------------    | -------------  | -------------
-| `letra`          | Número         | No
-| `limite_bajo`    | Número         | No
-| `limite_alto`    | Número         | No
+| `indice`         | Número         | No
+| `cantidad`       | Número         | No
 
 Ya que no se puede tener matrices con datos combinados, usamos números para representar las letras del abecedario.
 ```

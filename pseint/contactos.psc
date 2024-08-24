@@ -17,7 +17,7 @@ FinAlgoritmo
 //ALGORITMOS Y FUNCIONES ESPECÍFICAS DEL MÓDULO
 SubAlgoritmo con_ContactosMain(agenda, AGENDA_MAX)
 	Definir seleccion, indiceApellidos Como Entero
-	Dimensionar indiceApellidos[AGENDA_MAX,3]
+	Dimensionar indiceApellidos[27,2]
 	
 	con_ordenarPorApellido(agenda, indiceApellidos, AGENDA_MAX)	
 	Repetir
@@ -26,7 +26,7 @@ SubAlgoritmo con_ContactosMain(agenda, AGENDA_MAX)
 		seleccion = con_MenuPrincipal		
 		Segun seleccion Hacer
 			1:
-				con_VerPorApellido(agenda)
+				con_VerPorApellido(agenda, indiceApellidos)
 			2:
 				Escribir "Buscar por nombre o apellido (no hecho aún)"
 			De Otro Modo:
@@ -36,7 +36,7 @@ SubAlgoritmo con_ContactosMain(agenda, AGENDA_MAX)
 	Mientras Que seleccion <> 0	
 FinSubAlgoritmo
 
-SubAlgoritmo con_VerPorApellido(agenda)
+SubAlgoritmo con_VerPorApellido(agenda, indice)
 	Definir indiceAlfabeto, iterador, invalido Como Entero		
 	Definir letraElegida Como Caracter
 	invalido = 0
@@ -58,14 +58,18 @@ SubAlgoritmo con_VerPorApellido(agenda)
 				Leer letraElegida
 			SiNo
 				invalido = 0
+				Para iterador = indice[indiceAlfabeto, 0] Hasta indice[indiceAlfabeto, 1] Con Paso 1 Hacer
+					Escribir agenda[iterador, 1]					
+				Fin Para
+				Esperar Tecla				
 			FinSi
 		FinSi
 	Mientras Que invalido = 1
 FinSubAlgoritmo
 
 SubAlgoritmo con_ordenarPorApellido(agenda, indice, AGENDA_MAX)
-	Definir i, j Como Entero
-	Definir vectorAux, letraAnterior, letraSiguiente Como Caracter
+	Definir i, j, letraAnterior, letraSiguiente Como Entero
+	Definir vectorAux Como Caracter
 	Dimension vectorAux[5]
 	
 	i = 0	
@@ -105,24 +109,24 @@ SubAlgoritmo con_ordenarPorApellido(agenda, indice, AGENDA_MAX)
 	Fin Mientras
 	
 	i = 0
-	j = 0
+	letraAnterior = con_obtenerIndicie(Subcadena(agenda[0, 1], 0 , 0))
+	indice[letraAnterior, 0] = 0
+	indice[letraAnterior, 1] = 1
 	Mientras i <  AGENDA_MAX Hacer
 		Si agenda[i, 1] = "" Entonces
 			i = AGENDA_MAX
 		SiNo
-			letraAnterior = Subcadena(agenda[i, 1],0,0)
-			letraSiguiente = Subcadena(agenda[i+1, 1],0,0)
-			Si letraAnterior = letraSiguiente Entonces
-				indice[j, 0] = con_obtenerIndicie(letraAnterior)
-				indice[j, 1] = j
-				indice[j, 2] = i
-			SiNo				
-				indice[j, 0] = con_obtenerIndicie(letraAnterior)
-				indice[j, 1] = j
-				indice[j, 2] = i
-				j = j + 1
-			FinSi			
-			i = i + 1			
+			letraAnterior = con_obtenerIndicie(Subcadena(agenda[i, 1], 0, 0))
+			letraSiguiente = con_obtenerIndicie(Subcadena(agenda[i + 1, 1], 0, 0))
+			Si letraSiguiente <> -1 Entonces				
+				Si letraAnterior = letraSiguiente Entonces			
+					indice[letraAnterior, 1] = indice[letraAnterior, 1] + 1
+				SiNo				
+					indice[letraSiguiente, 0] = indice[letraAnterior, 1] + 1
+					indice[letraSiguiente, 1] = indice[letraAnterior, 1]
+				FinSi			
+			FinSi
+			i = i + 1
 		FinSi
 	FinMientras
 FinSubAlgoritmo
