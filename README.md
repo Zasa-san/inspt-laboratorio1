@@ -39,6 +39,8 @@ FinSubAlgoritmo
 | `indice`         | Número         | indice en la agenda donde está el primer nombre para le letra elegida | No
 | `cantidad`       | Número         | canitdad de nombres con esa letra                                     | No
 
+El índice es inicializado en cantidades en `-1`, de esta forma se puede avisar que en una determinada letra no hay contactos. A medida que se construye el índice esos `-1` serán actualizados para reflejar la cantidad de contactos en determinada letra del alfabeto.
+
 Ya que no se puede tener matrices con datos combinados, usamos números para representar las letras del abecedario.
 ```
 0 : a | A | á | Á
