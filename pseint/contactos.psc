@@ -19,6 +19,7 @@ SubAlgoritmo con_ContactosMain(agenda, AGENDA_MAX)
 	Definir seleccion, indiceApellidos Como Entero
 	Dimensionar indiceApellidos[27,2]
 	
+	con_inicializarIndice(indiceApellidos)
 	con_ordenarPorApellido(agenda, indiceApellidos, AGENDA_MAX)	
 	Repetir
 		Escribir "*Agenda de contactos*"		
@@ -49,7 +50,7 @@ SubAlgoritmo con_VerPorApellido(agenda, indice)
 			Leer letraElegida
 		FinSi
 		Si letraElegida <> "0" Entonces			
-			indiceAlfabeto = con_obtenerIndicie(letraElegida)
+			indiceAlfabeto = con_obtenerIndice(letraElegida)
 			Si indiceAlfabeto = -1 Entonces
 				Limpiar Pantalla
 				invalido = 1
@@ -58,9 +59,13 @@ SubAlgoritmo con_VerPorApellido(agenda, indice)
 				Leer letraElegida
 			SiNo
 				invalido = 0
-				Para iterador = indice[indiceAlfabeto, 0] Hasta indice[indiceAlfabeto, 1] Con Paso 1 Hacer
-					Escribir agenda[iterador, 1]					
-				Fin Para
+				Si indice[indiceAlfabeto, 1] <> -1 Entonces
+					Para iterador = 0 Hasta indice[indiceAlfabeto, 1] - 1 Con Paso 1 Hacer
+						Escribir agenda[indice[indiceAlfabeto, 0] + iterador, 1], " ", agenda[indice[indiceAlfabeto, 0] + iterador, 0]
+					Fin Para
+				SiNo
+					Escribir "No hay contactos con apellidos que inicien en *", letraElegida, "*"
+				FinSi
 				Esperar Tecla				
 			FinSi
 		FinSi
@@ -109,29 +114,29 @@ SubAlgoritmo con_ordenarPorApellido(agenda, indice, AGENDA_MAX)
 	Fin Mientras
 	
 	i = 0
-	letraAnterior = con_obtenerIndicie(Subcadena(agenda[0, 1], 0 , 0))
+	letraAnterior = con_obtenerIndice(Subcadena(agenda[0, 1], 0 , 0))
 	indice[letraAnterior, 0] = 0
 	indice[letraAnterior, 1] = 1
 	Mientras i <  AGENDA_MAX Hacer
 		Si agenda[i, 1] = "" Entonces
 			i = AGENDA_MAX
 		SiNo
-			letraAnterior = con_obtenerIndicie(Subcadena(agenda[i, 1], 0, 0))
-			letraSiguiente = con_obtenerIndicie(Subcadena(agenda[i + 1, 1], 0, 0))
+			letraAnterior = con_obtenerIndice(Subcadena(agenda[i, 1], 0, 0))
+			letraSiguiente = con_obtenerIndice(Subcadena(agenda[i + 1, 1], 0, 0))
 			Si letraSiguiente <> -1 Entonces				
 				Si letraAnterior = letraSiguiente Entonces			
 					indice[letraAnterior, 1] = indice[letraAnterior, 1] + 1
 				SiNo				
-					indice[letraSiguiente, 0] = indice[letraAnterior, 1] + 1
-					indice[letraSiguiente, 1] = indice[letraAnterior, 1]
+					indice[letraSiguiente, 0] = i + 1
+					indice[letraSiguiente, 1] = 1
 				FinSi			
 			FinSi
 			i = i + 1
 		FinSi
-	FinMientras
+	FinMientras	
 FinSubAlgoritmo
 
-Funcion indice = con_obtenerIndicie(letra)
+Funcion indice = con_obtenerIndice(letra)
 	Segun letra Hacer
 		'a' O 'A' O 'á' O 'Á':
 			indice = 0
@@ -215,7 +220,14 @@ Funcion seleccion = con_MenuPrincipal
 	Limpiar Pantalla
 FinFuncion
 
-Funcion con_poblarContactos(matriz)
+SubAlgoritmo con_inicializarIndice(indice)
+	Definir iterador Como Entero
+	Para iterador = 0 Hasta 26 Con Paso 1
+		indice[iterador, 1] = -1
+	FinPara
+FinSubAlgoritmo
+
+SubAlgoritmo con_poblarContactos(matriz)
 	// Inicializar contactos
     matriz[0, 0] <- "Ana"
     matriz[0, 1] <- "García"
@@ -366,4 +378,5 @@ Funcion con_poblarContactos(matriz)
     matriz[24, 2] <- "1154782260"
     matriz[24, 3] <- "renata.gonzalez@example.com"
     matriz[24, 4] <- "Av. Libertador 200, Buenos Aires"
-FinFuncion
+FinSubAlgoritmo
+
