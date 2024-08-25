@@ -31,13 +31,13 @@ FinSubAlgoritmo
 ### Índice alfabético 
 ```
 [
-    [limite_bajo, limite_alto],
+    [indice, cantidad],
 ]
 ```
-| Nombre del dato  | Tipo de dato   | ¿Vacio?
-| -------------    | -------------  | -------------
-| `indice`         | Número         | No
-| `cantidad`       | Número         | No
+| Nombre del dato  | Tipo de dato   | Descripción                                                           | ¿Vacio?   
+| -------------    | -------------  | -------------                                                         | -------------
+| `indice`         | Número         | indice en la agenda donde está el primer nombre para le letra elegida | No
+| `cantidad`       | Número         | canitdad de nombres con esa letra                                     | No
 
 Ya que no se puede tener matrices con datos combinados, usamos números para representar las letras del abecedario.
 ```
