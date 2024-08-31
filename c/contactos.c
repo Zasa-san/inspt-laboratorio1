@@ -17,24 +17,23 @@ typedef struct {
 
 void poblarContactos(contacto_t[AGENDA_MAX]);
 void ordenarPorApellido(contacto_t[AGENDA_MAX], int32_t[ALFABETO][2]);
+void verPorApellido(contacto_t[AGENDA_MAX], int32_t[ALFABETO][2]);
 int32_t menuPrincipal();
 
-
-int32_t main() {
+int main() {
     int32_t opcion;
     int32_t indice[ALFABETO][2];
     contacto_t agenda[AGENDA_MAX];
 
-    opcion = -1;
     poblarContactos(agenda);
     ordenarPorApellido(agenda, indice);
 
     printf("**Agenda de contactos**");
-    opcion = menuPrincipal();
 
     do {
+        opcion = menuPrincipal();
         switch (opcion) {
-        case 1: printf("agenda por apellido");
+        case 1: verPorApellido(agenda, indice);
             break;
 
         case 2: printf("busqueda");
@@ -43,7 +42,7 @@ int32_t main() {
         default: printf("Saliendo...");
             break;
         }
-    } while (opcion == -1);
+    } while (opcion != 0);
 
     fflush(stdin);
     getchar();
@@ -80,8 +79,44 @@ int32_t menuPrincipal() {
 }
 
 void ordenarPorApellido(contacto_t agenda[AGENDA_MAX], int32_t indice[ALFABETO][2]) {
+    uint32_t i, j, resultado;
+    contacto_t aux;
 
+    while (i < AGENDA_MAX) {
+        j = i;
+
+        if (strlen(agenda[j].apellido) == 0) {
+            break;
+        }
+
+        while (j < AGENDA_MAX) {
+            resultado = strcmp(agenda[i].apellido, agenda[j].apellido);
+            if (resultado == 0) {
+                //Los strings son iguales
+            }
+            else if (resultado < 0) {
+                //El string 1 viene antes que el string 2
+            }
+            else {
+                //El string 1 viene después del string 2
+                aux = agenda[j];
+                agenda[j] = agenda[i];
+                agenda[i] = aux;
+            }
+            j++;
+        }
+        i++;
+    }
 }
+
+void verPorApellido(contacto_t agenda[AGENDA_MAX], int32_t indice[ALFABETO][2]) {
+    uint32_t i = 0;
+    do {
+        printf("%s %s\n", agenda[i].apellido, agenda[i].nombre);
+        i++;
+    } while (strlen(agenda[i].apellido) != 0);
+}
+
 
 void poblarContactos(contacto_t agenda[AGENDA_MAX]) {
     strcpy(agenda[0].nombre, "Ana");
