@@ -1,45 +1,63 @@
 #include <stdio.h>
+#include <stdint.h>
 #include <string.h>
+#include <stdbool.h>
 #define AGENDA_MAX 1000
+#define ALFABETO 26
 #define STRING_MAX 200
-#define FALSE 0
 #define clrscr() printf("\e[1;1H\e[2J")
 
-void poblarContactos(char[AGENDA_MAX][5][STRING_MAX]);
-int menuPrincipal();
+typedef struct {
+    char nombre[STRING_MAX];
+    char apellido[STRING_MAX];
+    char telefono[STRING_MAX];
+    char email[STRING_MAX];
+    char direccion[STRING_MAX];
+} contacto_t;
 
-int main() {
-    int opcion;
-    char agenda[AGENDA_MAX][5][STRING_MAX];
+void poblarContactos(contacto_t[AGENDA_MAX]);
+void ordenarPorApellido(contacto_t[AGENDA_MAX], int32_t[ALFABETO][2]);
+int32_t menuPrincipal();
 
-    opcion = 0;
 
+int32_t main() {
+    int32_t opcion;
+    int32_t indice[ALFABETO][2];
+    contacto_t agenda[AGENDA_MAX];
+
+    opcion = -1;
     poblarContactos(agenda);
+    ordenarPorApellido(agenda, indice);
 
     printf("**Agenda de contactos**");
     opcion = menuPrincipal();
 
-    switch (opcion) {
-    case 1: printf("agenda por apellido");
-        break;
+    do {
+        switch (opcion) {
+        case 1: printf("agenda por apellido");
+            break;
 
-    case 2: printf("busqueda");
-        break;
+        case 2: printf("busqueda");
+            break;
 
-    default: printf("Saliendo...");
-        break;
-    }
+        default: printf("Saliendo...");
+            break;
+        }
+    } while (opcion == -1);
 
     fflush(stdin);
     getchar();
     return 0;
 }
 
-int menuPrincipal() {
-    int invalido, opcion;
+int32_t menuPrincipal() {
+    int32_t opcion;
+    bool invalido;
     opcion = 0;
-    invalido = FALSE;
+    invalido = false;
+
     printf("\n");
+
     do {
         if (opcion < 0 || opcion > 2) {
             printf("**Debe elegir una opción válida**\n");
@@ -50,164 +68,169 @@ int menuPrincipal() {
         printf("0 - Para salir de la agenda\n");
         scanf("%d", &opcion);
         if (opcion < 0 || opcion > 2) {
-            invalido = 1;
+            invalido = true;
         }
         else {
-            invalido = FALSE;
+            invalido = false;
         }
         clrscr();
-    } while (invalido != FALSE);
+    } while (invalido != false);
+
     return opcion;
 }
 
-void poblarContactos(char agenda[AGENDA_MAX][5][STRING_MAX]) {
-    strcpy(agenda[0][0], "Ana");
-    strcpy(agenda[0][1], "García");
-    strcpy(agenda[0][2], "1154782236");
-    strcpy(agenda[0][3], "ana.garcia@example.com");
-    strcpy(agenda[0][4], "Calle Falsa 456, Buenos Aires");
+void ordenarPorApellido(contacto_t agenda[AGENDA_MAX], int32_t indice[ALFABETO][2]) {
 
-    strcpy(agenda[1][0], "Luis");
-    strcpy(agenda[1][1], "Martínez");
-    strcpy(agenda[1][2], "");
-    strcpy(agenda[1][3], "");
-    strcpy(agenda[1][4], "Av. Santa Fe 1234, Buenos Aires");
+}
 
-    strcpy(agenda[2][0], "Sofía");
-    strcpy(agenda[2][1], "Rodríguez");
-    strcpy(agenda[2][2], "1154782238");
-    strcpy(agenda[2][3], "");
-    strcpy(agenda[2][4], "Calle Córdoba 789, Buenos Aires");
+void poblarContactos(contacto_t agenda[AGENDA_MAX]) {
+    strcpy(agenda[0].nombre, "Ana");
+    strcpy(agenda[0].apellido, "García");
+    strcpy(agenda[0].telefono, "1154782236");
+    strcpy(agenda[0].email, "ana.garcia@example.com");
+    strcpy(agenda[0].direccion, "Calle Falsa 456, Buenos Aires");
 
-    strcpy(agenda[3][0], "Martín");
-    strcpy(agenda[3][1], "Silva");
-    strcpy(agenda[3][2], "1154782239");
-    strcpy(agenda[3][3], "martin.silva@example.com");
-    strcpy(agenda[3][4], "");
+    strcpy(agenda[1].nombre, "Luis");
+    strcpy(agenda[1].apellido, "Martínez");
+    strcpy(agenda[1].telefono, "");
+    strcpy(agenda[1].email, "");
+    strcpy(agenda[1].direccion, "Av. Santa Fe 1234, Buenos Aires");
 
-    strcpy(agenda[4][0], "Julia");
-    strcpy(agenda[4][1], "Pérez");
-    strcpy(agenda[4][2], "1154782240");
-    strcpy(agenda[4][3], "");
-    strcpy(agenda[4][4], "Calle Avellaneda 234, Buenos Aires");
+    strcpy(agenda[2].nombre, "Sofía");
+    strcpy(agenda[2].apellido, "Rodríguez");
+    strcpy(agenda[2].telefono, "1154782238");
+    strcpy(agenda[2].email, "");
+    strcpy(agenda[2].direccion, "Calle Córdoba 789, Buenos Aires");
 
-    strcpy(agenda[5][0], "Ricardo");
-    strcpy(agenda[5][1], "Fernández");
-    strcpy(agenda[5][2], "1154782241");
-    strcpy(agenda[5][3], "");
-    strcpy(agenda[5][4], "Calle Moreno 678, Buenos Aires");
+    strcpy(agenda[3].nombre, "Martín");
+    strcpy(agenda[3].apellido, "Silva");
+    strcpy(agenda[3].telefono, "1154782239");
+    strcpy(agenda[3].email, "martin.silva@example.com");
+    strcpy(agenda[3].direccion, "");
 
-    strcpy(agenda[6][0], "Carla");
-    strcpy(agenda[6][1], "Vega");
-    strcpy(agenda[6][2], "");
-    strcpy(agenda[6][3], "");
-    strcpy(agenda[6][4], "Av. Córdoba 890, Buenos Aires");
+    strcpy(agenda[4].nombre, "Julia");
+    strcpy(agenda[4].apellido, "Pérez");
+    strcpy(agenda[4].telefono, "1154782240");
+    strcpy(agenda[4].email, "");
+    strcpy(agenda[4].direccion, "Calle Avellaneda 234, Buenos Aires");
 
-    strcpy(agenda[7][0], "Pedro");
-    strcpy(agenda[7][1], "Gómez");
-    strcpy(agenda[7][2], "1154782243");
-    strcpy(agenda[7][3], "pedro.gomez@example.com");
-    strcpy(agenda[7][4], "Calle San Juan 300, Buenos Aires");
+    strcpy(agenda[5].nombre, "Ricardo");
+    strcpy(agenda[5].apellido, "Fernández");
+    strcpy(agenda[5].telefono, "1154782241");
+    strcpy(agenda[5].email, "");
+    strcpy(agenda[5].direccion, "Calle Moreno 678, Buenos Aires");
 
-    strcpy(agenda[8][0], "Natalia");
-    strcpy(agenda[8][1], "Vargas");
-    strcpy(agenda[8][2], "1154782244");
-    strcpy(agenda[8][3], "");
-    strcpy(agenda[8][4], "Av. San Martín 1500, Buenos Aires");
+    strcpy(agenda[6].nombre, "Carla");
+    strcpy(agenda[6].apellido, "Vega");
+    strcpy(agenda[6].telefono, "");
+    strcpy(agenda[6].email, "");
+    strcpy(agenda[6].direccion, "Av. Córdoba 890, Buenos Aires");
 
-    strcpy(agenda[9][0], "Tomás");
-    strcpy(agenda[9][1], "Morales");
-    strcpy(agenda[9][2], "");
-    strcpy(agenda[9][3], "");
-    strcpy(agenda[9][4], "");
+    strcpy(agenda[7].nombre, "Pedro");
+    strcpy(agenda[7].apellido, "Gómez");
+    strcpy(agenda[7].telefono, "1154782243");
+    strcpy(agenda[7].email, "pedro.gomez@example.com");
+    strcpy(agenda[7].direccion, "Calle San Juan 300, Buenos Aires");
 
-    strcpy(agenda[10][0], "Mónica");
-    strcpy(agenda[10][1], "Fernández");
-    strcpy(agenda[10][2], "1154782246");
-    strcpy(agenda[10][3], "");
-    strcpy(agenda[10][4], "Calle Sarmiento 250, Buenos Aires");
+    strcpy(agenda[8].nombre, "Natalia");
+    strcpy(agenda[8].apellido, "Vargas");
+    strcpy(agenda[8].telefono, "1154782244");
+    strcpy(agenda[8].email, "");
+    strcpy(agenda[8].direccion, "Av. San Martín 1500, Buenos Aires");
 
-    strcpy(agenda[11][0], "Gustavo");
-    strcpy(agenda[11][1], "Martínez");
-    strcpy(agenda[11][2], "1154782247");
-    strcpy(agenda[11][3], "");
-    strcpy(agenda[11][4], "Av. 9 de Julio 700, Buenos Aires");
+    strcpy(agenda[9].nombre, "Tomás");
+    strcpy(agenda[9].apellido, "Morales");
+    strcpy(agenda[9].telefono, "");
+    strcpy(agenda[9].email, "");
+    strcpy(agenda[9].direccion, "");
 
-    strcpy(agenda[12][0], "Valeria");
-    strcpy(agenda[12][1], "Castro");
-    strcpy(agenda[12][2], "1154782248");
-    strcpy(agenda[12][3], "");
-    strcpy(agenda[12][4], "Calle Tucumán 600, Buenos Aires");
+    strcpy(agenda[10].nombre, "Mónica");
+    strcpy(agenda[10].apellido, "Fernández");
+    strcpy(agenda[10].telefono, "1154782246");
+    strcpy(agenda[10].email, "");
+    strcpy(agenda[10].direccion, "Calle Sarmiento 250, Buenos Aires");
 
-    strcpy(agenda[13][0], "Juan");
-    strcpy(agenda[13][1], "Salazar");
-    strcpy(agenda[13][2], "1154782249");
-    strcpy(agenda[13][3], "");
-    strcpy(agenda[13][4], "Av. Rivadavia 1000, Buenos Aires");
+    strcpy(agenda[11].nombre, "Gustavo");
+    strcpy(agenda[11].apellido, "Martínez");
+    strcpy(agenda[11].telefono, "1154782247");
+    strcpy(agenda[11].email, "");
+    strcpy(agenda[11].direccion, "Av. 9 de Julio 700, Buenos Aires");
 
-    strcpy(agenda[14][0], "Sandra");
-    strcpy(agenda[14][1], "Bravo");
-    strcpy(agenda[14][2], "1154782250");
-    strcpy(agenda[14][3], "");
-    strcpy(agenda[14][4], "Calle Chile 800, Buenos Aires");
+    strcpy(agenda[12].nombre, "Valeria");
+    strcpy(agenda[12].apellido, "Castro");
+    strcpy(agenda[12].telefono, "1154782248");
+    strcpy(agenda[12].email, "");
+    strcpy(agenda[12].direccion, "Calle Tucumán 600, Buenos Aires");
 
-    strcpy(agenda[15][0], "Emilio");
-    strcpy(agenda[15][1], "Gutiérrez");
-    strcpy(agenda[15][2], "1154782251");
-    strcpy(agenda[15][3], "");
-    strcpy(agenda[15][4], "Av. Santa Fe 900, Buenos Aires");
+    strcpy(agenda[13].nombre, "Juan");
+    strcpy(agenda[13].apellido, "Salazar");
+    strcpy(agenda[13].telefono, "1154782249");
+    strcpy(agenda[13].email, "");
+    strcpy(agenda[13].direccion, "Av. Rivadavia 1000, Buenos Aires");
 
-    strcpy(agenda[16][0], "Florencia");
-    strcpy(agenda[16][1], "Sosa");
-    strcpy(agenda[16][2], "1154782252");
-    strcpy(agenda[16][3], "");
-    strcpy(agenda[16][4], "Calle Montevideo 500, Buenos Aires");
+    strcpy(agenda[14].nombre, "Sandra");
+    strcpy(agenda[14].apellido, "Bravo");
+    strcpy(agenda[14].telefono, "1154782250");
+    strcpy(agenda[14].email, "");
+    strcpy(agenda[14].direccion, "Calle Chile 800, Buenos Aires");
 
-    strcpy(agenda[17][0], "Álvaro");
-    strcpy(agenda[17][1], "Jiménez");
-    strcpy(agenda[17][2], "1154782253");
-    strcpy(agenda[17][3], "");
-    strcpy(agenda[17][4], "Av. Belgrano 1200, Buenos Aires");
+    strcpy(agenda[15].nombre, "Emilio");
+    strcpy(agenda[15].apellido, "Gutiérrez");
+    strcpy(agenda[15].telefono, "1154782251");
+    strcpy(agenda[15].email, "");
+    strcpy(agenda[15].direccion, "Av. Santa Fe 900, Buenos Aires");
 
-    strcpy(agenda[18][0], "Carmen");
-    strcpy(agenda[18][1], "Rivas");
-    strcpy(agenda[18][2], "1154782254");
-    strcpy(agenda[18][3], "");
-    strcpy(agenda[18][4], "Calle Paraná 300, Buenos Aires");
+    strcpy(agenda[16].nombre, "Florencia");
+    strcpy(agenda[16].apellido, "Sosa");
+    strcpy(agenda[16].telefono, "1154782252");
+    strcpy(agenda[16].email, "");
+    strcpy(agenda[16].direccion, "Calle Montevideo 500, Buenos Aires");
 
-    strcpy(agenda[19][0], "Jorge");
-    strcpy(agenda[19][1], "González");
-    strcpy(agenda[19][2], "1154782255");
-    strcpy(agenda[19][3], "");
-    strcpy(agenda[19][4], "Calle Lavalle 1200, Buenos Aires");
+    strcpy(agenda[17].nombre, "Álvaro");
+    strcpy(agenda[17].apellido, "Jiménez");
+    strcpy(agenda[17].telefono, "1154782253");
+    strcpy(agenda[17].email, "");
+    strcpy(agenda[17].direccion, "Av. Belgrano 1200, Buenos Aires");
 
-    strcpy(agenda[20][0], "Silvia");
-    strcpy(agenda[20][1], "Cruz");
-    strcpy(agenda[20][2], "1154782256");
-    strcpy(agenda[20][3], "");
-    strcpy(agenda[20][4], "Av. Corrientes 1500, Buenos Aires");
+    strcpy(agenda[18].nombre, "Carmen");
+    strcpy(agenda[18].apellido, "Rivas");
+    strcpy(agenda[18].telefono, "1154782254");
+    strcpy(agenda[18].email, "");
+    strcpy(agenda[18].direccion, "Calle Paraná 300, Buenos Aires");
 
-    strcpy(agenda[21][0], "Ricardo");
-    strcpy(agenda[21][1], "Vega");
-    strcpy(agenda[21][2], "1154782257");
-    strcpy(agenda[21][3], "");
-    strcpy(agenda[21][4], "Calle San Martín 2000, Buenos Aires");
+    strcpy(agenda[19].nombre, "Jorge");
+    strcpy(agenda[19].apellido, "González");
+    strcpy(agenda[19].telefono, "1154782255");
+    strcpy(agenda[19].email, "");
+    strcpy(agenda[19].direccion, "Calle Lavalle 1200, Buenos Aires");
 
-    strcpy(agenda[22][0], "Gabriela");
-    strcpy(agenda[22][1], "Ramírez");
-    strcpy(agenda[22][2], "1154782258");
-    strcpy(agenda[22][3], "gabriela.ramirez@example.com");
-    strcpy(agenda[22][4], "");
+    strcpy(agenda[20].nombre, "Silvia");
+    strcpy(agenda[20].apellido, "Cruz");
+    strcpy(agenda[20].telefono, "1154782256");
+    strcpy(agenda[20].email, "");
+    strcpy(agenda[20].direccion, "Av. Corrientes 1500, Buenos Aires");
 
-    strcpy(agenda[23][0], "Tomás");
-    strcpy(agenda[23][1], "Fernández");
-    strcpy(agenda[23][2], "1154782259");
-    strcpy(agenda[23][3], "");
-    strcpy(agenda[23][4], "Calle Olavarría 123, Buenos Aires");
+    strcpy(agenda[21].nombre, "Ricardo");
+    strcpy(agenda[21].apellido, "Vega");
+    strcpy(agenda[21].telefono, "1154782257");
+    strcpy(agenda[21].email, "");
+    strcpy(agenda[21].direccion, "Calle San Martín 2000, Buenos Aires");
 
-    strcpy(agenda[24][0], "Renata");
-    strcpy(agenda[24][1], "González");
-    strcpy(agenda[24][2], "1154782260");
-    strcpy(agenda[24][3], "renata.gonzalez@example.com");
-    strcpy(agenda[24][4], "Av. Libertador 200, Buenos Aires");
+    strcpy(agenda[22].nombre, "Gabriela");
+    strcpy(agenda[22].apellido, "Ramírez");
+    strcpy(agenda[22].telefono, "1154782258");
+    strcpy(agenda[22].email, "gabriela.ramirez@example.com");
+    strcpy(agenda[22].direccion, "");
+
+    strcpy(agenda[23].nombre, "Tomás");
+    strcpy(agenda[23].apellido, "Fernández");
+    strcpy(agenda[23].telefono, "1154782259");
+    strcpy(agenda[23].email, "");
+    strcpy(agenda[23].direccion, "Calle Olavarría 123, Buenos Aires");
+
+    strcpy(agenda[24].nombre, "Renata");
+    strcpy(agenda[24].apellido, "González");
+    strcpy(agenda[24].telefono, "1154782260");
+    strcpy(agenda[24].email, "renata.gonzalez@example.com");
+    strcpy(agenda[24].direccion, "Av. Libertador 200, Buenos Aires");
 }
