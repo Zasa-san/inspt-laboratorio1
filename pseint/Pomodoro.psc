@@ -29,43 +29,72 @@ Algoritmo Pomodoro
 	
 	Limpiar Pantalla
 	
-	construirReloj(min_Accion, min_Pausa)
+	pom_Construir_Pantalla(min_Accion, min_Pausa)
 	
 FinAlgoritmo
 
-SubAlgoritmo construirReloj(min_Accion, min_Pausa)
+SubAlgoritmo pom_Construir_Pantalla(min_Accion, min_Pausa)
 	
-	Definir min, SEG, LONG_NUM, ANCHO_NUM, LONGITUDTOTAL, i, j, k Como Entero
-	Definir blancoLateral, dosPuntos, vecMin, vecSeg, reloj Como Caracter
+	Definir min, SEG, LONG_NUM, ANCHO_NUM, LONGITUD_TOTAL, LONG_POMODORO_SUB, ANCHO_POMODORO, i, j, k Como Entero
+	Definir BLANCO_LATERAL, DOS_PUNTOS, SUBTITULO_POMODORO_ACCION, SUBTITULO_POMODORO_PAUSA, vec_Min, vec_Seg, reloj Como Caracter
+	
 	
 	LONG_NUM=8
 	ANCHO_NUM = 12
 	ANCHO_ESPACIO = 10
-	LONGITUDTOTAL=ANCHO_ESPACIO+ANCHO_NUM*2+ANCHO_NUM+ANCHO_NUM*2+ANCHO_ESPACIO
+	LONG_POMODORO_SUB=9
+	ANCHO_POMODORO=80
+	LONGITUD_TOTAL=ANCHO_ESPACIO+ANCHO_NUM*2+ANCHO_NUM+ANCHO_NUM*2+ANCHO_ESPACIO
 	
-	Dimension blancoLateral[LONG_NUM,ANCHO_ESPACIO]
-	Dimension dosPuntos[LONG_NUM,ANCHO_NUM]
-	Dimension vecMin[LONG_NUM,ANCHO_NUM*2]
-	Dimension vecSeg[LONG_NUM,ANCHO_NUM*2]
-	Dimension reloj[LONG_NUM,LONGITUDTOTAL]
+	Dimension BLANCO_LATERAL[LONG_NUM,ANCHO_ESPACIO]
+	Dimension DOS_PUNTOS[LONG_NUM,ANCHO_NUM]
+	Dimension vec_Min[LONG_NUM,ANCHO_NUM*2]
+	Dimension vec_Seg[LONG_NUM,ANCHO_NUM*2]
+	Dimension reloj[LONG_NUM,LONGITUD_TOTAL]
+	Dimension SUBTITULO_POMODORO_ACCION[LONG_POMODORO_SUB,ANCHO_POMODORO]
+	Dimension SUBTITULO_POMODORO_PAUSA[LONG_POMODORO_SUB,ANCHO_POMODORO]
+	Dimension SUBTITULO_POMODORO[LONG_POMODORO_SUB,ANCHO_POMODORO]
 	
-	blancoLateral[0,]="          "
-	blancoLateral[1,]="          "
-	blancoLateral[2,]="          "
-	blancoLateral[3,]="          "
-	blancoLateral[4,]="          "
-	blancoLateral[5,]="          "
-	blancoLateral[6,]="          "
-	blancoLateral[7,]="          "
+	BLANCO_LATERAL[0,]="          "
+	BLANCO_LATERAL[1,]="          "
+	BLANCO_LATERAL[2,]="          "
+	BLANCO_LATERAL[3,]="          "
+	BLANCO_LATERAL[4,]="          "
+	BLANCO_LATERAL[5,]="          "
+	BLANCO_LATERAL[6,]="          "
+	BLANCO_LATERAL[7,]="          "
 	
-	dosPuntos[0,]="            "
-	dosPuntos[1,]="            "
-	dosPuntos[2,]="    d8b     "
-	dosPuntos[3,]="    Y8P     "
-	dosPuntos[4,]="            "
-	dosPuntos[5,]="    d8b     "
-	dosPuntos[6,]="    Y8P     "
-	dosPuntos[7,]="            "
+	DOS_PUNTOS[0,]="            "
+	DOS_PUNTOS[1,]="            "
+	DOS_PUNTOS[2,]="    d8b     "
+	DOS_PUNTOS[3,]="    Y8P     "
+	DOS_PUNTOS[4,]="            "
+	DOS_PUNTOS[5,]="    d8b     "
+	DOS_PUNTOS[6,]="    Y8P     "
+	DOS_PUNTOS[7,]="            "
+	
+	
+	//FUENTE: SPEED
+	SUBTITULO_POMODORO_ACCION[0,]="                                                                                "
+	SUBTITULO_POMODORO_ACCION[1,]="                     _______            _____                                   "
+	SUBTITULO_POMODORO_ACCION[2,]="                     ___    |______________(_)____________                      "
+	SUBTITULO_POMODORO_ACCION[3,]="                     __  /| |  ___/  ___/_  /_  __ \_  __ \                     "
+	SUBTITULO_POMODORO_ACCION[4,]="                     _  ___ / /__ / /__ _  / / /_/ /  / / /                     "
+	SUBTITULO_POMODORO_ACCION[5,]="                     /_/  |_\___/ \___/ /_/  \____//_/ /_/                      "
+	SUBTITULO_POMODORO_ACCION[6,]="                   __________________________________________                   "
+	SUBTITULO_POMODORO_ACCION[7,]="                                                                                "
+	SUBTITULO_POMODORO_ACCION[8,]="                                                                                "
+	
+	//FUENTE: SPEED
+	SUBTITULO_POMODORO_PAUSA[0,]="                                                                                "
+	SUBTITULO_POMODORO_PAUSA[1,]="                     ________                                                   "
+	SUBTITULO_POMODORO_PAUSA[2,]="                     ___  __ \_____ ____  ______________ _                      "
+	SUBTITULO_POMODORO_PAUSA[3,]="                     __  /_/ /  __ `/  / / /_  ___/  __ `/                      "
+	SUBTITULO_POMODORO_PAUSA[4,]="                     _  ____// /_/ // /_/ /_(__  )/ /_/ /                       "
+	SUBTITULO_POMODORO_PAUSA[5,]="                     /_/     \__,_/ \__,_/ /____/ \__,_/                        "
+	SUBTITULO_POMODORO_PAUSA[6,]="                   __________________________________________                   "
+	SUBTITULO_POMODORO_PAUSA[7,]="                                                                                "
+	SUBTITULO_POMODORO_PAUSA[8,]="                                                                                "
 	
 	
 	
@@ -73,9 +102,19 @@ SubAlgoritmo construirReloj(min_Accion, min_Pausa)
 		Si (k mod 2) = 0 Entonces
 			min = min_Accion
 			SEG = 0
+			Para i=0 con paso 1 Hasta LONG_POMODORO_SUB-1 Hacer
+				Para j=0 Con Paso 1 Hasta ANCHO_POMODORO-1 Hacer
+					SUBTITULO_POMODORO[i,j]=SUBTITULO_POMODORO_ACCION[i,j]
+				FinPara
+			FinPara
 		SiNo
 			min = min_Pausa
 			SEG = 0
+			Para i=0 con paso 1 Hasta LONG_POMODORO_SUB-1 Hacer
+				Para j=0 Con Paso 1 Hasta ANCHO_POMODORO-1 Hacer
+					SUBTITULO_POMODORO[i,j]=SUBTITULO_POMODORO_PAUSA[i,j]
+				FinPara
+			FinPara
 		FinSi
 			
 			Mientras min >= 0 Hacer
@@ -83,42 +122,42 @@ SubAlgoritmo construirReloj(min_Accion, min_Pausa)
 				Mientras seg >= 0 Hacer
 					
 					Limpiar Pantalla
-					imprimirTituloPomodoro
-					setNumero(min, vecMin, LONG_NUM, ANCHO_NUM)
-					setNumero(seg, vecSeg, LONG_NUM, ANCHO_NUM)
+					pom_Imprimir_Titulo(SUBTITULO_POMODORO, LONG_POMODORO_SUB, ANCHO_POMODORO)
+					pom_Set_Numero(min, vec_Min, LONG_NUM, ANCHO_NUM)
+					pom_Set_Numero(seg, vec_Seg, LONG_NUM, ANCHO_NUM)
 					
 					Para i=0 con paso 1 Hasta LONG_NUM-1 Hacer
 						Para j=0 Con Paso 1 Hasta ANCHO_ESPACIO-1 Hacer
-							reloj[i,j]=blancoLateral[i,j]
+							reloj[i,j]=BLANCO_LATERAL[i,j]
 						FinPara
 					FinPara
 					
 					Para i=0 con paso 1 Hasta LONG_NUM-1 Hacer
 						Para j=0 Con Paso 1 Hasta (ANCHO_NUM-1)*2 Hacer
-							reloj[i,j+ANCHO_ESPACIO]=vecMin[i,j]
+							reloj[i,j+ANCHO_ESPACIO]=vec_Min[i,j]
 						FinPara
 					FinPara
 					
 					Para i=0 con paso 1 Hasta LONG_NUM-1 Hacer
 						Para j=0 Con Paso 1 Hasta ANCHO_NUM-1 Hacer
-							reloj[i,j+ANCHO_ESPACIO+(ANCHO_NUM*2)]=dosPuntos[i,j]
+							reloj[i,j+ANCHO_ESPACIO+(ANCHO_NUM*2)]=DOS_PUNTOS[i,j]
 						FinPara
 					FinPara
 					
 					Para i=0 con paso 1 Hasta LONG_NUM-1 Hacer
 						Para j=0 Con Paso 1 Hasta (ANCHO_NUM-1)*2 Hacer
-							reloj[i,j+ANCHO_ESPACIO+ANCHO_NUM*2+ANCHO_NUM]=vecSeg[i,j]
+							reloj[i,j+ANCHO_ESPACIO+ANCHO_NUM*2+ANCHO_NUM]=vec_Seg[i,j]
 						FinPara
 					FinPara
 					
 					Para i=0 con paso 1 Hasta LONG_NUM-1 Hacer
 						Para j=0 Con Paso 1 Hasta ANCHO_ESPACIO-1 Hacer
-							reloj[i,j+ANCHO_ESPACIO+ANCHO_NUM*2+ANCHO_NUM+ANCHO_NUM*2]=blancoLateral[i,j]
+							reloj[i,j+ANCHO_ESPACIO+ANCHO_NUM*2+ANCHO_NUM+ANCHO_NUM*2]=BLANCO_LATERAL[i,j]
 						FinPara
 					FinPara
 					
 					Para i=0 con paso 1 Hasta LONG_NUM-1 Hacer
-						Para j=0 Con Paso 1 Hasta LONGITUDTOTAL-1 Hacer
+						Para j=0 Con Paso 1 Hasta LONGITUD_TOTAL-1 Hacer
 							Escribir reloj[i,j] Sin Saltar
 						FinPara
 						Escribir ""
@@ -139,160 +178,158 @@ SubAlgoritmo construirReloj(min_Accion, min_Pausa)
 	
 FinSubAlgoritmo
 
-SubAlgoritmo setNumero (num Por Valor, vecNum Por Referencia, LONG_NUM Por Valor, ANCHO_NUM Por Valor)
-	Definir num0, num1, num2, num3, num4, num5, num6, num7, num8, num9, dosPuntos Como Caracter
-	Definir i, j, primerDigito, segundoDigito Como Entero
+
+SubAlgoritmo pom_Set_Numero (num Por Valor, vec_Num Por Referencia, LONG_NUM Por Valor, ANCHO_NUM Por Valor)
+	Definir NUM0, NUM1, NUM2, NUM3, NUM4, NUM5, NUM6, NUM7, NUM8, NUM9 Como Caracter
+	Definir i, j, primer_Digito, segundo_Digito Como Entero
 	
-	Dimension num0[LONG_NUM,ANCHO_NUM]
-	Dimension num1[LONG_NUM,ANCHO_NUM]
-	Dimension num2[LONG_NUM,ANCHO_NUM]
-	Dimension num3[LONG_NUM,ANCHO_NUM]
-	Dimension num4[LONG_NUM,ANCHO_NUM]
-	Dimension num5[LONG_NUM,ANCHO_NUM]
-	Dimension num6[LONG_NUM,ANCHO_NUM]
-	Dimension num7[LONG_NUM,ANCHO_NUM]
-	Dimension num8[LONG_NUM,ANCHO_NUM]
-	Dimension num9[LONG_NUM,ANCHO_NUM]
+	Dimension NUM0[LONG_NUM,ANCHO_NUM]
+	Dimension NUM1[LONG_NUM,ANCHO_NUM]
+	Dimension NUM2[LONG_NUM,ANCHO_NUM]
+	Dimension NUM3[LONG_NUM,ANCHO_NUM]
+	Dimension NUM4[LONG_NUM,ANCHO_NUM]
+	Dimension NUM5[LONG_NUM,ANCHO_NUM]
+	Dimension NUM6[LONG_NUM,ANCHO_NUM]
+	Dimension NUM7[LONG_NUM,ANCHO_NUM]
+	Dimension NUM8[LONG_NUM,ANCHO_NUM]
+	Dimension NUM9[LONG_NUM,ANCHO_NUM]
 	
-	num0[0,]="  .d8888b.  "
-	num0[1,]=" d88P  Y88b "
-	num0[2,]=" 888    888 "
-	num0[3,]=" 888    888 "
-	num0[4,]=" 888    888 "
-	num0[5,]=" 888    888 "
-	num0[6,]=" Y88b  d88P "
-	num0[7,]="  °Y8888P°  "
+	NUM0[0,]="  .d8888b.  "
+	NUM0[1,]=" d88P  Y88b "
+	NUM0[2,]=" 888    888 "
+	NUM0[3,]=" 888    888 "
+	NUM0[4,]=" 888    888 "
+	NUM0[5,]=" 888    888 "
+	NUM0[6,]=" Y88b  d88P "
+	NUM0[7,]="  °Y8888P°  "
 	
-	num1[0,]="   d888     "
-	num1[1,]="  d8888     "
-	num1[2,]="    888     "
-	num1[3,]="    888     "
-	num1[4,]="    888     "
-	num1[5,]="    888     "
-	num1[6,]="    888     "
-	num1[7,]="  8888888   "
+	NUM1[0,]="   d888     "
+	NUM1[1,]="  d8888     "
+	NUM1[2,]="    888     "
+	NUM1[3,]="    888     "
+	NUM1[4,]="    888     "
+	NUM1[5,]="    888     "
+	NUM1[6,]="    888     "
+	NUM1[7,]="  8888888   "
 	
-	num2[0,]="  .d8888b.  "
-	num2[1,]=" d88P  Y88b "
-	num2[2,]="        888 "
-	num2[3,]="      .d88P "
-	num2[4,]="  .od888P°  "
-	num2[5,]=" d88P°      "
-	num2[6,]=" 888°       "
-	num2[7,]=" 888888888  "
+	NUM2[0,]="  .d8888b.  "
+	NUM2[1,]=" d88P  Y88b "
+	NUM2[2,]="        888 "
+	NUM2[3,]="      .d88P "
+	NUM2[4,]="  .od888P°  "
+	NUM2[5,]=" d88P°      "
+	NUM2[6,]=" 888°       "
+	NUM2[7,]=" 888888888  "
 	
-	num3[0,]="  .d8888b.  "
-	num3[1,]=" d88P  Y88b "
-	num3[2,]="      .d88P "
-	num3[3,]="     8888°  "
-	num3[4,]="      °Y8b. "
-	num3[5,]=" 888    888 "
-	num3[6,]=" Y88b  d88P "
-	num3[7,]="  °Y8888P°  "
+	NUM3[0,]="  .d8888b.  "
+	NUM3[1,]=" d88P  Y88b "
+	NUM3[2,]="      .d88P "
+	NUM3[3,]="     8888°  "
+	NUM3[4,]="      °Y8b. "
+	NUM3[5,]=" 888    888 "
+	NUM3[6,]=" Y88b  d88P "
+	NUM3[7,]="  °Y8888P°  "
 	
-	num4[0,]="     d8888  "
-	num4[1,]="    d8P888  "
-	num4[2,]="   d8P 888  "
-	num4[3,]="  d8P  888  "
-	num4[4,]=" d88   888  "
-	num4[5,]=" 8888888888 "
-	num4[6,]="       888  "
-	num4[7,]="       888  "
+	NUM4[0,]="     d8888  "
+	NUM4[1,]="    d8P888  "
+	NUM4[2,]="   d8P 888  "
+	NUM4[3,]="  d8P  888  "
+	NUM4[4,]=" d88   888  "
+	NUM4[5,]=" 8888888888 "
+	NUM4[6,]="       888  "
+	NUM4[7,]="       888  "
 	
-	num5[0,]=" 888888888  "
-	num5[1,]=" 888        "
-	num5[2,]=" 888        "
-	num5[3,]=" 8888888b.  "
-	num5[4,]="      °Y88b "
-	num5[5,]="        888 "
-	num5[6,]=" Y88b  d88P "
-	num5[7,]="  °Y8888P°  "
+	NUM5[0,]=" 888888888  "
+	NUM5[1,]=" 888        "
+	NUM5[2,]=" 888        "
+	NUM5[3,]=" 8888888b.  "
+	NUM5[4,]="      °Y88b "
+	NUM5[5,]="        888 "
+	NUM5[6,]=" Y88b  d88P "
+	NUM5[7,]="  °Y8888P°  "
 	
-	num6[0,]="  .d8888b.  "
-	num6[1,]=" d88P  Y88b "
-	num6[2,]=" 888        "
-	num6[3,]=" 888d888b.  "
-	num6[4,]=" 888P °Y88b "
-	num6[5,]=" 888    888 "
-	num6[6,]=" Y88b  d88P "
-	num6[7,]="  °Y8888P°  "
+	NUM6[0,]="  .d8888b.  "
+	NUM6[1,]=" d88P  Y88b "
+	NUM6[2,]=" 888        "
+	NUM6[3,]=" 888d888b.  "
+	NUM6[4,]=" 888P °Y88b "
+	NUM6[5,]=" 888    888 "
+	NUM6[6,]=" Y88b  d88P "
+	NUM6[7,]="  °Y8888P°  "
 	
-	num7[0,]=" 8888888888 "
-	num7[1,]="       d88P "
-	num7[2,]="      d88P  "
-	num7[3,]="     d88P   "
-	num7[4,]="    d88P    "
-	num7[5,]="   d88P     "
-	num7[6,]="  d88P      "
-	num7[7,]=" d88P       "
+	NUM7[0,]=" 8888888888 "
+	NUM7[1,]="       d88P "
+	NUM7[2,]="      d88P  "
+	NUM7[3,]="     d88P   "
+	NUM7[4,]="    d88P    "
+	NUM7[5,]="   d88P     "
+	NUM7[6,]="  d88P      "
+	NUM7[7,]=" d88P       "
 	
-	num8[0,]="  .d8888b.  "
-	num8[1,]=" d88P  Y88b "
-	num8[2,]=" Y88b. d88P "
-	num8[3,]="  °Y88888°  "
-	num8[4,]=" .d8P°°Y8b. "
-	num8[5,]=" 888    888 "
-	num8[6,]=" Y88b  d88P "
-	num8[7,]="  °Y8888P°  "
+	NUM8[0,]="  .d8888b.  "
+	NUM8[1,]=" d88P  Y88b "
+	NUM8[2,]=" Y88b. d88P "
+	NUM8[3,]="  °Y88888°  "
+	NUM8[4,]=" .d8P°°Y8b. "
+	NUM8[5,]=" 888    888 "
+	NUM8[6,]=" Y88b  d88P "
+	NUM8[7,]="  °Y8888P°  "
 	
-	num9[0,]="  .d8888b.  "
-	num9[1,]=" d88P  Y88b "
-	num9[2,]=" 888    888 "
-	num9[3,]=" Y88b. d88P "
-	num9[4,]="  °Y888P888 "
-	num9[5,]="        888 "
-	num9[6,]=" Y88b  d88P "
-	num9[7,]="  °Y8888P°  "
+	NUM9[0,]="  .d8888b.  "
+	NUM9[1,]=" d88P  Y88b "
+	NUM9[2,]=" 888    888 "
+	NUM9[3,]=" Y88b. d88P "
+	NUM9[4,]="  °Y888P888 "
+	NUM9[5,]="        888 "
+	NUM9[6,]=" Y88b  d88P "
+	NUM9[7,]="  °Y8888P°  "
 	
-	primerDigito = trunc(num/10)
-	segundoDigito = num % 10
+	primer_Digito = trunc(num/10)
+	segundo_Digito = num % 10
 	
 	Para  i = 0 Con Paso 1 Hasta LONG_NUM-1 Hacer
 		para j = 0 con paso 1 hasta ANCHO_NUM-1 Hacer
-			segun (primerDigito) Hacer
-				Caso 0: vecNum[i, j] = num0[i, j]
-				Caso 1: vecNum[i, j] = num1[i, j]
-				Caso 2: vecNum[i, j] = num2[i, j]
-				Caso 3: vecNum[i, j] = num3[i, j]
-				Caso 4: vecNum[i, j] = num4[i, j]
-				Caso 5: vecNum[i, j] = num5[i, j]
-				Caso 6: vecNum[i, j] = num6[i, j]
-				Caso 7: vecNum[i, j] = num7[i, j]
-				Caso 8: vecNum[i, j] = num8[i, j]
-				Caso 9: vecNum[i, j] = num9[i, j]
+			segun (primer_Digito) Hacer
+				Caso 0: vec_Num[i, j] = NUM0[i, j]
+				Caso 1: vec_Num[i, j] = NUM1[i, j]
+				Caso 2: vec_Num[i, j] = NUM2[i, j]
+				Caso 3: vec_Num[i, j] = NUM3[i, j]
+				Caso 4: vec_Num[i, j] = NUM4[i, j]
+				Caso 5: vec_Num[i, j] = NUM5[i, j]
+				Caso 6: vec_Num[i, j] = NUM6[i, j]
+				Caso 7: vec_Num[i, j] = NUM7[i, j]
+				Caso 8: vec_Num[i, j] = NUM8[i, j]
+				Caso 9: vec_Num[i, j] = NUM9[i, j]
 			FinSegun
 		FinPara
 	FinPara
 	Para  i = 0 Con Paso 1 Hasta LONG_NUM-1 Hacer
 		para j = 0 con paso 1 hasta ANCHO_NUM-1 Hacer
-			segun (segundoDigito) Hacer
-				Caso 0: vecNum[i, j+ANCHO_NUM] = num0[i, j]
-				Caso 1: vecNum[i, j+ANCHO_NUM] = num1[i, j]
-				Caso 2: vecNum[i, j+ANCHO_NUM] = num2[i, j]
-				Caso 3: vecNum[i, j+ANCHO_NUM] = num3[i, j]
-				Caso 4: vecNum[i, j+ANCHO_NUM] = num4[i, j]
-				Caso 5: vecNum[i, j+ANCHO_NUM] = num5[i, j]
-				Caso 6: vecNum[i, j+ANCHO_NUM] = num6[i, j]
-				Caso 7: vecNum[i, j+ANCHO_NUM] = num7[i, j]
-				Caso 8: vecNum[i, j+ANCHO_NUM] = num8[i, j]
-				Caso 9: vecNum[i, j+ANCHO_NUM] = num9[i, j]
+			segun (segundo_Digito) Hacer
+				Caso 0: vec_Num[i, j+ANCHO_NUM] = NUM0[i, j]
+				Caso 1: vec_Num[i, j+ANCHO_NUM] = NUM1[i, j]
+				Caso 2: vec_Num[i, j+ANCHO_NUM] = NUM2[i, j]
+				Caso 3: vec_Num[i, j+ANCHO_NUM] = NUM3[i, j]
+				Caso 4: vec_Num[i, j+ANCHO_NUM] = NUM4[i, j]
+				Caso 5: vec_Num[i, j+ANCHO_NUM] = NUM5[i, j]
+				Caso 6: vec_Num[i, j+ANCHO_NUM] = NUM6[i, j]
+				Caso 7: vec_Num[i, j+ANCHO_NUM] = NUM7[i, j]
+				Caso 8: vec_Num[i, j+ANCHO_NUM] = NUM8[i, j]
+				Caso 9: vec_Num[i, j+ANCHO_NUM] = NUM9[i, j]
 			FinSegun
 		FinPara
 	FinPara
 FinSubAlgoritmo
 
-SubProceso imprimirTituloPomodoro
+
+SubProceso pom_Imprimir_Titulo (SUBTITULO_POMODORO, LONG_POMODORO_SUB, ANCHO_POMODORO) 
 	
-	Definir LONG_POMODORO_TIT, ANCHO_POMODORO_TIT, LONG_POMODORO_SUB, ANCHO_POMODORO_SUB, i, j Como Entero
-	Definir TITULO_POMODORO, SUBTITULO_POMODORO Como Caracter
+	Definir LONG_POMODORO_TIT, i, j Como Entero
+	Definir TITULO_POMODORO Como Caracter
 	
 	LONG_POMODORO_TIT=10
-	ANCHO_POMODORO_TIT=80
-	Dimension TITULO_POMODORO[LONG_POMODORO_TIT,ANCHO_POMODORO_TIT]
+	Dimension TITULO_POMODORO[LONG_POMODORO_TIT,ANCHO_POMODORO]
 	
-	LONG_POMODORO_SUB=9
-	ANCHO_POMODORO_SUB=80
-	Dimension SUBTITULO_POMODORO[LONG_POMODORO_SUB,ANCHO_POMODORO_SUB]
 	
 	//TITULO_POMODORO[0,]="  _______  _______  __   __  _______  ______   _______  ______    _______  "
 	//TITULO_POMODORO[1,]=" |       ||       ||  |_|  ||       ||      | |       ||    _ |  |       | "
@@ -313,6 +350,7 @@ SubProceso imprimirTituloPomodoro
 	//TITULO_POMODORO[8,]=" || |_|                                                 || "
 	//TITULO_POMODORO[9,]=" >>=====================================================<< "
 	
+	//FUENTE: SPEED
 	TITULO_POMODORO[0,]="                                                                                "
 	TITULO_POMODORO[1,]=">>============================================================================<<"
 	TITULO_POMODORO[2,]="||                                       _________                           ||"
@@ -331,25 +369,16 @@ SubProceso imprimirTituloPomodoro
 	//TITULO_POMODORO[4,]="                  || |    |__| |  | |__| |__/ |__| |  \ |__| ||                  "
 	//TITULO_POMODORO[5,]="                  >>=========================================<<                  "
 	//TITULO_POMODORO[6,]="                                                                                "
-	
-	SUBTITULO_POMODORO[0,]="                                                                                "
-	SUBTITULO_POMODORO[1,]="                     _______            _____                                   "
-	SUBTITULO_POMODORO[2,]="                     ___    |______________(_)____________                      "
-	SUBTITULO_POMODORO[3,]="                     __  /| |  ___/  ___/_  /_  __ \_  __ \                     "
-	SUBTITULO_POMODORO[4,]="                     _  ___ / /__ / /__ _  / / /_/ /  / / /                     "
-	SUBTITULO_POMODORO[5,]="                     /_/  |_\___/ \___/ /_/  \____//_/ /_/                      "
-	SUBTITULO_POMODORO[6,]="                   __________________________________________                   "
-	SUBTITULO_POMODORO[7,]="                                                                                "
-	SUBTITULO_POMODORO[8,]="                                                                                "
+
 	
 	Para i=0 con paso 1 Hasta LONG_POMODORO_TIT-1 Hacer
-		Para j=0 Con Paso 1 Hasta ANCHO_POMODORO_TIT-1 Hacer
+		Para j=0 Con Paso 1 Hasta ANCHO_POMODORO-1 Hacer
 			Escribir TITULO_POMODORO[i,j] Sin Saltar
 		FinPara
 		Escribir ""
 	FinPara
 	Para i=0 con paso 1 Hasta LONG_POMODORO_SUB-1 Hacer
-		Para j=0 Con Paso 1 Hasta ANCHO_POMODORO_SUB-1 Hacer
+		Para j=0 Con Paso 1 Hasta ANCHO_POMODORO-1 Hacer
 			Escribir SUBTITULO_POMODORO[i,j] Sin Saltar
 		FinPara
 		Escribir ""
