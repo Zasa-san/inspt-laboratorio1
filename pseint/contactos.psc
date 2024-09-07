@@ -149,7 +149,14 @@ SubAlgoritmo con_VerPorApellido(agenda, indice)
 					Fin Para
 					Escribir "Use las teclas numéricas para elegir un contacto"
 					Leer contactoElegido
-					pom_mostrarContacto(agenda, contactoElegido)
+					Limpiar Pantalla
+					con_hacerLinea()
+					con_MostrarContacto(agenda, indice[indiceAlfabeto, 0] + contactoElegido - 1)
+					con_hacerLinea()
+					Escribir "1 - Editar este contacto"
+					Escribir "2 - Borrar este contacto"
+					Escribir "0 - Volver"
+					Leer contactoElegido
 				SiNo
 					Escribir "No hay contactos con apellidos que inicien en *", letraElegida, "*"
 				FinSi
