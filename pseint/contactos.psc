@@ -59,7 +59,9 @@ SubAlgoritmo con_AgregarContacto(agenda, indice, AGENDA_MAX)
 	
 	Mientras iterador < maxIndice Hacer
 		Limpiar Pantalla
+		hacerLinea()
 		Escribir "Creación de nuevo contacto"
+		hacerLinea()
 		Escribir "0 - Salir sin guardar"
 		Escribir "1 - Guardar"
 		Escribir " "
@@ -97,7 +99,9 @@ SubAlgoritmo con_AgregarContacto(agenda, indice, AGENDA_MAX)
 		
 		Si iterador = maxIndice Y guardar = 1 Entonces
 			Limpiar Pantalla
+			hacerLinea()
 			Escribir "El contacto a guardar es: "
+			hacerLinea()
 			Escribir "0 - Salir sin guardar"
 			Escribir "1 - Confirmar guardado"
 			con_MostrarContacto(agenda, indice)
@@ -119,7 +123,9 @@ SubAlgoritmo con_VerPorApellido(agenda, indice)
 	Definir letraElegida Como Caracter
 	invalido = 0
 	
+	hacerLinea()
 	Escribir "Vista por apellido"	
+	hacerLinea()
 	Repetir
 		Si invalido = 0 Entonces
 			Escribir "Eliga la letra para ver todos los contactos agendados"
@@ -274,6 +280,10 @@ Funcion indice = con_obtenerIndice(letra)
 		De Otro Modo:
 			indice = -1
 	Fin Segun
+FinFuncion
+
+Funcion hacerLinea
+	Escribir "---------------------------"
 FinFuncion
 
 SubAlgoritmo con_MostrarContacto(agenda, indice)
