@@ -18,11 +18,12 @@ FinAlgoritmo
 SubAlgoritmo con_ContactosMain(agenda, AGENDA_MAX)
 	Definir seleccion, indiceApellidos, cantidadDeContactos Como Entero
 	Dimensionar indiceApellidos[27,2]
-	
+
 	con_inicializarIndice(indiceApellidos)
 	con_ordenarPorApellido(agenda, indiceApellidos, AGENDA_MAX)
 	cantidadDeContactos = con_longitudArreglo(agenda, AGENDA_MAX)
 	Repetir
+		con_bienvenida()
 		Escribir "*Agenda de contactos*"
 		Escribir "Actualmente tiene ", cantidadDeContactos, "/", AGENDA_MAX ," contactos guardados"
 		Escribir " "
@@ -59,9 +60,9 @@ SubAlgoritmo con_AgregarContacto(agenda, indice, AGENDA_MAX)
 	
 	Mientras iterador < maxIndice Hacer
 		Limpiar Pantalla
-		hacerLinea()
+		con_hacerLinea()
 		Escribir "Creación de nuevo contacto"
-		hacerLinea()
+		con_hacerLinea()
 		Escribir "0 - Salir sin guardar"
 		Escribir "1 - Guardar"
 		Escribir " "
@@ -99,9 +100,9 @@ SubAlgoritmo con_AgregarContacto(agenda, indice, AGENDA_MAX)
 		
 		Si iterador = maxIndice Y guardar = 1 Entonces
 			Limpiar Pantalla
-			hacerLinea()
+			con_hacerLinea()
 			Escribir "El contacto a guardar es: "
-			hacerLinea()
+			con_hacerLinea()
 			Escribir "0 - Salir sin guardar"
 			Escribir "1 - Confirmar guardado"
 			con_MostrarContacto(agenda, indice)
@@ -119,13 +120,13 @@ SubAlgoritmo con_AgregarContacto(agenda, indice, AGENDA_MAX)
 FinSubAlgoritmo
 
 SubAlgoritmo con_VerPorApellido(agenda, indice)
-	Definir indiceAlfabeto, iterador, invalido Como Entero		
+	Definir indiceAlfabeto, iterador, invalido, contactoElegido Como Entero		
 	Definir letraElegida Como Caracter
 	invalido = 0
 	
-	hacerLinea()
+	con_hacerLinea()
 	Escribir "Vista por apellido"	
-	hacerLinea()
+	con_hacerLinea()
 	Repetir
 		Si invalido = 0 Entonces
 			Escribir "Eliga la letra para ver todos los contactos agendados"
@@ -144,8 +145,11 @@ SubAlgoritmo con_VerPorApellido(agenda, indice)
 				invalido = 0
 				Si indice[indiceAlfabeto, 1] <> -1 Entonces
 					Para iterador = 0 Hasta indice[indiceAlfabeto, 1] - 1 Con Paso 1 Hacer
-						Escribir iterador+1, ") ", agenda[indice[indiceAlfabeto, 0] + iterador, 1], " ", agenda[indice[indiceAlfabeto, 0] + iterador, 0]
+						Escribir iterador+1, ") ", agenda[indice[indiceAlfabeto, 0] + iterador, 1], " ", agenda[indice[indiceAlfabeto, 0] + iterador, 0]						
 					Fin Para
+					Escribir "Use las teclas numéricas para elegir un contacto"
+					Leer contactoElegido
+					pom_mostrarContacto(agenda, contactoElegido)
 				SiNo
 					Escribir "No hay contactos con apellidos que inicien en *", letraElegida, "*"
 				FinSi
@@ -282,8 +286,18 @@ Funcion indice = con_obtenerIndice(letra)
 	Fin Segun
 FinFuncion
 
-Funcion hacerLinea
+Funcion con_hacerLinea
 	Escribir "---------------------------"
+FinFuncion
+
+Funcion con_bienvenida
+	Escribir "----------------------------------------------------------------------------"
+	Escribir "   ______   ____     _   __  ______    ___    ______  ______   ____    _____"
+	Escribir "  / ____/  / __ \   / | / / /_  __/   /   |  / ____/ /_  __/  / __ \  / ___/"
+	Escribir " / /      / / / /  /  |/ /   / /     / /| | / /       / /    / / / /  \__ \ "
+	Escribir "/ /___   / /_/ /  / /|  /   / /     / ___ |/ /___    / /    / /_/ /  ___/ / "
+	Escribir "\____/   \____/  /_/ |_/   /_/     /_/  |_|\____/   /_/     \____/  /____/  "
+	Escribir "----------------------------------------------------------------------------"
 FinFuncion
 
 SubAlgoritmo con_MostrarContacto(agenda, indice)
