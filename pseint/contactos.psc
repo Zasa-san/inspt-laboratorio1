@@ -33,7 +33,7 @@ SubAlgoritmo con_ContactosMain(agenda, AGENDA_MAX)
 			2:
 				Escribir "Buscar por nombre o apellido (no hecho aún)"
 			3:
-				con_AgregarContacto(agenda, AGENDA_MAX)
+				con_AgregarContacto(agenda, cantidadDeContactos, AGENDA_MAX)
 			De Otro Modo:
 				Escribir "Saliendo..."
 		Fin Segun
@@ -41,7 +41,23 @@ SubAlgoritmo con_ContactosMain(agenda, AGENDA_MAX)
 	Mientras Que seleccion <> 0	
 FinSubAlgoritmo
 
-SubAlgoritmo con_AgregarContacto(agenda, AGENDA_MAX)
+SubAlgoritmo con_AgregarContacto(agenda, cantidadDeContactos, AGENDA_MAX)
+	Definir textoIngresado Como Caracter
+	
+	Limpiar Pantalla
+	Escribir "Creación de nuevo contacto"
+	Si cantidadDeContactos >= AGENDA_MAX Entonces
+		Escribir "Ha alcanzado el máximo de contactos posibles, no se pueden agregar nuevos contactos"
+		Esperar Tecla
+	SiNo
+		Escribir "Ingrese los nombres del nuevo contactos..."
+		Escribir "Nombre: ", agenda[cantidadDeContactos, 0]
+		Escribir "Apellido: ", agenda[cantidadDeContactos, 0]
+		Escribir "Telefono: ", agenda[cantidadDeContactos, 0]
+		Escribir "Email: ", agenda[cantidadDeContactos, 0]
+		Escribir "Dirección: ", agenda[cantidadDeContactos, 0]
+		Leer textoIngresado
+	FinSi
 FinSubAlgoritmo
 
 SubAlgoritmo con_VerPorApellido(agenda, indice)
@@ -75,6 +91,8 @@ SubAlgoritmo con_VerPorApellido(agenda, indice)
 				FinSi
 				Esperar Tecla				
 			FinSi
+		SiNo
+			invalido = 0
 		FinSi
 	Mientras Que invalido = 1
 FinSubAlgoritmo
