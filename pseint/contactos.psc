@@ -43,7 +43,7 @@ SubAlgoritmo con_ContactosMain(agenda, AGENDA_MAX)
 	Mientras Que seleccion <> 0	
 FinSubAlgoritmo
 
-SubAlgoritmo con_AgregarContacto(agenda, cantidadDeContactos, AGENDA_MAX)
+SubAlgoritmo con_AgregarContacto(agenda, indice, AGENDA_MAX)
 	Definir textoIngresado, elementos Como Caracter
 	Definir guardar, iterador, maxIndice Como Entero
 	iterador = 0
@@ -63,16 +63,21 @@ SubAlgoritmo con_AgregarContacto(agenda, cantidadDeContactos, AGENDA_MAX)
 		Escribir "0 - Salir sin guardar"
 		Escribir "1 - Guardar"
 		Escribir " "
-		Si cantidadDeContactos >= AGENDA_MAX Entonces
+		Si indice >= AGENDA_MAX Entonces
 			iterador = maxIndice
 			Escribir "Ha alcanzado el máximo de contactos posibles, no se pueden agregar nuevos contactos"
 			Esperar Tecla
 		SiNo
-			con_MostrarContacto(agenda, cantidadDeContactos)
+			con_MostrarContacto(agenda, indice)
 			Escribir elementos[iterador], ": " Sin Saltar
 			Leer textoIngresado
 			Si textoIngresado = "0" Entonces
-				iterador = maxIndice							
+				iterador = maxIndice
+				agenda[indice, 0] = ""
+				agenda[indice, 1] = ""
+				agenda[indice, 2] = ""
+				agenda[indice, 3] = ""
+				agenda[indice, 4] = ""
 			SiNo
 				Si iterador < 2 Y textoIngresado = "1"  Entonces					
 					Limpiar Pantalla
@@ -83,28 +88,28 @@ SubAlgoritmo con_AgregarContacto(agenda, cantidadDeContactos, AGENDA_MAX)
 						guardar = 1
 						iterador = maxIndice
 					SiNo
-						agenda[cantidadDeContactos, iterador] = textoIngresado
+						agenda[indice, iterador] = textoIngresado
 						iterador = iterador + 1
 					FinSi
 				FinSi				
 			FinSi
 		FinSi	
 		
-		Si iterador = maxIndice Entonces
+		Si iterador = maxIndice Y guardar = 1 Entonces
 			Limpiar Pantalla
 			Escribir "El contacto a guardar es: "
 			Escribir "0 - Salir sin guardar"
 			Escribir "1 - Confirmar guardado"
-			con_MostrarContacto(agenda, cantidadDeContactos)
+			con_MostrarContacto(agenda, indice)
 			Escribir "Elija la opción " Sin Saltar
 			Leer guardar			
 			Si guardar <> 1 Entonces
-				agenda[cantidadDeContactos, 0] = ""
-				agenda[cantidadDeContactos, 1] = ""
-				agenda[cantidadDeContactos, 2] = ""
-				agenda[cantidadDeContactos, 3] = ""
-				agenda[cantidadDeContactos, 4] = ""
-			FinSi				
+				agenda[indice, 0] = ""
+				agenda[indice, 1] = ""
+				agenda[indice, 2] = ""
+				agenda[indice, 3] = ""
+				agenda[indice, 4] = ""
+			FinSi		
 		FinSi
 	Fin Mientras
 FinSubAlgoritmo
@@ -133,7 +138,7 @@ SubAlgoritmo con_VerPorApellido(agenda, indice)
 				invalido = 0
 				Si indice[indiceAlfabeto, 1] <> -1 Entonces
 					Para iterador = 0 Hasta indice[indiceAlfabeto, 1] - 1 Con Paso 1 Hacer
-						Escribir agenda[indice[indiceAlfabeto, 0] + iterador, 1], " ", agenda[indice[indiceAlfabeto, 0] + iterador, 0]
+						Escribir iterador+1, ") ", agenda[indice[indiceAlfabeto, 0] + iterador, 1], " ", agenda[indice[indiceAlfabeto, 0] + iterador, 0]
 					Fin Para
 				SiNo
 					Escribir "No hay contactos con apellidos que inicien en *", letraElegida, "*"
