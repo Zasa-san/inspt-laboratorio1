@@ -73,7 +73,7 @@ SubAlgoritmo con_AgregarOCambiarContacto(agenda, indice, AGENDA_MAX)
 		Escribir "0 - Salir sin guardar"
 		Escribir "1 - Guardar"
 		Escribir " "
-		Si indice >= AGENDA_MAX Entonces
+		Si contactoOriginal[0] = "" Y indice >= AGENDA_MAX Entonces
 			iterador = maxIndice
 			Escribir "Ha alcanzado el máximo de contactos posibles, no se pueden agregar nuevos contactos"
 			Esperar Tecla
@@ -89,7 +89,7 @@ SubAlgoritmo con_AgregarOCambiarContacto(agenda, indice, AGENDA_MAX)
 				agenda[indice, 3] = contactoOriginal[3]
 				agenda[indice, 4] = contactoOriginal[4]
 			SiNo
-				Si agenda[indice, 0] = "" O agenda[indice, 1] = "" Entonces					
+				Si textoIngresado = "" Y iterador < 2 Entonces					
 					Limpiar Pantalla
 					Escribir "Tanto el nombre como el apellido deben completarse antes de guardar..."
 					Esperar Tecla					
@@ -127,7 +127,7 @@ SubAlgoritmo con_AgregarOCambiarContacto(agenda, indice, AGENDA_MAX)
 FinSubAlgoritmo
 
 SubAlgoritmo con_VerPorApellido(agenda, indice, AGENDA_MAX)
-	Definir indiceAlfabeto, iterador, invalido, contactoElegido Como Entero		
+	Definir indiceAlfabeto, iterador, invalido, contactoElegido, opcionElegida Como Entero		
 	Definir letraElegida Como Caracter
 	invalido = 0
 	
@@ -176,7 +176,7 @@ SubAlgoritmo con_VerPorApellido(agenda, indice, AGENDA_MAX)
 							Escribir "1 - Editar este contacto"
 							Escribir "2 - Borrar este contacto"
 							Escribir "0 - Volver"
-							Leer contactoElegido
+							Leer opcionElegida
 							Segun contactoElegido Hacer
 								1: 
 									con_AgregarOCambiarContacto(agenda, indice[indiceAlfabeto, 0] + contactoElegido - 1, AGENDA_MAX)									
