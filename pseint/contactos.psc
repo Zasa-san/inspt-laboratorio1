@@ -16,25 +16,32 @@ FinAlgoritmo
 
 //ALGORITMOS Y FUNCIONES ESPECÍFICAS DEL MÓDULO
 SubAlgoritmo con_ContactosMain(agenda, AGENDA_MAX)
-	Definir seleccion, indiceApellidos Como Entero
+	Definir seleccion, indiceApellidos, cantidadDeContactos Como Entero
 	Dimensionar indiceApellidos[27,2]
 	
 	con_inicializarIndice(indiceApellidos)
-	con_ordenarPorApellido(agenda, indiceApellidos, AGENDA_MAX)	
+	con_ordenarPorApellido(agenda, indiceApellidos, AGENDA_MAX)
+	cantidadDeContactos = con_longitudArreglo(agenda, AGENDA_MAX)
 	Repetir
-		Escribir "*Agenda de contactos*"		
-		//Mostrar menu principal del módulo
-		seleccion = con_MenuPrincipal		
+		Escribir "*Agenda de contactos*"
+		Escribir "Actualmente tiene ", cantidadDeContactos, "/", AGENDA_MAX ," contactos guardados"
+		Escribir " "
+		seleccion = con_MenuPrincipal	
 		Segun seleccion Hacer
 			1:
 				con_VerPorApellido(agenda, indiceApellidos)
 			2:
 				Escribir "Buscar por nombre o apellido (no hecho aún)"
+			3:
+				con_AgregarContacto(agenda, AGENDA_MAX)
 			De Otro Modo:
 				Escribir "Saliendo..."
 		Fin Segun
 		Limpiar Pantalla
 	Mientras Que seleccion <> 0	
+FinSubAlgoritmo
+
+SubAlgoritmo con_AgregarContacto(agenda, AGENDA_MAX)
 FinSubAlgoritmo
 
 SubAlgoritmo con_VerPorApellido(agenda, indice)
@@ -207,9 +214,10 @@ Funcion seleccion = con_MenuPrincipal
 		Escribir "Opciones de navegación:"
 		Escribir "1 - Ver por apellido"
 		Escribir "2 - Buscar por nombre o apellido"
+		Escribir "3 - Agregar nuevo contacto"
 		Escribir "0 - Para salir de la agenda"
 		Leer opcion_elegida		
-		Si opcion_elegida < 0 O opcion_elegida > 2 Entonces
+		Si opcion_elegida < 0 O opcion_elegida > 3 Entonces
 			invalido = 1
 		SiNo
 			invalido = 0
@@ -226,6 +234,20 @@ SubAlgoritmo con_inicializarIndice(indice)
 		indice[iterador, 1] = -1
 	FinPara
 FinSubAlgoritmo
+
+Funcion longitudArreglo <- con_longitudArreglo(arreglo, max)
+	Definir contador, salir Como Entero
+	contador = 0
+	salir = 0
+	Mientras salir = 0 Y contador < max Hacer
+		Si arreglo[contador, 0] = "" Entonces
+			salir = 1
+		SiNo
+			contador = contador + 1	
+		FinSi
+	FinMientras
+	longitudArreglo = contador
+FinFuncion
 
 SubAlgoritmo con_poblarContactos(matriz)
 	// Inicializar contactos
