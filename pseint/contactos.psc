@@ -42,22 +42,56 @@ SubAlgoritmo con_ContactosMain(agenda, AGENDA_MAX)
 FinSubAlgoritmo
 
 SubAlgoritmo con_AgregarContacto(agenda, cantidadDeContactos, AGENDA_MAX)
-	Definir textoIngresado Como Caracter
+	Definir textoIngresado, elementos Como Caracter
+	Definir guardar, iterador, maxIndice Como Entero
+	iterador = 0
+	guardar = 0
+	maxIndice = 4
 	
-	Limpiar Pantalla
-	Escribir "Creación de nuevo contacto"
-	Si cantidadDeContactos >= AGENDA_MAX Entonces
-		Escribir "Ha alcanzado el máximo de contactos posibles, no se pueden agregar nuevos contactos"
-		Esperar Tecla
-	SiNo
-		Escribir "Ingrese los nombres del nuevo contactos..."
-		Escribir "Nombre: ", agenda[cantidadDeContactos, 0]
-		Escribir "Apellido: ", agenda[cantidadDeContactos, 0]
-		Escribir "Telefono: ", agenda[cantidadDeContactos, 0]
-		Escribir "Email: ", agenda[cantidadDeContactos, 0]
-		Escribir "Dirección: ", agenda[cantidadDeContactos, 0]
-		Leer textoIngresado
-	FinSi
+	Dimensionar elementos[maxIndice + 1]	
+	elementos[0] = "Nombre"
+	elementos[1] = "Apellido"
+	elementos[2] = "Telefono"
+	elementos[3] = "Email"
+	elementos[4] = "Dirección"
+	
+	Repetir
+		Limpiar Pantalla
+		Escribir "Creación de nuevo contacto"
+		Escribir "0 - Salir sin guardar"
+		Escribir "1 - Guardar"
+		Escribir " "
+		Si cantidadDeContactos >= AGENDA_MAX Entonces
+			iterador = maxIndice
+			Escribir "Ha alcanzado el máximo de contactos posibles, no se pueden agregar nuevos contactos"
+			Esperar Tecla
+		SiNo
+			con_MostrarContacto(agenda, cantidadDeContactos)
+			Escribir elementos[iterador], ": " Sin Saltar
+			Leer textoIngresado
+			Si textoIngresado = "0" Entonces
+				iterador = maxIndice							
+			SiNo
+				Si iterador < 2 Y textoIngresado = "1"  Entonces					
+					Limpiar Pantalla
+					Escribir "Tanto el nombre como el apellido deben completarse antes de guardar..."
+					Esperar Tecla					
+				SiNo
+					agenda[cantidadDeContactos, iterador] = textoIngresado
+					iterador = iterador + 1
+				FinSi				
+			FinSi
+		FinSi	
+		
+		Si iterador = maxIndice Entonces
+			Escribir "El contacto a guardar es: "
+			Escribir "0 - Salir sin guardar"
+			Escribir "1 - Guardar"
+			con_MostrarContacto(agenda, cantidadDeContactos)
+			Escribir "Elija la opción " Sin Saltar
+			Leer guardar
+		FinSi
+	Mientras Que iterador <= maxIndice
 FinSubAlgoritmo
 
 SubAlgoritmo con_VerPorApellido(agenda, indice)
@@ -221,6 +255,14 @@ Funcion indice = con_obtenerIndice(letra)
 			indice = -1
 	Fin Segun
 FinFuncion
+
+SubAlgoritmo con_MostrarContacto(agenda, indice)
+	Escribir "Nombre: ", agenda[indice, 0]
+	Escribir "Apellido: ", agenda[indice, 1]
+	Escribir "Telefono: ", agenda[indice, 2]
+	Escribir "Email: ", agenda[indice, 3]
+	Escribir "Dirección: ", agenda[indice, 4]
+FinSubAlgoritmo
 
 Funcion seleccion = con_MenuPrincipal
 	Definir opcion_elegida, invalido Como Entero
