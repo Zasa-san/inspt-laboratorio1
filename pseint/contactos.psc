@@ -34,6 +34,8 @@ SubAlgoritmo con_ContactosMain(agenda, AGENDA_MAX)
 				Escribir "Buscar por nombre o apellido (no hecho aún)"
 			3:
 				con_AgregarContacto(agenda, cantidadDeContactos, AGENDA_MAX)
+				con_ordenarPorApellido(agenda, indiceApellidos, AGENDA_MAX)
+				cantidadDeContactos = con_longitudArreglo(agenda, AGENDA_MAX)
 			De Otro Modo:
 				Escribir "Saliendo..."
 		Fin Segun
@@ -55,7 +57,7 @@ SubAlgoritmo con_AgregarContacto(agenda, cantidadDeContactos, AGENDA_MAX)
 	elementos[3] = "Email"
 	elementos[4] = "Dirección"
 	
-	Repetir
+	Mientras iterador < maxIndice Hacer
 		Limpiar Pantalla
 		Escribir "Creación de nuevo contacto"
 		Escribir "0 - Salir sin guardar"
@@ -77,21 +79,34 @@ SubAlgoritmo con_AgregarContacto(agenda, cantidadDeContactos, AGENDA_MAX)
 					Escribir "Tanto el nombre como el apellido deben completarse antes de guardar..."
 					Esperar Tecla					
 				SiNo
-					agenda[cantidadDeContactos, iterador] = textoIngresado
-					iterador = iterador + 1
+					Si textoIngresado = "1" Entonces
+						guardar = 1
+						iterador = maxIndice
+					SiNo
+						agenda[cantidadDeContactos, iterador] = textoIngresado
+						iterador = iterador + 1
+					FinSi
 				FinSi				
 			FinSi
 		FinSi	
 		
 		Si iterador = maxIndice Entonces
+			Limpiar Pantalla
 			Escribir "El contacto a guardar es: "
 			Escribir "0 - Salir sin guardar"
-			Escribir "1 - Guardar"
+			Escribir "1 - Confirmar guardado"
 			con_MostrarContacto(agenda, cantidadDeContactos)
 			Escribir "Elija la opción " Sin Saltar
-			Leer guardar
+			Leer guardar			
+			Si guardar <> 1 Entonces
+				agenda[cantidadDeContactos, 0] = ""
+				agenda[cantidadDeContactos, 1] = ""
+				agenda[cantidadDeContactos, 2] = ""
+				agenda[cantidadDeContactos, 3] = ""
+				agenda[cantidadDeContactos, 4] = ""
+			FinSi				
 		FinSi
-	Mientras Que iterador <= maxIndice
+	Fin Mientras
 FinSubAlgoritmo
 
 SubAlgoritmo con_VerPorApellido(agenda, indice)
