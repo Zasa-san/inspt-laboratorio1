@@ -18,7 +18,7 @@ FinAlgoritmo
 SubAlgoritmo con_ContactosMain(agenda, AGENDA_MAX)
 	Definir seleccion, indiceApellidos, cantidadDeContactos Como Entero
 	Dimensionar indiceApellidos[27,2]
-
+	
 	con_inicializarIndice(indiceApellidos)
 	con_ordenarPorApellido(agenda, indiceApellidos, AGENDA_MAX)
 	cantidadDeContactos = con_longitudArreglo(agenda, AGENDA_MAX)
@@ -30,11 +30,11 @@ SubAlgoritmo con_ContactosMain(agenda, AGENDA_MAX)
 		seleccion = con_MenuPrincipal	
 		Segun seleccion Hacer
 			1:
-				con_VerPorApellido(agenda, indiceApellidos)
+				con_VerPorApellido(agenda, indiceApellidos, AGENDA_MAX)
 			2:
 				Escribir "Buscar por nombre o apellido (no hecho aún)"
 			3:
-				con_AgregarContacto(agenda, cantidadDeContactos, AGENDA_MAX)
+				con_AgregarOCambiarContacto(agenda, cantidadDeContactos, AGENDA_MAX)
 				con_ordenarPorApellido(agenda, indiceApellidos, AGENDA_MAX)
 				cantidadDeContactos = con_longitudArreglo(agenda, AGENDA_MAX)
 			De Otro Modo:
@@ -44,19 +44,26 @@ SubAlgoritmo con_ContactosMain(agenda, AGENDA_MAX)
 	Mientras Que seleccion <> 0	
 FinSubAlgoritmo
 
-SubAlgoritmo con_AgregarContacto(agenda, indice, AGENDA_MAX)
-	Definir textoIngresado, elementos Como Caracter
+SubAlgoritmo con_AgregarOCambiarContacto(agenda, indice, AGENDA_MAX)
+	Definir textoIngresado, elementos, contactoOriginal Como Caracter
 	Definir guardar, iterador, maxIndice Como Entero
 	iterador = 0
 	guardar = 0
 	maxIndice = 4
 	
-	Dimensionar elementos[maxIndice + 1]	
+	Dimensionar elementos[maxIndice + 1]
 	elementos[0] = "Nombre"
 	elementos[1] = "Apellido"
 	elementos[2] = "Telefono"
 	elementos[3] = "Email"
 	elementos[4] = "Dirección"
+	
+	Dimensionar contactoOriginal[5]
+	contactoOriginal[0] = agenda[indice, 0]
+	contactoOriginal[1] = agenda[indice, 1]
+	contactoOriginal[2] = agenda[indice, 2]
+	contactoOriginal[3] = agenda[indice, 3]
+	contactoOriginal[4] = agenda[indice, 4]
 	
 	Mientras iterador < maxIndice Hacer
 		Limpiar Pantalla
@@ -76,13 +83,13 @@ SubAlgoritmo con_AgregarContacto(agenda, indice, AGENDA_MAX)
 			Leer textoIngresado
 			Si textoIngresado = "0" Entonces
 				iterador = maxIndice
-				agenda[indice, 0] = ""
-				agenda[indice, 1] = ""
-				agenda[indice, 2] = ""
-				agenda[indice, 3] = ""
-				agenda[indice, 4] = ""
+				agenda[indice, 0] = contactoOriginal[0]
+				agenda[indice, 1] = contactoOriginal[1]
+				agenda[indice, 2] = contactoOriginal[2]
+				agenda[indice, 3] = contactoOriginal[3]
+				agenda[indice, 4] = contactoOriginal[4]
 			SiNo
-				Si iterador < 2 Y textoIngresado = "1"  Entonces					
+				Si agenda[indice, 0] = "" O agenda[indice, 1] = "" Entonces					
 					Limpiar Pantalla
 					Escribir "Tanto el nombre como el apellido deben completarse antes de guardar..."
 					Esperar Tecla					
@@ -109,17 +116,17 @@ SubAlgoritmo con_AgregarContacto(agenda, indice, AGENDA_MAX)
 			Escribir "Elija la opción " Sin Saltar
 			Leer guardar			
 			Si guardar <> 1 Entonces
-				agenda[indice, 0] = ""
-				agenda[indice, 1] = ""
-				agenda[indice, 2] = ""
-				agenda[indice, 3] = ""
-				agenda[indice, 4] = ""
+				agenda[indice, 0] = contactoOriginal[0]
+				agenda[indice, 1] = contactoOriginal[1]
+				agenda[indice, 2] = contactoOriginal[2]
+				agenda[indice, 3] = contactoOriginal[3]
+				agenda[indice, 4] = contactoOriginal[4]
 			FinSi		
 		FinSi
 	Fin Mientras
 FinSubAlgoritmo
 
-SubAlgoritmo con_VerPorApellido(agenda, indice)
+SubAlgoritmo con_VerPorApellido(agenda, indice, AGENDA_MAX)
 	Definir indiceAlfabeto, iterador, invalido, contactoElegido Como Entero		
 	Definir letraElegida Como Caracter
 	invalido = 0
@@ -148,19 +155,39 @@ SubAlgoritmo con_VerPorApellido(agenda, indice)
 						Escribir iterador+1, ") ", agenda[indice[indiceAlfabeto, 0] + iterador, 1], " ", agenda[indice[indiceAlfabeto, 0] + iterador, 0]						
 					Fin Para
 					Escribir "Use las teclas numéricas para elegir un contacto"
+					Escribir "o 0 para salir"
 					Leer contactoElegido
-					Limpiar Pantalla
-					con_hacerLinea()
-					con_MostrarContacto(agenda, indice[indiceAlfabeto, 0] + contactoElegido - 1)
-					con_hacerLinea()
-					Escribir "1 - Editar este contacto"
-					Escribir "2 - Borrar este contacto"
-					Escribir "0 - Volver"
-					Leer contactoElegido
+					Si contactoElegido > 0 Entonces					
+						Mientras contactoElegido > iterador + 1
+							Limpiar Pantalla
+							Escribir "*El número elegido no corresponde a ningún contacto listado*"
+							Escribir "Elija un número de la siguiente lista"
+							Escribir "o 0 para salir"
+							Para iterador = 0 Hasta indice[indiceAlfabeto, 1] - 1 Con Paso 1 Hacer
+								Escribir iterador+1, ") ", agenda[indice[indiceAlfabeto, 0] + iterador, 1], " ", agenda[indice[indiceAlfabeto, 0] + iterador, 0]						
+							Fin Para
+							Leer contactoElegido
+						FinMientras
+						Si contactoElegido > 0 Entonces
+							Limpiar Pantalla
+							con_hacerLinea()
+							con_MostrarContacto(agenda, indice[indiceAlfabeto, 0] + contactoElegido - 1)
+							con_hacerLinea()
+							Escribir "1 - Editar este contacto"
+							Escribir "2 - Borrar este contacto"
+							Escribir "0 - Volver"
+							Leer contactoElegido
+							Segun contactoElegido Hacer
+								1: 
+									con_AgregarOCambiarContacto(agenda, indice[indiceAlfabeto, 0] + contactoElegido - 1, AGENDA_MAX)									
+								2: 
+									Escribir "" //ACA VA LO DE BORRAR UN CONTACTO
+							Fin Segun
+						FinSi
+					FinSi
 				SiNo
 					Escribir "No hay contactos con apellidos que inicien en *", letraElegida, "*"
-				FinSi
-				Esperar Tecla				
+				FinSi		
 			FinSi
 		SiNo
 			invalido = 0
