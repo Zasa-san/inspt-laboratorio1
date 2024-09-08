@@ -82,7 +82,7 @@ Funcion reordenarContactos <- con_AgregarOCambiarContacto(agenda, indice, AGENDA
 		
 		Si iterador = 2 Entonces
 			Escribir "Para el telofono ingrese solo numeros"
-			Escribir "0 y 1 no se tomarán para salir o guardar"
+			Escribir "o presione ENTER par adejar vacio"
 		SiNo
 			Escribir "0 - Salir sin guardar"
 			Escribir "1 - Guardar"			
