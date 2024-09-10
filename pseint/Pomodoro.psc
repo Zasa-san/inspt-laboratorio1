@@ -479,30 +479,30 @@ FinSubProceso
 
 //Pantalla de apertura del módulo
 SubProceso pom_Pantalla_Inicio
-		esperar 1 segundos
-		pom_Pantalla_Inicio_1
-		esperar 500 Milisegundos
-		Borrar Pantalla
-		pom_Pantalla_Inicio_2
-		esperar 500 Milisegundos
-		Borrar Pantalla
-		pom_Pantalla_Inicio_3
-		esperar 500 Milisegundos
-		Borrar Pantalla
-		pom_Pantalla_Inicio_4
-		esperar 500 Milisegundos
-		Borrar Pantalla
-		pom_Pantalla_Inicio_3
-		esperar 500 Milisegundos
-		Borrar Pantalla
-		pom_Pantalla_Inicio_2
-		esperar 500 Milisegundos
-		Borrar Pantalla
-		pom_Pantalla_Inicio_1
-		esperar 500 Milisegundos
-		
-		Escribir 'PRESIONE UNA TECLA PARA COMENZAR...' Sin Saltar
-		Esperar Tecla
+	esperar 1 segundos
+	pom_Pantalla_Inicio_1
+	esperar 500 Milisegundos
+	Borrar Pantalla
+	pom_Pantalla_Inicio_2
+	esperar 500 Milisegundos
+	Borrar Pantalla
+	pom_Pantalla_Inicio_3
+	esperar 500 Milisegundos
+	Borrar Pantalla
+	pom_Pantalla_Inicio_4
+	esperar 500 Milisegundos
+	Borrar Pantalla
+	pom_Pantalla_Inicio_3
+	esperar 500 Milisegundos
+	Borrar Pantalla
+	pom_Pantalla_Inicio_2
+	esperar 500 Milisegundos
+	Borrar Pantalla
+	pom_Pantalla_Inicio_1
+	esperar 500 Milisegundos
+	
+	Escribir 'PRESIONE UNA TECLA PARA COMENZAR...' Sin Saltar
+	Esperar Tecla
 FinSubProceso
 
 
