@@ -140,11 +140,13 @@ Funcion reordenarContactos <- con_agregarOCambiarContacto(agenda, indice, AGENDA
 FinFuncion
 
 Funcion reordenarContactos = con_buscarPorNombre(agenda, AGENDA_MAX)
-	
+	Definir ingreso Como Caracter
 	reordenarContactos = 0
 	
 	con_tituloBuscarPorNombre
-	Esperar Tecla
+	Escribir "Escriba el nombre y/o apellido a buscar"
+	Escribir "Para salir, escriba 0"
+	Leer ingreso
 	
 FinFuncion
 
@@ -435,12 +437,13 @@ Funcion con_tituloBuscarPorNombre
 	con_hacerLinea()
 FinFuncion
 
-
 Funcion seleccion = con_MenuPrincipal
 	Definir opcion_elegida, invalido Como Entero
 	invalido = 0
 	Repetir
 		Si opcion_elegida < 0 O opcion_elegida > 2 Entonces
+			con_bienvenida()
+			Escribir " "
 			Escribir "**Debe elegir una opción válida**"
 		FinSi
 		Escribir "Opciones de navegación:"
