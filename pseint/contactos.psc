@@ -30,13 +30,14 @@ SubAlgoritmo con_ContactosMain(agenda, AGENDA_MAX)
 		seleccion = con_MenuPrincipal	
 		Segun seleccion Hacer
 			1:
-				reordenarContactos = con_VerPorApellido(agenda, indiceApellidos, AGENDA_MAX)
+				reordenarContactos = con_verPorApellido(agenda, indiceApellidos, AGENDA_MAX)
 			2:
-				Escribir "Buscar por nombre o apellido (no hecho aún)"
+				reordenarContactos = con_buscarPorNombre(agenda, AGENDA_MAX)
 			3:
-				reordenarContactos = con_AgregarOCambiarContacto(agenda, cantidadDeContactos, AGENDA_MAX)
+				reordenarContactos = con_agregarOCambiarContacto(agenda, cantidadDeContactos, AGENDA_MAX)
 			De Otro Modo:
 				Escribir "Saliendo..."
+				Esperar Tecla
 		Fin Segun
 		
 	    Si reordenarContactos = 1 Entonces
@@ -48,7 +49,7 @@ SubAlgoritmo con_ContactosMain(agenda, AGENDA_MAX)
 	Mientras Que seleccion <> 0	
 FinSubAlgoritmo
 
-Funcion reordenarContactos <- con_AgregarOCambiarContacto(agenda, indice, AGENDA_MAX)
+Funcion reordenarContactos <- con_agregarOCambiarContacto(agenda, indice, AGENDA_MAX)
 	Definir textoIngresado, elementos, contactoOriginal Como Caracter
 	Definir guardar, iterador, maxIndice Como Entero
 	iterador = 0
@@ -138,44 +139,16 @@ Funcion reordenarContactos <- con_AgregarOCambiarContacto(agenda, indice, AGENDA
 	Fin Mientras
 FinFuncion
 
-Funcion reordenarContactos = con_EliminarContacto(agenda, indice, AGENDA_MAX)
-	Definir confirmacion, iterador Como Entero
+Funcion reordenarContactos = con_buscarPorNombre(agenda, AGENDA_MAX)
 	
-	Repetir
-		con_tituloBorrarContacto()
-		con_MostrarContacto(agenda, indice)
-		con_hacerLinea()
-		Si  confirmacion < 0 O confirmacion > 1 Entonces
-			Escribir "Debe elegir una opción válida"
-			Esperar Tecla
-		FinSi
-		Escribir "¿Desea borrar este contacto?"
-		Escribir "1 - Borrar"
-		Escribir "0 - Salir sin borrar"
-		Leer confirmacion		
-	Mientras que confirmacion < 0 O confirmacion > 1
+	reordenarContactos = 0
 	
-	Si confirmacion = 1 Entonces
-		cantidadDeContactos = con_longitudArreglo(agenda, AGENDA_MAX)		
-		reordenarContactos = 1
-		Para iterador = indice Hasta cantidadDeContactos - 1 Con Paso 1 Hacer
-			agenda[iterador, 0] = agenda[iterador + 1, 0]
-			agenda[iterador, 1] = agenda[iterador + 1, 1]
-			agenda[iterador, 2] = agenda[iterador + 1, 2]
-			agenda[iterador, 3] = agenda[iterador + 1, 3]
-			agenda[iterador, 4] = agenda[iterador + 1, 4]
-		Fin Para
-		agenda[cantidadDeContactos, 0] = ""
-		agenda[cantidadDeContactos, 1] = ""
-		agenda[cantidadDeContactos, 2] = ""
-		agenda[cantidadDeContactos, 3] = ""
-		agenda[cantidadDeContactos, 4] = ""
-	SiNo
-		reordenarContactos = 0
-	FinSi
+	con_tituloBuscarPorNombre
+	Esperar Tecla
+	
 FinFuncion
 
-Funcion reordenarContactos <- con_VerPorApellido(agenda, indice, AGENDA_MAX)
+Funcion reordenarContactos <- con_verPorApellido(agenda, indice, AGENDA_MAX)
 	Definir indiceAlfabeto, iterador, invalido, contactoElegido, opcionElegida, indiceDeContacto Como Entero		
 	Definir letraElegida Como Caracter
 	invalido = 0
@@ -235,9 +208,9 @@ Funcion reordenarContactos <- con_VerPorApellido(agenda, indice, AGENDA_MAX)
 							Leer contactoElegido
 							Segun contactoElegido Hacer
 								1: 
-									reordenarContactos = con_AgregarOCambiarContacto(agenda, indiceDeContacto, AGENDA_MAX)									
+									reordenarContactos = con_agregarOCambiarContacto(agenda, indiceDeContacto, AGENDA_MAX)									
 								2: 
-									reordenarContactos = con_EliminarContacto(agenda, indiceDeContacto, AGENDA_MAX)		
+									reordenarContactos = con_eliminarContacto(agenda, indiceDeContacto, AGENDA_MAX)		
 							Fin Segun
 						FinSi
 					FinSi
@@ -247,6 +220,43 @@ Funcion reordenarContactos <- con_VerPorApellido(agenda, indice, AGENDA_MAX)
 			invalido = 0
 		FinSi
 	Mientras Que invalido = 1
+FinFuncion
+
+Funcion reordenarContactos = con_eliminarContacto(agenda, indice, AGENDA_MAX)
+	Definir confirmacion, iterador Como Entero
+	
+	Repetir
+		con_tituloBorrarContacto()
+		con_MostrarContacto(agenda, indice)
+		con_hacerLinea()
+		Si  confirmacion < 0 O confirmacion > 1 Entonces
+			Escribir "Debe elegir una opción válida"
+			Esperar Tecla
+		FinSi
+		Escribir "¿Desea borrar este contacto?"
+		Escribir "1 - Borrar"
+		Escribir "0 - Salir sin borrar"
+		Leer confirmacion		
+	Mientras que confirmacion < 0 O confirmacion > 1
+	
+	Si confirmacion = 1 Entonces
+		cantidadDeContactos = con_longitudArreglo(agenda, AGENDA_MAX)		
+		reordenarContactos = 1
+		Para iterador = indice Hasta cantidadDeContactos - 1 Con Paso 1 Hacer
+			agenda[iterador, 0] = agenda[iterador + 1, 0]
+			agenda[iterador, 1] = agenda[iterador + 1, 1]
+			agenda[iterador, 2] = agenda[iterador + 1, 2]
+			agenda[iterador, 3] = agenda[iterador + 1, 3]
+			agenda[iterador, 4] = agenda[iterador + 1, 4]
+		Fin Para
+		agenda[cantidadDeContactos, 0] = ""
+		agenda[cantidadDeContactos, 1] = ""
+		agenda[cantidadDeContactos, 2] = ""
+		agenda[cantidadDeContactos, 3] = ""
+		agenda[cantidadDeContactos, 4] = ""
+	SiNo
+		reordenarContactos = 0
+	FinSi
 FinFuncion
 
 SubAlgoritmo con_ordenarPorApellido(agenda, indice, AGENDA_MAX)
@@ -415,6 +425,13 @@ Funcion con_tituloBorrarContacto
 	Limpiar Pantalla
 	con_hacerLinea()
 	Escribir "Borrar el contacto"
+	con_hacerLinea()
+FinFuncion
+
+Funcion con_tituloBuscarPorNombre
+	Limpiar Pantalla
+	con_hacerLinea()
+	Escribir "Busqueda por nombre"
 	con_hacerLinea()
 FinFuncion
 
