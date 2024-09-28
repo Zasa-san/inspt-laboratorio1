@@ -140,7 +140,12 @@ Funcion reordenarContactos <- con_agregarOCambiarContacto(agenda, indice, AGENDA
 FinFuncion
 
 Funcion reordenarContactos = con_buscarPorNombre(agenda, AGENDA_MAX)
-	Definir ingreso Como Caracter
+	Definir iteradorI, resultados Como Entero
+	Definir ingreso, subcadenaIngreso, subcadenaNombre, subcadenaApellido Como Caracter
+	
+	MAX_RESULTADOS = 10
+	Dimensionar resultados[MAX_RESULTADOS,2] //indice de la agenda, peso de la igualdad
+	Dimensionar resultadosSwap[2]
 	reordenarContactos = 0
 	
 	con_tituloBuscarPorNombre
@@ -148,6 +153,14 @@ Funcion reordenarContactos = con_buscarPorNombre(agenda, AGENDA_MAX)
 	Escribir "Para salir, escriba 0"
 	Leer ingreso
 	
+	Si ingreso <> "0" Entonces
+		con_generarResultados(agenda, resultados, ingreso, AGENDA_MAX, MAX_RESULTADOS)		
+		Para iteradorI = 0 Hasta MAX_RESULTADOS - 1 Con Paso 1 Hacer
+			Escribir resultados[iteradorI, 0], " ", resultados[iteradorI, 1]
+			Escribir iteradorI + 1, "- ", agenda[resultados[iteradorI, 0], 0], " ", agenda[resultados[iteradorI, 0], 1]			
+		Fin Para
+		Esperar Tecla
+	FinSi	
 FinFuncion
 
 Funcion reordenarContactos <- con_verPorApellido(agenda, indice, AGENDA_MAX)
@@ -324,6 +337,57 @@ SubAlgoritmo con_ordenarPorApellido(agenda, indice, AGENDA_MAX)
 			i = i + 1
 		FinSi
 	FinMientras	
+FinSubAlgoritmo
+
+SubAlgoritmo con_generarResultados(agenda, resultados, ingreso, AGENDA_MAX, MAX_RESULTADOS)
+	Definir iteradorI, iteradorJ, iteradorK, longitudIngreso, longitudNombre, longitudApellido, ponderado, resultadosSwap Como Entero
+	Definir subcadenaIngreso, subcadenaNombre, subcadenaApellido Como Caracter
+
+	Dimensionar resultadosSwap[2]
+	reordenarContactos = 0
+	iteradorJ = 0
+	
+	Para iteradorI = 0 Hasta AGENDA_MAX Con Paso 1 Hacer
+		ponderado = 0
+		iteradorJ = 0
+		Si agenda[iteradorI, 0] = "" Entonces
+			iteradorI = AGENDA_MAX
+		SiNo
+			longitudIngreso = Longitud(ingreso)
+			longitudNombre = Longitud(agenda[iteradorI,0])
+			longitudApellido = Longitud(agenda[iteradorI,1])
+			
+			Mientras iteradorJ < longitudIngreso Y iteradorJ < longitudNombre Y iteradorJ < longitudApellido Hacer
+				subcadenaNombre = Mayusculas(Subcadena(agenda[iteradorI,0], 0, iteradorJ))
+				subcadenaApellido = Mayusculas(Subcadena(agenda[iteradorI,1], 0, iteradorJ))
+				subcadenaIngreso = Mayusculas(Subcadena(ingreso, 0, iteradorJ))
+				Si subcadenaNombre = subcadenaIngreso O subcadenaApellido = subcadenaIngreso Entonces
+					ponderado = ponderado + 1
+				SiNo
+					//Forzar salida si los textos dejan de ser igaules
+					iteradorJ = 1
+					longitudIngreso = 0						
+				FinSi
+				iteradorJ = iteradorJ + 1
+			Fin Mientras
+			
+			Si ponderado > 0 Entonces	
+				Para iteradorJ = 0 Hasta MAX_RESULTADOS - 1 Con Paso 1 Hacer						
+					Si ponderado > resultados[iteradorJ, 1] Entonces
+						Para iteradorK = iteradorJ Hasta MAX_RESULTADOS - 2 Con Paso 1 Hacer
+							resultadosSwap[0] = resultados[iteradorK, 0]
+							resultadosSwap[1] = resultados[iteradorK, 1]
+							resultados[iteradorJ, 0] = iteradorI
+							resultados[iteradorJ , 1] = ponderado
+							resultados[iteradorK + 1, 0] = resultadosSwap[0]
+							resultados[iteradorK + 1, 1] = resultadosSwap[1]	
+						Fin Para
+						iteradorJ = MAX_RESULTADOS
+					FinSi						
+				Fin Para
+			FinSi
+		FinSi
+	Fin Para
 FinSubAlgoritmo
 
 Funcion indice = con_obtenerIndice(letra)
@@ -635,5 +699,11 @@ SubAlgoritmo con_poblarContactos(matriz)
     matriz[24, 2] <- "1154782260"
     matriz[24, 3] <- "renata.gonzalez@example.com"
     matriz[24, 4] <- "Av. Libertador 200, Buenos Aires"
+	
+	matriz[24, 0] <- "Sandro"
+    matriz[24, 1] <- "Comanche"
+    matriz[24, 2] <- "5477861216"
+    matriz[24, 3] <- ""
+    matriz[24, 4] <- ""
 FinSubAlgoritmo
 
