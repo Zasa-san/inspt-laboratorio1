@@ -140,7 +140,7 @@ Funcion reordenarContactos <- con_agregarOCambiarContacto(agenda, indice, AGENDA
 FinFuncion
 
 Funcion reordenarContactos = con_buscarPorNombre(agenda, AGENDA_MAX)
-	Definir iteradorI, resultados Como Entero
+	Definir iteradorI, resultados, contactoElegido, opcionElegida Como Entero
 	Definir ingreso, subcadenaIngreso, subcadenaNombre, subcadenaApellido Como Caracter
 	
 	MAX_RESULTADOS = 10
@@ -154,13 +154,43 @@ Funcion reordenarContactos = con_buscarPorNombre(agenda, AGENDA_MAX)
 	Leer ingreso
 	
 	Si ingreso <> "0" Entonces
-		con_generarResultados(agenda, resultados, ingreso, AGENDA_MAX, MAX_RESULTADOS)		
-		Para iteradorI = 0 Hasta MAX_RESULTADOS - 1 Con Paso 1 Hacer
-			Escribir resultados[iteradorI, 0], " ", resultados[iteradorI, 1]
-			Escribir iteradorI + 1, "- ", agenda[resultados[iteradorI, 0], 0], " ", agenda[resultados[iteradorI, 0], 1]			
-		Fin Para
-		Esperar Tecla
-	FinSi	
+		con_generarResultados(agenda, resultados, ingreso, AGENDA_MAX, MAX_RESULTADOS)
+		Limpiar Pantalla
+		con_tituloBuscarPorNombre
+		Si resultados[0,1] = 0 Entonces
+			Escribir "No se han encontrado resultados para la busqueda"
+		SiNo
+			Repetir
+				Limpiar Pantalla
+				con_tituloBuscarPorNombre
+				Escribir "Use las teclas numéricas para elegir un contacto"
+				Escribir "Para salir, escriba 0"
+				Para iteradorI = 0 Hasta MAX_RESULTADOS - 1 Con Paso 1 Hacer
+					Si resultados[iteradorI, 1] > 0 Entonces			
+						Escribir iteradorI + 1, ") ", agenda[resultados[iteradorI, 0], 0], " ", agenda[resultados[iteradorI, 0], 1]			
+					FinSi
+				Fin Para
+				Leer contactoElegido
+			Mientras Que contactoElegido > 10 O contactoElegido < 0		
+		FinSi		
+	FinSi
+	
+	Si contactoElegido <> 0 Entonces
+		Limpiar Pantalla
+		con_hacerLinea()
+		con_MostrarContacto(agenda, resultados[contactoElegido - 1, 0])
+		con_hacerLinea()
+		Escribir "1 - Editar este contacto"
+		Escribir "2 - Borrar este contacto"
+		Escribir "0 - Salir"
+		Leer opcionElegida
+		Segun opcionElegida Hacer
+			1: 
+				reordenarContactos = con_agregarOCambiarContacto(agenda, resultados[contactoElegido - 1, 0], AGENDA_MAX)									
+			2: 
+				reordenarContactos = con_eliminarContacto(agenda, resultados[contactoElegido - 1, 0], AGENDA_MAX)		
+		Fin Segun
+	FinSi
 FinFuncion
 
 Funcion reordenarContactos <- con_verPorApellido(agenda, indice, AGENDA_MAX)
@@ -205,7 +235,7 @@ Funcion reordenarContactos <- con_verPorApellido(agenda, indice, AGENDA_MAX)
 							Limpiar Pantalla
 							Escribir "*El número elegido no corresponde a ningún contacto listado*"
 							Escribir "Elija un número de la siguiente lista"
-							Escribir "o 0 para salir"
+							Escribir "Para salir, escriba 0"
 							Para iterador = 0 Hasta indice[indiceAlfabeto, 1] - 1 Con Paso 1 Hacer
 								Escribir iterador+1, ") ", agenda[indice[indiceAlfabeto, 0] + iterador, 1], " ", agenda[indice[indiceAlfabeto, 0] + iterador, 0]						
 							Fin Para
@@ -342,7 +372,7 @@ FinSubAlgoritmo
 SubAlgoritmo con_generarResultados(agenda, resultados, ingreso, AGENDA_MAX, MAX_RESULTADOS)
 	Definir iteradorI, iteradorJ, iteradorK, longitudIngreso, longitudNombre, longitudApellido, ponderado, resultadosSwap Como Entero
 	Definir subcadenaIngreso, subcadenaNombre, subcadenaApellido Como Caracter
-
+	
 	Dimensionar resultadosSwap[2]
 	reordenarContactos = 0
 	iteradorJ = 0
@@ -374,14 +404,8 @@ SubAlgoritmo con_generarResultados(agenda, resultados, ingreso, AGENDA_MAX, MAX_
 			Si ponderado > 0 Entonces	
 				Para iteradorJ = 0 Hasta MAX_RESULTADOS - 1 Con Paso 1 Hacer						
 					Si ponderado > resultados[iteradorJ, 1] Entonces
-						Para iteradorK = iteradorJ Hasta MAX_RESULTADOS - 2 Con Paso 1 Hacer
-							resultadosSwap[0] = resultados[iteradorK, 0]
-							resultadosSwap[1] = resultados[iteradorK, 1]
-							resultados[iteradorJ, 0] = iteradorI
-							resultados[iteradorJ , 1] = ponderado
-							resultados[iteradorK + 1, 0] = resultadosSwap[0]
-							resultados[iteradorK + 1, 1] = resultadosSwap[1]	
-						Fin Para
+						resultados[iteradorJ, 0] = iteradorI
+						resultados[iteradorJ, 1] = ponderado
 						iteradorJ = MAX_RESULTADOS
 					FinSi						
 				Fin Para
