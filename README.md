@@ -66,16 +66,17 @@ Ya que no se puede tener matrices con datos combinados, usamos números para rep
 
 ### Contactos
 ```
-contacto_t[]
+Lista de contacto_t
 ```
 Estructura de `contacto_t`:
-| Nombre del dato  | Tipo de dato           | ¿Vacio?
+| Nombre del dato  | Tipo de dato           | NULL
 | -------------    | -------------          | -------------
 | `nombre`         | char                   | No
 | `apellido`       | char                   | No
 | `telefono`       | char                   | Si
 | `email`          | char                   | Si
 | `dirección`      | char                   | Si
+| `siguiente`      | contacto*              | Si
 
 ### Índice alfabético 
 ```
