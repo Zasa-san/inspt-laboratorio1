@@ -30,6 +30,7 @@ nombreDeMiTipo_t
 ```
 | Nombre del dato  | Tipo de dato           | ¿Vacio?
 | -------------    | -------------          | -------------
+| `documento`      | char                   | No
 | `nombre`         | Cadena de caracteres   | No
 | `apellido`       | Cadena de caracteres   | No
 | `telefono`       | Cadena de caracteres   | Si
@@ -71,7 +72,6 @@ contacto_t[]
 Estructura de `contacto_t`:
 | Nombre del dato  | Tipo de dato           | ¿Vacio?
 | -------------    | -------------          | -------------
-| `documento`      | char                   | No
 | `nombre`         | char                   | No
 | `apellido`       | char                   | No
 | `telefono`       | char                   | Si
