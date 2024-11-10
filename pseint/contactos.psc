@@ -78,7 +78,7 @@ Funcion reordenarContactos <- con_agregarOCambiarContacto(agenda, indice, AGENDA
 	Mientras iterador < maxIndice Hacer
 		con_tituloAgregarOCambiar()
 		
-		Si iterador = 2 Entonces
+		Si iterador = 3 Entonces
 			Escribir "Para el telofono ingrese solo numeros"
 			Escribir "o presione ENTER par adejar vacio"
 		SiNo
@@ -107,10 +107,10 @@ Funcion reordenarContactos <- con_agregarOCambiarContacto(agenda, indice, AGENDA
 			SiNo
 				Si textoIngresado = "" Y iterador < 3 Entonces					
 					Limpiar Pantalla
-					Escribir "Tanto el documento, nombre y apellido deben completarse antes de guardar..."
+					Escribir "El documento, nombre y apellido deben completarse antes de guardar..."
 					Esperar Tecla					
 				SiNo
-					Si textoIngresado = "1" Y iterador <> 2 Entonces						
+					Si textoIngresado = "1" Y iterador <> 3 Entonces						
 						iterador = maxIndice
 					SiNo
 						agenda[indice, iterador] = textoIngresado
@@ -430,7 +430,7 @@ SubAlgoritmo con_ordenarPorApellido(agenda, indice, AGENDA_MAX)
 			Si agenda[j, 0] = "" Entonces
 				j = AGENDA_MAX
 			SiNo
-				Si agenda[i, 2] > agenda[j, 2] Entonces
+				Si Mayusculas(agenda[i, 2]) > Mayusculas(agenda[j, 2]) Entonces
 					vectorAux[0] = agenda[i, 0]
 					vectorAux[1] = agenda[i, 1]
 					vectorAux[2] = agenda[i, 2]
