@@ -2,15 +2,14 @@ Algoritmo funcionalidades_Oficina
 	Definir opc Como Entero
 	//ESPACIO GLOBAL
 	//VAIRABLES GLOBALES DE CONFIGURACION
-	Definir AGENDA_MAX Como Entero
+	Definir AGENDA_MAX, ID Como Entero
 	AGENDA_MAX = 1000
 	
-	//VARIABLES GLOBALES PARA MODULOS
+	//VARIABLES GLOBALES PARA EL MODULO CONTACTOS
 	Definir con_agenda, con_indicePorApellido Como Caracter
-	Dimensionar con_agenda[AGENDA_MAX,6]
-	
+	Dimensionar con_agenda[AGENDA_MAX,6]	
 	//ALGORITMOS DEL MODULO CONTACTO
-	con_poblarContactos(con_agenda)
+	con_poblarContactos(con_agenda, ID)
 	
 	main_Pantalla_Inicio
 	Repetir
@@ -18,7 +17,7 @@ Algoritmo funcionalidades_Oficina
 		Limpiar Pantalla
 		Segun opc Hacer
 			Caso 1: 
-				Contactos
+				con_ContactosMain(con_agenda, AGENDA_MAX, ID)
 			Caso 2: 
 				Calendario(con_agenda, AGENDA_MAX)
 			Caso 3: 
@@ -26,8 +25,7 @@ Algoritmo funcionalidades_Oficina
 			De Otro Modo:
 				Escribir "Hasta pronto..."
 		FinSegun
-	Mientras Que opc <> 0
-	
+	Mientras Que opc <> 0	
 FinAlgoritmo
 
 SubProceso main_Pantalla_Inicio
@@ -213,24 +211,9 @@ FinFuncion
 //              | |  _  | |__| (_) | | | | || (_| | (__| || (_) \__ \                 
 //             |_| (_)  \____\___/|_| |_|\__\__,_|\___|\__\___/|___/                 
 //--------------------------------------------------------------------------------------------------
-SubAlgoritmo Contactos
-	//ESPACIO GLOBAL
-	//VAIRABLES GLOBALES DE CONFIGURACION
-	Definir AGENDA_MAX Como Entero
-	AGENDA_MAX = 1000
-	
-	//VARIABLES GLOBALES PARA MODULOS
-	Definir con_agenda, con_indicePorApellido Como Caracter
-	Dimensionar con_agenda[AGENDA_MAX,6]
-	
-	//ALGORITMOS DEL MODULO CONTACTO
-	con_poblarContactos(con_agenda)
-	con_ContactosMain(con_agenda, AGENDA_MAX)
-	//Escribir "Se ha regresado al main..."
-FinSubAlgoritmo
-
+// FUNCIONES MODULO CONTACTOS INICIO
 //ALGORITMOS Y FUNCIONES ESPECÍFICAS DEL MÓDULO
-SubAlgoritmo con_ContactosMain(agenda, AGENDA_MAX)
+SubAlgoritmo con_ContactosMain(agenda, AGENDA_MAX, ID Por Referencia)
 	Definir seleccion, indiceApellidos, cantidadDeContactos, reordenarContacto Como Entero
 	Dimensionar indiceApellidos[27,2]
 	
@@ -245,13 +228,13 @@ SubAlgoritmo con_ContactosMain(agenda, AGENDA_MAX)
 		seleccion = con_MenuPrincipal	
 		Segun seleccion Hacer
 			1:
-				reordenarContactos = con_verPorApellido(agenda, indiceApellidos, AGENDA_MAX)
+				reordenarContactos = con_verPorApellido(agenda, indiceApellidos, AGENDA_MAX, ID)
 			2:
-				reordenarContactos = con_buscarPorNombre(agenda, AGENDA_MAX)
+				reordenarContactos = con_buscarPorNombre(agenda, AGENDA_MAX, ID)
 			3:
-				reordenarContactos = con_agregarOCambiarContacto(agenda, cantidadDeContactos, AGENDA_MAX)
+				reordenarContactos = con_agregarOCambiarContacto(agenda, cantidadDeContactos, AGENDA_MAX, ID)
 			4:
-				reordenarContactos = con_listarTodos(agenda, cantidadDeContactos, AGENDA_MAX)
+				reordenarContactos = con_listarTodos(agenda, cantidadDeContactos, AGENDA_MAX, ID)
 			De Otro Modo:
 				Escribir "Saliendo..."
 				Esperar Tecla
@@ -266,16 +249,16 @@ SubAlgoritmo con_ContactosMain(agenda, AGENDA_MAX)
 	Mientras Que seleccion <> 0	
 FinSubAlgoritmo
 
-Funcion reordenarContactos <- con_agregarOCambiarContacto(agenda, indice, AGENDA_MAX)
+Funcion reordenarContactos <- con_agregarOCambiarContacto(agenda, indice, AGENDA_MAX, ID Por Referencia)
 	Definir textoIngresado, elementos, contactoOriginal Como Caracter
 	Definir guardar, iterador, maxIndice Como Entero
-	iterador = 0
+	iterador = 1
 	guardar = 0
 	maxIndice = 6
 	reordenarContactos = 0
 	
 	Dimensionar elementos[maxIndice]
-	elementos[0] = "Documento"
+	elementos[0] = "ID" //No se usa
 	elementos[1] = "Nombre"
 	elementos[2] = "Apellido"
 	elementos[3] = "Telefono"
@@ -322,7 +305,7 @@ Funcion reordenarContactos <- con_agregarOCambiarContacto(agenda, indice, AGENDA
 			SiNo
 				Si textoIngresado = "" Y iterador < 3 Entonces					
 					Limpiar Pantalla
-					Escribir "El documento, nombre y apellido deben completarse antes de guardar..."
+					Escribir "El nombre y apellido deben completarse antes de guardar..."
 					Esperar Tecla					
 				SiNo
 					Si textoIngresado = "1" Y iterador <> 3 Entonces						
@@ -348,6 +331,10 @@ Funcion reordenarContactos <- con_agregarOCambiarContacto(agenda, indice, AGENDA
 			Leer guardar
 			Si guardar = 1 Entonces
 				reordenarContactos = 1
+				Si agenda[indice, 0] == "" Entonces
+					agenda[indice, 0] = ConvertirATexto(ID)
+					ID = ID + 1
+				FinSi
 			SiNo
 				agenda[indice, 0] = contactoOriginal[0]
 				agenda[indice, 1] = contactoOriginal[1]
@@ -360,7 +347,7 @@ Funcion reordenarContactos <- con_agregarOCambiarContacto(agenda, indice, AGENDA
 	Fin Mientras
 FinFuncion
 
-Funcion reordenarContactos = con_buscarPorNombre(agenda, AGENDA_MAX)
+Funcion reordenarContactos = con_buscarPorNombre(agenda, AGENDA_MAX, ID Por Referencia)
 	Definir iteradorI, resultados, contactoElegido, opcionElegida Como Entero
 	Definir ingreso, subcadenaIngreso, subcadenaNombre, subcadenaApellido Como Caracter
 	
@@ -407,14 +394,14 @@ Funcion reordenarContactos = con_buscarPorNombre(agenda, AGENDA_MAX)
 		Leer opcionElegida
 		Segun opcionElegida Hacer
 			1: 
-				reordenarContactos = con_agregarOCambiarContacto(agenda, resultados[contactoElegido - 1, 0], AGENDA_MAX)									
+				reordenarContactos = con_agregarOCambiarContacto(agenda, resultados[contactoElegido - 1, 0], AGENDA_MAX, ID)									
 			2: 
 				reordenarContactos = con_eliminarContacto(agenda, resultados[contactoElegido - 1, 0], AGENDA_MAX)		
 		Fin Segun
 	FinSi
 FinFuncion
 
-Funcion reordenarContactos <- con_verPorApellido(agenda, indice, AGENDA_MAX)
+Funcion reordenarContactos <- con_verPorApellido(agenda, indice, AGENDA_MAX, ID Por Referencia)
 	Definir indiceAlfabeto, iterador, invalido, contactoElegido, opcionElegida, indiceDeContacto Como Entero		
 	Definir letraElegida Como Caracter
 	invalido = 0
@@ -474,7 +461,7 @@ Funcion reordenarContactos <- con_verPorApellido(agenda, indice, AGENDA_MAX)
 							Leer contactoElegido
 							Segun contactoElegido Hacer
 								1: 
-									reordenarContactos = con_agregarOCambiarContacto(agenda, indiceDeContacto, AGENDA_MAX)									
+									reordenarContactos = con_agregarOCambiarContacto(agenda, indiceDeContacto, AGENDA_MAX, ID)									
 								2: 
 									reordenarContactos = con_eliminarContacto(agenda, indiceDeContacto, AGENDA_MAX)		
 							Fin Segun
@@ -488,7 +475,7 @@ Funcion reordenarContactos <- con_verPorApellido(agenda, indice, AGENDA_MAX)
 	Mientras Que invalido = 1
 FinFuncion
 
-Funcion reordenarContactos <- con_listarTodos(agenda, cantidadDeContactos, AGENDA_MAX)
+Funcion reordenarContactos <- con_listarTodos(agenda, cantidadDeContactos, AGENDA_MAX, ID Por Referencia)
 	Definir iterador, pagina, maxPagina, opcionElegida, tope Como Entero
 	
 	reordenarContactos = 0
@@ -518,7 +505,7 @@ Funcion reordenarContactos <- con_listarTodos(agenda, cantidadDeContactos, AGEND
 		con_hacerLinea
 		
 		Para iterador <- pagina * 10 Hasta tope - 1 Con Paso 1 Hacer
-			Escribir iterador + 1, ") ",  agenda[iterador, 2], " ", agenda[iterador, 1]
+			Escribir iterador + 1, ") ",  agenda[iterador, 2], " ", agenda[iterador, 1], " - (ID:", agenda[iterador, 0], ")"
 		Fin Para
 		
 		Leer opcionElegida
@@ -537,13 +524,13 @@ Funcion reordenarContactos <- con_listarTodos(agenda, cantidadDeContactos, AGEND
 					pagina = pagina + 1				
 				FinSi
 			3:
-				reordenarContactos = con_elegirEnPagina(agenda, tope, pagina, AGENDA_MAX)
+				reordenarContactos = con_elegirEnPagina(agenda, tope, pagina, AGENDA_MAX, ID)
 		Fin Segun
 		
 	Mientras Que opcionElegida <> 0 Y reordenarContactos <> 1
 FinFuncion
 
-Funcion reordenarContactos <- con_elegirEnPagina(agenda, tope, pagina, AGENDA_MAX)
+Funcion reordenarContactos <- con_elegirEnPagina(agenda, tope, pagina, AGENDA_MAX, ID Por Referencia)
 	Definir iterador, opcionElegida, indiceContacto, listadoMin Como Entero
 	
 	reordenarContactos = 0
@@ -586,7 +573,7 @@ Funcion reordenarContactos <- con_elegirEnPagina(agenda, tope, pagina, AGENDA_MA
 			Leer opcionElegida
 			Segun opcionElegida Hacer
 				1: 
-					reordenarContactos = con_agregarOCambiarContacto(agenda, indiceContacto, AGENDA_MAX)									
+					reordenarContactos = con_agregarOCambiarContacto(agenda, indiceContacto, AGENDA_MAX, ID)									
 				2: 
 					reordenarContactos = con_eliminarContacto(agenda, indiceContacto, AGENDA_MAX)		
 			Fin Segun
@@ -665,7 +652,7 @@ SubAlgoritmo con_ordenarPorApellido(agenda, indice, AGENDA_MAX)
 					agenda[j, 2] = vectorAux[2]
 					agenda[j, 3] = vectorAux[3]
 					agenda[j, 4] = vectorAux[4]
-					agenda[i, 5] = vectorAux[5]
+					agenda[j, 5] = vectorAux[5]
 				FinSi
 				j = j + 1
 			FinSi		
@@ -822,7 +809,6 @@ Funcion con_bienvenida
 FinFuncion
 
 SubAlgoritmo con_MostrarContacto(agenda, indice)
-	Escribir "Documento: ", agenda[indice, 0]
 	Escribir "Nombre: ", agenda[indice, 1]
 	Escribir "Apellido: ", agenda[indice, 2]
 	Escribir "Telefono: ", agenda[indice, 3]
@@ -913,190 +899,194 @@ Funcion longitudArreglo <- con_longitudArreglo(arreglo, max)
 	longitudArreglo = contador
 FinFuncion
 
-SubAlgoritmo con_poblarContactos(matriz)
+SubAlgoritmo con_poblarContactos(matriz, ID Por Referencia)
+	ID = 26
+	
 	// Inicializar contactos
-	matriz[0, 0] <- "30123456"
+	matriz[0, 0] <- "0"
 	matriz[0, 1] <- "Ana"
 	matriz[0, 2] <- "García"
 	matriz[0, 3] <- "1154782236"
 	matriz[0, 4] <- "ana.garcia@example.com"
 	matriz[0, 5] <- "Calle Falsa 456, Buenos Aires"
 	
-	matriz[1, 0] <- "32123457"
+	matriz[1, 0] <- "1"
 	matriz[1, 1] <- "Luis"
 	matriz[1, 2] <- "Martínez"
 	matriz[1, 3] <- ""
 	matriz[1, 4] <- ""
 	matriz[1, 5] <- "Av. Santa Fe 1234, Buenos Aires"
 	
-	matriz[2, 0] <- "34123458"
+	matriz[2, 0] <- "2"
 	matriz[2, 1] <- "Sofía"
 	matriz[2, 2] <- "Rodríguez"
 	matriz[2, 3] <- "1154782238"
 	matriz[2, 4] <- ""
 	matriz[2, 5] <- "Calle Córdoba 789, Buenos Aires"
 	
-	matriz[3, 0] <- "36123459"
+	matriz[3, 0] <- "3"
 	matriz[3, 1] <- "Martín"
 	matriz[3, 2] <- "Silva"
 	matriz[3, 3] <- "1154782239"
 	matriz[3, 4] <- "martin.silva@example.com"
 	matriz[3, 5] <- ""
 	
-	matriz[4, 0] <- "38123460"
+	matriz[4, 0] <- "4"
 	matriz[4, 1] <- "Julia"
 	matriz[4, 2] <- "Pérez"
 	matriz[4, 3] <- "1154782240"
 	matriz[4, 4] <- ""
 	matriz[4, 5] <- "Calle Avellaneda 234, Buenos Aires"
 	
-	matriz[5, 0] <- "40123461"
+	matriz[5, 0] <- "5"
 	matriz[5, 1] <- "Ricardo"
 	matriz[5, 2] <- "Fernández"
 	matriz[5, 3] <- "1154782241"
 	matriz[5, 4] <- ""
 	matriz[5, 5] <- "Calle Moreno 678, Buenos Aires"
 	
-	matriz[6, 0] <- "42123462"
+	matriz[6, 0] <- "6"
 	matriz[6, 1] <- "Carla"
 	matriz[6, 2] <- "Vega"
 	matriz[6, 3] <- ""
 	matriz[6, 4] <- ""
 	matriz[6, 5] <- "Av. Córdoba 890, Buenos Aires"
 	
-	matriz[7, 0] <- "44123463"
+	matriz[7, 0] <- "7"
 	matriz[7, 1] <- "Pedro"
 	matriz[7, 2] <- "Gómez"
 	matriz[7, 3] <- "1154782243"
 	matriz[7, 4] <- "pedro.gomez@example.com"
 	matriz[7, 5] <- "Calle San Juan 300, Buenos Aires"
 	
-	matriz[8, 0] <- "46123464"
+	matriz[8, 0] <- "8"
 	matriz[8, 1] <- "Natalia"
 	matriz[8, 2] <- "Vargas"
 	matriz[8, 3] <- "1154782244"
 	matriz[8, 4] <- ""
 	matriz[8, 5] <- "Av. San Martín 1500, Buenos Aires"
 	
-	matriz[9, 0] <- "48123465"
+	matriz[9, 0] <- "9"
 	matriz[9, 1] <- "Tomás"
 	matriz[9, 2] <- "Morales"
 	matriz[9, 3] <- ""
 	matriz[9, 4] <- ""
 	matriz[9, 5] <- ""
 	
-	matriz[10, 0] <- "50123466"
+	matriz[10, 0] <- "10"
 	matriz[10, 1] <- "Mónica"
 	matriz[10, 2] <- "Fernández"
 	matriz[10, 3] <- "1154782246"
 	matriz[10, 4] <- ""
 	matriz[10, 5] <- "Calle Sarmiento 250, Buenos Aires"
 	
-	matriz[11, 0] <- "52123467"
+	matriz[11, 0] <- "11"
 	matriz[11, 1] <- "Gustavo"
 	matriz[11, 2] <- "Martínez"
 	matriz[11, 3] <- "1154782247"
 	matriz[11, 4] <- ""
 	matriz[11, 5] <- "Av. 9 de Julio 700, Buenos Aires"
 	
-	matriz[12, 0] <- "54123468"
+	matriz[12, 0] <- "12"
 	matriz[12, 1] <- "Valeria"
 	matriz[12, 2] <- "Castro"
 	matriz[12, 3] <- "1154782248"
 	matriz[12, 4] <- ""
 	matriz[12, 5] <- "Calle Tucumán 600, Buenos Aires"
 	
-	matriz[13, 0] <- "56123469"
+	matriz[13, 0] <- "13"
 	matriz[13, 1] <- "Juan"
 	matriz[13, 2] <- "Salazar"
 	matriz[13, 3] <- "1154782249"
 	matriz[13, 4] <- ""
 	matriz[13, 5] <- "Av. Rivadavia 1000, Buenos Aires"
 	
-	matriz[14, 0] <- "58123470"
+	matriz[14, 0] <- "14"
 	matriz[14, 1] <- "Sandra"
 	matriz[14, 2] <- "Bravo"
 	matriz[14, 3] <- "1154782250"
 	matriz[14, 4] <- ""
 	matriz[14, 5] <- "Calle Chile 800, Buenos Aires"
 	
-	matriz[15, 0] <- "60123471"
+	matriz[15, 0] <- "15"
 	matriz[15, 1] <- "Emilio"
 	matriz[15, 2] <- "Gutiérrez"
 	matriz[15, 3] <- "1154782251"
 	matriz[15, 4] <- ""
 	matriz[15, 5] <- "Av. Santa Fe 900, Buenos Aires"
 	
-	matriz[16, 0] <- "62123472"
+	matriz[16, 0] <- "16"
 	matriz[16, 1] <- "Florencia"
 	matriz[16, 2] <- "Sosa"
 	matriz[16, 3] <- "1154782252"
 	matriz[16, 4] <- ""
 	matriz[16, 5] <- "Calle Montevideo 500, Buenos Aires"
 	
-	matriz[17, 0] <- "64123473"
+	matriz[17, 0] <- "17"
 	matriz[17, 1] <- "Álvaro"
 	matriz[17, 2] <- "Jiménez"
 	matriz[17, 3] <- "1154782253"
 	matriz[17, 4] <- ""
 	matriz[17, 5] <- "Av. Belgrano 1200, Buenos Aires"
 	
-	matriz[18, 0] <- "66123474"
+	matriz[18, 0] <- "18"
 	matriz[18, 1] <- "Carmen"
 	matriz[18, 2] <- "Rivas"
 	matriz[18, 3] <- "1154782254"
 	matriz[18, 4] <- ""
 	matriz[18, 5] <- "Calle Paraná 300, Buenos Aires"
 	
-	matriz[19, 0] <- "68123475"
+	matriz[19, 0] <- "19"
 	matriz[19, 1] <- "Jorge"
 	matriz[19, 2] <- "González"
 	matriz[19, 3] <- "1154782255"
 	matriz[19, 4] <- ""
 	matriz[19, 5] <- "Calle Lavalle 1200, Buenos Aires"
 	
-	matriz[20, 0] <- "70123476"
+	matriz[20, 0] <- "20"
 	matriz[20, 1] <- "Silvia"
 	matriz[20, 2] <- "Cruz"
 	matriz[20, 3] <- "1154782256"
 	matriz[20, 4] <- ""
 	matriz[20, 5] <- "Av. Corrientes 1500, Buenos Aires"
 	
-	matriz[21, 0] <- "72123477"
+	matriz[21, 0] <- "21"
 	matriz[21, 1] <- "Ricardo"
 	matriz[21, 2] <- "Vega"
 	matriz[21, 3] <- "1154782257"
 	matriz[21, 4] <- ""
 	matriz[21, 5] <- "Calle San Martín 2000, Buenos Aires"
 	
-	matriz[22, 0] <- "74123478"
+	matriz[22, 0] <- "22"
 	matriz[22, 1] <- "Gabriela"
 	matriz[22, 2] <- "Ramírez"
 	matriz[22, 3] <- "1154782258"
 	matriz[22, 4] <- "gabriela.ramirez@example.com"
 	matriz[22, 5] <- ""
 	
-	matriz[23, 0] <- "76123479"
+	matriz[23, 0] <- "23"
 	matriz[23, 1] <- "Tomás"
 	matriz[23, 2] <- "Fernández"
 	matriz[23, 3] <- "1154782259"
 	matriz[23, 4] <- ""
 	matriz[23, 5] <- "Calle Olavarría 123, Buenos Aires"
 	
-	matriz[24, 0] <- "78123480"
+	matriz[24, 0] <- "24"
 	matriz[24, 1] <- "Renata"
 	matriz[24, 2] <- "González"
 	matriz[24, 3] <- "1154782260"
 	matriz[24, 4] <- "renata.gonzalez@example.com"
 	matriz[24, 5] <- "Av. Libertador 200, Buenos Aires"
 	
-	matriz[25, 0] <- "80123481"
+	matriz[25, 0] <- "25"
 	matriz[25, 1] <- "Sandro"
 	matriz[25, 2] <- "Comanche"
 	matriz[25, 3] <- "5477861216"
 	matriz[25, 4] <- ""
 	matriz[25, 5] <- ""	
 FinSubAlgoritmo
+// FUNCIONES MODULO CONTACTOS FIN
+
 
 //--------------------------------------------------------------------------------------------------
 //            ____           _                        _                            "
