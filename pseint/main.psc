@@ -6,10 +6,14 @@ Algoritmo funcionalidades_Oficina
 	AGENDA_MAX = 1000
 	
 	//VARIABLES GLOBALES PARA EL MODULO CONTACTOS
-	Definir con_agenda, con_indicePorApellido Como Caracter
+	Definir con_indiceApellidos Como Entero
+	Definir con_agenda Como Caracter
 	Dimensionar con_agenda[AGENDA_MAX,6]	
+	Dimensionar con_indiceApellidos[27,2]
 	//ALGORITMOS DEL MODULO CONTACTO
 	con_poblarContactos(con_agenda, ID)
+	
+	con_ordenarPorApellido(con_agenda, con_indiceApellidos, AGENDA_MAX)
 	
 	main_Pantalla_Inicio
 	Repetir
@@ -17,7 +21,7 @@ Algoritmo funcionalidades_Oficina
 		Limpiar Pantalla
 		Segun opc Hacer
 			Caso 1: 
-				con_ContactosMain(con_agenda, AGENDA_MAX, ID)
+				con_ContactosMain(con_agenda, con_indiceApellidos, AGENDA_MAX, ID)
 			Caso 2: 
 				Calendario(con_agenda, AGENDA_MAX)
 			Caso 3: 
@@ -213,12 +217,11 @@ FinFuncion
 //--------------------------------------------------------------------------------------------------
 // FUNCIONES MODULO CONTACTOS INICIO
 //ALGORITMOS Y FUNCIONES ESPECÍFICAS DEL MÓDULO
-SubAlgoritmo con_ContactosMain(agenda, AGENDA_MAX, ID Por Referencia)
-	Definir seleccion, indiceApellidos, cantidadDeContactos, reordenarContacto Como Entero
-	Dimensionar indiceApellidos[27,2]
+SubAlgoritmo con_ContactosMain(agenda, AGENDA_MAX, indiceApellidos, ID Por Referencia)
+	Definir seleccion, cantidadDeContactos, reordenarContacto Como Entero
 	
-	con_ordenarPorApellido(agenda, indiceApellidos, AGENDA_MAX)
 	cantidadDeContactos = con_longitudArreglo(agenda, AGENDA_MAX)
+	
 	Repetir
 		reordenarContacto = 0
 		con_bienvenida()
@@ -1218,7 +1221,12 @@ Fin SubAlgoritmo
 //--------------- SUBALGORITMOS --------------- 
 
 Subalgoritmo cal_MenuAccionesDia(diaSeleccionado, nombreMes, año, listaTareas, tareasRealizadas, contadorTareas, maxDias, maxTareas, diaInicio, agenda, AGENDA_MAX)
-    continuarDia <- Verdadero
+	Definir cantidadDeContactos, indiceContactoElegido, iterador Como Entero
+	Definir idContactoElegido Como Caracter
+	
+    continuarDia <- Verdadero	
+	cantidadDeContactos = con_longitudArreglo(agenda, AGENDA_MAX)
+	
     Mientras continuarDia Hacer
         Limpiar Pantalla
         Escribir "Fecha seleccionada: ", diaSeleccionado, " de ", nombreMes, " de ", año
@@ -1295,24 +1303,20 @@ Subalgoritmo cal_MenuAccionesDia(diaSeleccionado, nombreMes, año, listaTareas, t
                     Escribir "Selecciona el número de la tarea a la que deseas asignar participantes (0 para volver): "
                     Leer numTarea
                     Si (numTarea > 0 Y numTarea <= contadorTareas[diaSeleccionado]) Entonces
-                        Escribir "Lista de contactos: "
-                        Para i = 0 Hasta 24 Hacer
-                            Si agenda[i, 0] <> "" Entonces
-                                Escribir i, ". ", agenda[i, 1], " ", agenda[i, 2]
-                            Fin Si
-                        Fin Para
-                        Escribir "Introduce el número del contacto que deseas asignar (0 para terminar): "
-                        Leer numContacto
-                        Mientras numContacto <> 0 Hacer
-                            Si agenda[numContacto, 0] <> "" Entonces
-                                listaTareas[diaSeleccionado, numTarea] <- listaTareas[diaSeleccionado, numTarea] + " - " + agenda[numContacto, 1] + " " + agenda[numContacto, 2] + " - "
-                                Escribir "Contacto asignado."
-                            Sino
-                                Escribir "Número de contacto no válido."
-                            Fin Si
-                            Escribir "Introduce el número del contacto que deseas asignar (0 para terminar): "
-                            Leer numContacto
-                        Fin Mientras
+						idContactoElegido = cal_listaDeContactos(agenda, cantidadDeContactos, AGENDA_MAX)											
+						Para iterador<-0 Hasta cantidadDeContactos Con Paso 1 Hacer
+							Si agenda[iterador, 0] == idContactoElegido Entonces
+								indiceContactoElegido = iterador
+								iterador = cantidadDeContactos
+							FinSi
+						Fin Para					
+						Si agenda[indiceContactoElegido, 0] <> "" Entonces
+							listaTareas[diaSeleccionado, numTarea] <- listaTareas[diaSeleccionado, numTarea] + " - " + agenda[indiceContactoElegido, 1] + " " + agenda[indiceContactoElegido, 2]
+							Escribir "Contacto asignado."
+						Sino
+							Escribir "Número de contacto no válido."
+						Fin Si
+						Escribir "Introduce el número del contacto que deseas asignar (0 para terminar): "
                     Sino
                         Escribir "Número de tarea no válido."
                     Fin Si
@@ -1398,6 +1402,98 @@ Subalgoritmo cal_PrecargarTareas2024(listaTareas, tareasRealizadas, contadorTare
     listaTareas[30, 1] <- "Entregar informes mensuales"
     tareasRealizadas[30, 1] <- "No"
 Fin Subalgoritmo
+
+Funcion idContactoElegido <- cal_listaDeContactos(agenda, cantidadDeContactos, AGENDA_MAX)
+	Definir salir Como Logico
+	Definir iterador, pagina, maxPagina, opcionElegida, tope Como Entero
+	
+	salir = Falso
+	pagina = 0
+	maxPagina = 10
+	
+	Repetir	
+		tope = (pagina * 10 + maxPagina)
+		
+		Si tope > cantidadDeContactos Entonces
+			tope = cantidadDeContactos
+		FinSi
+		
+		con_tituloListarTodos
+		
+		Si opcionElegida < 0 O opcionElegida > 3 Entonces
+			Escribir "Debe elegir una opción válida"
+			con_hacerLinea
+		FinSi
+		
+		Escribir "Pagina " pagina + 1
+		Escribir "0 - Salir"
+		Escribir "1 - Página anterior"
+		Escribir "2 - Página siguiente"
+		Escribir "3 - Elegir contacto de esta página"
+		
+		con_hacerLinea
+		
+		Para iterador <- pagina * 10 Hasta tope - 1 Con Paso 1 Hacer
+			Escribir iterador + 1, ") ",  agenda[iterador, 2], " ", agenda[iterador, 1]
+		Fin Para
+		
+		Leer opcionElegida
+		
+		Segun opcionElegida Hacer
+			0:
+				salir = Verdadero
+			1:
+				Si pagina > 1 Entonces
+					pagina = pagina - 1
+				SiNo
+					pagina = 0
+				FinSi				
+			2:
+				Si tope < cantidadDeContactos Entonces
+					pagina = pagina + 1				
+				FinSi
+			3:
+				idContactoElegido = cal_elegirContacto(agenda, tope, pagina, AGENDA_MAX)
+				salir = Verdadero
+		Fin Segun
+		
+	Mientras Que salir == Falso
+FinFuncion
+
+Funcion idContactoElegido <- cal_elegirContacto(agenda, tope, pagina, AGENDA_MAX)
+	Definir iterador, opcionElegida, indiceContacto, listadoMin Como Entero
+	
+	listadoMin = pagina * 10 + 1
+	
+	con_tituloListarTodos
+	
+	Escribir "Use las teclas numéricas para elegir un contacto"
+	Escribir "o 0 para salir"
+	
+	Para iterador <- pagina * 10 Hasta tope - 1 Con Paso 1 Hacer
+		Escribir iterador + 1, ") ",  agenda[iterador, 2], " ", agenda[iterador, 1]
+	Fin Para
+	
+	Leer opcionElegida	
+	
+	Si opcionElegida > 0 Entonces		
+		Mientras opcionElegida > tope O opcionElegida < listadoMin
+			Limpiar Pantalla
+			con_tituloListarTodos
+			Escribir "*El número elegido no corresponde a ningún contacto listado*"
+			Escribir "Elija un número de la siguiente lista"
+			Escribir "Para salir, escriba 0"
+			Para iterador <- pagina * 10 Hasta tope - 1 Con Paso 1 Hacer
+				Escribir iterador + 1, ") ",  agenda[iterador, 2], " ", agenda[iterador, 1]
+			Fin Para
+			Leer opcionElegida
+		FinMientras		
+		Si opcionElegida > 0 Entonces
+			indiceContacto = opcionElegida - 1
+			idContactoElegido = agenda[indiceContacto, 0]
+		FinSi
+	FinSi
+FinFuncion
 
 
 //--------------------------------------------------------------------------------------------------
