@@ -1,5 +1,5 @@
 Algoritmo funcionalidades_Oficina
-	Definir opc Como Entero
+	Definir opc, iteradorI, iteradorJ Como Entero
 	//ESPACIO GLOBAL
 	//VAIRABLES GLOBALES DE CONFIGURACION
 	Definir AGENDA_MAX, ID Como Entero
@@ -10,10 +10,25 @@ Algoritmo funcionalidades_Oficina
 	Definir con_agenda Como Caracter
 	Dimensionar con_agenda[AGENDA_MAX,6]	
 	Dimensionar con_indiceApellidos[27,2]
-	//ALGORITMOS DEL MODULO CONTACTO
-	con_poblarContactos(con_agenda, ID)
 	
+	//VARIABLE DEL MODULO CALENDARIO
+	Dimensionar tareas[32]
+    Dimensionar tareasRealizadas[32, 11] 
+    Dimensionar listaTareas[32, 11] 
+    Dimensionar contadorTareas[33]
+	
+	//ALGORITMOS DE INICIALIZACION DEL MODULO CONTACTO
+	con_poblarContactos(con_agenda, ID)	
 	con_ordenarPorApellido(con_agenda, con_indiceApellidos, AGENDA_MAX)
+	
+	//ALGORITMOS DE INICIALIZACION DEL MODULO CALENDARIO
+    Para iteradorI <- 1 Hasta 31 Hacer
+        contadorTareas[iteradorI] <- 0
+        Para iteradorJ <- 1 Hasta 10 Hacer
+            listaTareas[iteradorI, iteradorJ] <- ""
+            tareasRealizadas[iteradorI, iteradorJ] <- "No"
+        Fin Para
+    Fin Para
 	
 	main_Pantalla_Inicio
 	Repetir
@@ -23,7 +38,7 @@ Algoritmo funcionalidades_Oficina
 			Caso 1: 
 				con_ContactosMain(con_agenda, con_indiceApellidos, AGENDA_MAX, ID)
 			Caso 2: 
-				Calendario(con_agenda, AGENDA_MAX)
+				Calendario(con_agenda, AGENDA_MAX, tareas, tareasRealizadas, listaTareas, contadorTareas)
 			Caso 3: 
 				Pomodoro
 			De Otro Modo:
@@ -217,7 +232,7 @@ FinFuncion
 //--------------------------------------------------------------------------------------------------
 // FUNCIONES MODULO CONTACTOS INICIO
 //ALGORITMOS Y FUNCIONES ESPECÍFICAS DEL MÓDULO
-SubAlgoritmo con_ContactosMain(agenda, AGENDA_MAX, indiceApellidos, ID Por Referencia)
+SubAlgoritmo con_ContactosMain(agenda, indiceApellidos, AGENDA_MAX, ID Por Referencia)
 	Definir seleccion, cantidadDeContactos, reordenarContacto Como Entero
 	
 	cantidadDeContactos = con_longitudArreglo(agenda, AGENDA_MAX)
@@ -1100,24 +1115,12 @@ FinSubAlgoritmo
 //                           |___/                                            "
 //--------------------------------------------------------------------------------------------------
 
-SubAlgoritmo Calendario(con_agenda, AGENDA_MAX)
+SubAlgoritmo Calendario(con_agenda, AGENDA_MAX, tareas, tareasRealizadas, listaTareas, contadorTareas)
     Definir mes, año, diaInicio, diasMes, diaSeleccionado, opc, numTarea Como Entero
     Definir nombreMes, nuevaTarea Como Cadena
     Definir continuarPrograma, continuarSeleccionMes Como Logico
     continuarPrograma <- Verdadero
-    Dimensionar tareas[32]
-    Dimensionar tareasRealizadas[32, 11] 
-    Dimensionar listaTareas[32, 11] 
-    Dimensionar contadorTareas[33]
-    
-    // Inicialización de las matrices
-    Para i <- 1 Hasta 31 Hacer
-        contadorTareas[i] <- 0
-        Para j <- 1 Hasta 10 Hacer
-            listaTareas[i, j] <- ""
-            tareasRealizadas[i, j] <- "No"
-        Fin Para
-    Fin Para
+
     cal_Pantalla_inicio
     // BUCLE PRINCIPAL
     Mientras continuarPrograma Hacer
