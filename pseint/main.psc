@@ -29,6 +29,7 @@ Algoritmo funcionalidades_Oficina
             tareasRealizadas[iteradorI, iteradorJ] <- "No"
         Fin Para
     Fin Para
+	cal_PrecargarTareas2024(listaTareas, tareasRealizadas, contadorTareas)
 	
 	main_Pantalla_Inicio
 	Repetir
@@ -1183,11 +1184,6 @@ SubAlgoritmo Calendario(con_agenda, AGENDA_MAX, tareas, tareasRealizadas, listaT
                                 11: nombreMes <- "Noviembre"; diasMes <- 30
                                 12: nombreMes <- "Diciembre"; diasMes <- 31
                             Fin Segun
-                            
-							// Precargar tareas si es noviembre de 2024
-                            Si (año = 2024 Y mes = 11) Entonces
-                                cal_PrecargarTareas2024(listaTareas, tareasRealizadas, contadorTareas)
-                            Fin Si
 							
                             // Mostrar el calendario por primera vez
                             cal_RenderCalendario(diaInicio, diasMes, nombreMes, año, contadorTareas)
@@ -1330,8 +1326,6 @@ Subalgoritmo cal_MenuAccionesDia(diaSeleccionado, nombreMes, año, listaTareas, t
     Fin Mientras
 Fin Subalgoritmo
 
-
-
 Subalgoritmo cal_RenderCalendario(diaInicio, diasMes, nombreMes, año, contadorTareas)
     Escribir "Calendario de ", nombreMes, " ", año
     Escribir "  L      M      X      J      V      S      D  " // Encabezado de la semana
@@ -1358,7 +1352,6 @@ Subalgoritmo cal_RenderCalendario(diaInicio, diasMes, nombreMes, año, contadorTa
     Fin Para
     Escribir ""
 Fin Subalgoritmo
-
 
 Subalgoritmo cal_Pantalla_inicio
 	Escribir "                                                                                "
