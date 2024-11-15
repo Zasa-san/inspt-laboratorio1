@@ -1,17 +1,17 @@
 #include <stdio.h>
 #include <string.h>
 
-enum opcionesMenu_t {
+typedef enum {
   SALIR = 0,
   POMODORO = 1,
   CONTACTOS = 2,
   MAX_OPCION = 2,
-};
+} opcionesMenu_t;
 
 void limpiarPantalla();
 void esperarTecla(char*);
 void dibujarTitulo();
-enum opcionesMenu_t menuPrincipal();
+opcionesMenu_t menuPrincipal();
 
 void limpiarPantalla() {
   printf("\e[1;1H\e[2J");
@@ -40,8 +40,8 @@ void dibujarTitulo() {
   esperarTecla("Presione una tecla para inciar");
 }
 
-enum opcionesMenu_t menuPrincipal() {
-  enum opcionesMenu_t opcionSelecionada;
+opcionesMenu_t menuPrincipal() {
+  opcionesMenu_t opcionSelecionada;
 
   limpiarPantalla();
   printf("Menu principal\n");

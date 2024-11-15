@@ -9,7 +9,7 @@ int main() {
   setlocale(LC_ALL, "es_ES.UTF-8");
   SetConsoleOutputCP(CP_UTF8);
 
-  enum opcionesMenu_t opcionSelecionada;
+  opcionesMenu_t opcionSelecionada;
   dibujarTitulo();
 
   opcionSelecionada = menuPrincipal();
