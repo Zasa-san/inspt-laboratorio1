@@ -63,6 +63,11 @@ Ya que no se puede tener matrices con datos combinados, usamos números para rep
 ---
 
 ## **C**
+## Compilación
+Para compilar el código debe ejecturar el siguiente código en la carpeta `c`
+```
+gcc -fdiagnostics-color=always -g main.c utilidades.c contactos.c -o main.exe
+```
 ## Tipos de dato
 
 ### Contactos

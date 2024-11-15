@@ -1,90 +1,63 @@
-#include <stdio.h>
-#include <stdint.h>
-#include <string.h>
 #include <stdbool.h>
-#define ALFABETO 26
-#define STRING_MAX 100
-#define clrscr() printf("\e[1;1H\e[2J")
+#include <stdio.h>
+#include "contactos.h"
 
-typedef enum {
-    SALIR = 0,
-    VER = 1,
-    BUSCAR = 2,
-    CREAR = 3,
-} opcionesMenu_t;
-
-typedef struct contacto {
-    char nombre[STRING_MAX];
-    char apellido[STRING_MAX];
-    char telefono[STRING_MAX];
-    char email[STRING_MAX];
-    char direccion[STRING_MAX];
-    struct contacto* siguiente;
-} contacto_t;
-
-typedef contacto_t* pContacto;
-typedef contacto_t* Contactos;
-
-//void poblarContactos(contacto_t[AGENDA_MAX]);
-//void ordenarPorApellido(contacto_t[AGENDA_MAX], int32_t[ALFABETO][2]);
-//void verPorApellido(contacto_t[AGENDA_MAX], int32_t[ALFABETO][2]);
-opcionesMenu_t menuPrincipal();
-
-int main() {
-    opcionesMenu_t opcionMenu;
+void contactosMain() {
+    opcionesMenuContactos_t opcionMenu;
     //int32_t indice[ALFABETO][2];
     Contactos agendaContactos = NULL;
+    bool salir = false;
 
     //poblarContactos(agenda);
     //ordenarPorApellido(agenda, indice);
 
     printf("**Agenda de contactos**");
 
-    do {
-        opcionMenu = menuPrincipal();
+    do
+    {
+        opcionMenu = menuContactos();
         switch (opcionMenu) {
-        case VER: printf("ver por apellido");
-            break;
-        case BUSCAR: printf("busqueda");
-            break;
-        case CREAR: printf("crear");
-            break;
+        case CON_LISTAR:
+        printf("acá iría el módulo para ver por apellido");
+        esperarTecla(NULL);
+        break;
+        case CON_CREAR:
+        printf("acá iriía la parte de crear");
+        esperarTecla(NULL);
+        break;
+        case CON_SALIR:
+        salir = true;
+        break;
         default: printf("Saliendo...");
             break;
         }
-    } while (opcionMenu != 0);
-
-    fflush(stdin);
-    getchar();
-    return 0;
+    } while (salir == false);
 }
 
-opcionesMenu_t menuPrincipal() {
-    opcionesMenu_t opcion;
-    bool invalido;
-    opcion = 0;
-    invalido = false;
-
-    printf("\n");
+opcionesMenuContactos_t menuContactos() {
+    opcionesMenuContactos_t opcion;
+    bool invalido = false;
 
     do {
+        limpiarPantalla();
         if (invalido) {
             printf("**Debe elegir una opción válida**\n");
         }
-        printf("Opciones de navegación:\n");
+        else {
+            printf("Opciones de navegación:\n");
+        }
         printf("1 - Ver por apellido\n");
-        printf("2 - Buscar por nombre o apellido\n");
-        printf("3 - Crear un nuevo contacto\n");
+        printf("2 - Crear un nuevo contacto\n");
         printf("0 - Para salir de la agenda\n");
         scanf("%d", &opcion);
-        if (opcion < SALIR || opcion > CREAR) {
+        limpiarBuffer();
+        if (opcion < CON_SALIR || opcion > CON_MAX_OPCION) {
             invalido = true;
         }
         else {
             invalido = false;
         }
-        clrscr();
-    } while (invalido != false);
+    } while (invalido == true);
 
     return opcion;
 }

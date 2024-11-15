@@ -4,6 +4,8 @@
         "stdio.h": "c",
         "stdint.h": "c",
         "stdint-gcc.h": "c",
-        "stdbool.h": "c"
+        "stdbool.h": "c",
+        "locale.h": "c",
+        "windows.h": "c"
     }
 }

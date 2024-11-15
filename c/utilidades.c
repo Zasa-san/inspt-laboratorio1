@@ -1,32 +1,24 @@
-#include <stdio.h>
-#include <stdint.h>
-#include <string.h>
 #include <stdbool.h>
-
-typedef enum {
-  SALIR = 0,
-  POMODORO = 1,
-  CONTACTOS = 2,
-  MAX_OPCION = 2,
-} opcionesMenu_t;
-
-void limpiarPantalla();
-void esperarTecla(char*);
-void dibujarTitulo();
-opcionesMenu_t menuPrincipal();
+#include <stdio.h>
+#include <string.h>
+#include "utilidades.h"
 
 void limpiarPantalla() {
   printf("\e[1;1H\e[2J");
 }
 
+void limpiarBuffer() {
+  fflush(stdin);
+}
+
 void esperarTecla(char* mensaje) {
+  fflush(stdin);
   if (mensaje != NULL && strlen(mensaje) > 0) {
     printf("\n%s", mensaje);
   }
   else {
     printf("\nPresione una tecla para continuar");
   }
-  fflush(stdin);
   getchar();
 }
 
@@ -42,8 +34,8 @@ void dibujarTitulo() {
   esperarTecla("Presione una tecla para inciar");
 }
 
-opcionesMenu_t menuPrincipal() {
-  opcionesMenu_t opcionSelecionada;
+opcionesMenuPrincipal_t menuPrincipal() {
+  opcionesMenuPrincipal_t opcionSelecionada;
   bool invalido = false;
 
   do {
@@ -57,7 +49,7 @@ opcionesMenu_t menuPrincipal() {
     printf("2 - Agenda de contactos\n");
     printf("0 - Salir\n");
     scanf("%d", &opcionSelecionada);
-    if (opcionSelecionada < SALIR || opcionSelecionada > MAX_OPCION) {
+    if (opcionSelecionada < MAIN_SALIR || opcionSelecionada > MAIN_MAX_OPCION) {
       invalido = true;
     }
     else {
