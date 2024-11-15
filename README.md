@@ -25,11 +25,12 @@ nombreDeMiTipo_t
 ### Contactos
 ```
 [
-    [nombre, apellido, telefono, email, dirección],
+    [id, nombre, apellido, telefono, email, dirección],
 ]
 ```
 | Nombre del dato  | Tipo de dato           | ¿Vacio?
 | -------------    | -------------          | -------------
+| `id`             | Cadena de caracteres   | No
 | `nombre`         | Cadena de caracteres   | No
 | `apellido`       | Cadena de caracteres   | No
 | `telefono`       | Cadena de caracteres   | Si
