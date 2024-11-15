@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <stdbool.h>
+#include <stdlib.h>
 #include "utilidades.h"
 #include "contactos.h"
 
@@ -11,8 +12,11 @@ int main() {
   SetConsoleOutputCP(CP_UTF8);
 
   bool salir = false;
-
   opcionesMenuPrincipal_t opcionSelecionada;
+  pContacto contacto_p;
+  Contactos ListaDeContactos = NULL;
+
+  poblarContactos(&ListaDeContactos, &contacto_p);
 
   dibujarTitulo();
 
@@ -24,7 +28,7 @@ int main() {
     esperarTecla(NULL);
     break;
     case MAIN_CONTACTOS:
-    contactosMain();
+    contactosMain(ListaDeContactos);
     break;
     case MAIN_SALIR:
     salir = true;
@@ -34,6 +38,7 @@ int main() {
 
   limpiarPantalla();
   esperarTecla("Fin de ejecución");
+  free(ListaDeContactos);
   return 0;
 }
 

@@ -23,10 +23,10 @@ typedef struct contacto {
 typedef contacto_t* pContacto;
 typedef contacto_t* Contactos;
 
-//void poblarContactos(contacto_t[AGENDA_MAX]);
-//void ordenarPorApellido(contacto_t[AGENDA_MAX], int32_t[ALFABETO][2]);
-//void verPorApellido(contacto_t[AGENDA_MAX], int32_t[ALFABETO][2]);
-void contactosMain();
+void poblarContactos(Contactos*, pContacto*);
+void listadoCompleto(Contactos);
+void verContacto(pContacto);
+void contactosMain(contacto_t*);
 opcionesMenuContactos_t menuContactos();
 
 #endif
