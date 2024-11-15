@@ -1,5 +1,7 @@
 #include <stdio.h>
+#include <stdint.h>
 #include <string.h>
+#include <stdbool.h>
 
 typedef enum {
   SALIR = 0,
@@ -42,25 +44,26 @@ void dibujarTitulo() {
 
 opcionesMenu_t menuPrincipal() {
   opcionesMenu_t opcionSelecionada;
+  bool invalido = false;
 
-  limpiarPantalla();
-  printf("Menu principal\n");
-  printf("Elija una opción\n");
-  printf("1 - Pomodoro\n");
-  printf("2 - Agenda de contactos\n");
-  printf("0 - Salir\n");
-
-  scanf("%i", &opcionSelecionada);
-
-  while (opcionSelecionada < SALIR || opcionSelecionada > MAX_OPCION)
-  {
+  do {
     limpiarPantalla();
-    printf("Debe elegir una opción válida\n");
+    if (invalido) {
+      printf("**Debe elegir una opción válida**\n");
+    }
+    printf("Menu principal\n");
+    printf("Elija una opción\n");
     printf("1 - Pomodoro\n");
     printf("2 - Agenda de contactos\n");
     printf("0 - Salir\n");
-    scanf("%i", &opcionSelecionada);
-  }
+    scanf("%d", &opcionSelecionada);
+    if (opcionSelecionada < SALIR || opcionSelecionada > MAX_OPCION) {
+      invalido = true;
+    }
+    else {
+      invalido = false;
+    }
+  } while (invalido != false);
 
   return opcionSelecionada;
 };

@@ -1,6 +1,3 @@
-#include <stdio.h>
-#include <stdint.h>
-#include <stdbool.h>
 #include <locale.h>
 #include <windows.h>
 #include "utilidades.c"
@@ -10,6 +7,7 @@ int main() {
   SetConsoleOutputCP(CP_UTF8);
 
   opcionesMenu_t opcionSelecionada;
+
   dibujarTitulo();
 
   opcionSelecionada = menuPrincipal();
