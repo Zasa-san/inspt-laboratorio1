@@ -1,30 +1,24 @@
+#include <stdbool.h>
 #include <stdio.h>
 #include <string.h>
-
-enum opcionesMenu_t {
-  SALIR = 0,
-  POMODORO = 1,
-  CONTACTOS = 2,
-  MAX_OPCION = 2,
-};
-
-void limpiarPantalla();
-void esperarTecla(char*);
-void dibujarTitulo();
-enum opcionesMenu_t menuPrincipal();
+#include "utilidades.h"
 
 void limpiarPantalla() {
   printf("\e[1;1H\e[2J");
 }
 
+void limpiarBuffer() {
+  fflush(stdin);
+}
+
 void esperarTecla(char* mensaje) {
+  fflush(stdin);
   if (mensaje != NULL && strlen(mensaje) > 0) {
     printf("\n%s", mensaje);
   }
   else {
     printf("\nPresione una tecla para continuar");
   }
-  fflush(stdin);
   getchar();
 }
 
@@ -40,27 +34,28 @@ void dibujarTitulo() {
   esperarTecla("Presione una tecla para inciar");
 }
 
-enum opcionesMenu_t menuPrincipal() {
-  enum opcionesMenu_t opcionSelecionada;
+opcionesMenuPrincipal_t menuPrincipal() {
+  opcionesMenuPrincipal_t opcionSelecionada;
+  bool invalido = false;
 
-  limpiarPantalla();
-  printf("Menu principal\n");
-  printf("Elija una opción\n");
-  printf("1 - Pomodoro\n");
-  printf("2 - Agenda de contactos\n");
-  printf("0 - Salir\n");
-
-  scanf("%i", &opcionSelecionada);
-
-  while (opcionSelecionada < SALIR || opcionSelecionada > MAX_OPCION)
-  {
+  do {
     limpiarPantalla();
-    printf("Debe elegir una opción válida\n");
+    if (invalido) {
+      printf("**Debe elegir una opción válida**\n");
+    }
+    printf("Menu principal\n");
+    printf("Elija una opción\n");
     printf("1 - Pomodoro\n");
     printf("2 - Agenda de contactos\n");
     printf("0 - Salir\n");
-    scanf("%i", &opcionSelecionada);
-  }
+    scanf("%d", &opcionSelecionada);
+    if (opcionSelecionada < MAIN_SALIR || opcionSelecionada > MAIN_MAX_OPCION) {
+      invalido = true;
+    }
+    else {
+      invalido = false;
+    }
+  } while (invalido != false);
 
   return opcionSelecionada;
 };

@@ -1,83 +1,68 @@
-#include <stdio.h>
-#include <stdint.h>
-#include <string.h>
 #include <stdbool.h>
-#define AGENDA_MAX 1000
-#define ALFABETO 26
-#define STRING_MAX 200
-#define clrscr() printf("\e[1;1H\e[2J")
+#include <stdio.h>
+#include "contactos.h"
 
-typedef struct {
-    char nombre[STRING_MAX];
-    char apellido[STRING_MAX];
-    char telefono[STRING_MAX];
-    char email[STRING_MAX];
-    char direccion[STRING_MAX];
-} contacto_t;
+void contactosMain() {
+    opcionesMenuContactos_t opcionMenu;
+    //int32_t indice[ALFABETO][2];
+    Contactos agendaContactos = NULL;
+    bool salir = false;
 
-void poblarContactos(contacto_t[AGENDA_MAX]);
-void ordenarPorApellido(contacto_t[AGENDA_MAX], int32_t[ALFABETO][2]);
-void verPorApellido(contacto_t[AGENDA_MAX], int32_t[ALFABETO][2]);
-int32_t menuPrincipal();
-
-int main() {
-    int32_t opcion;
-    int32_t indice[ALFABETO][2];
-    contacto_t agenda[AGENDA_MAX];
-
-    poblarContactos(agenda);
-    ordenarPorApellido(agenda, indice);
+    //poblarContactos(agenda);
+    //ordenarPorApellido(agenda, indice);
 
     printf("**Agenda de contactos**");
 
-    do {
-        opcion = menuPrincipal();
-        switch (opcion) {
-        case 1: verPorApellido(agenda, indice);
-            break;
-
-        case 2: printf("busqueda");
-            break;
-
+    do
+    {
+        opcionMenu = menuContactos();
+        switch (opcionMenu) {
+        case CON_LISTAR:
+        printf("acá iría el módulo para ver por apellido");
+        esperarTecla(NULL);
+        break;
+        case CON_CREAR:
+        printf("acá iriía la parte de crear");
+        esperarTecla(NULL);
+        break;
+        case CON_SALIR:
+        salir = true;
+        break;
         default: printf("Saliendo...");
             break;
         }
-    } while (opcion != 0);
-
-    fflush(stdin);
-    getchar();
-    return 0;
+    } while (salir == false);
 }
 
-int32_t menuPrincipal() {
-    int32_t opcion;
-    bool invalido;
-    opcion = 0;
-    invalido = false;
-
-    printf("\n");
+opcionesMenuContactos_t menuContactos() {
+    opcionesMenuContactos_t opcion;
+    bool invalido = false;
 
     do {
-        if (opcion < 0 || opcion > 2) {
+        limpiarPantalla();
+        if (invalido) {
             printf("**Debe elegir una opción válida**\n");
         }
-        printf("Opciones de navegación:\n");
+        else {
+            printf("Opciones de navegación:\n");
+        }
         printf("1 - Ver por apellido\n");
-        printf("2 - Buscar por nombre o apellido\n");
+        printf("2 - Crear un nuevo contacto\n");
         printf("0 - Para salir de la agenda\n");
         scanf("%d", &opcion);
-        if (opcion < 0 || opcion > 2) {
+        limpiarBuffer();
+        if (opcion < CON_SALIR || opcion > CON_MAX_OPCION) {
             invalido = true;
         }
         else {
             invalido = false;
         }
-        clrscr();
-    } while (invalido != false);
+    } while (invalido == true);
 
     return opcion;
 }
 
+/*
 void ordenarPorApellido(contacto_t agenda[AGENDA_MAX], int32_t indice[ALFABETO][2]) {
     uint32_t i, j, resultado;
     contacto_t aux;
@@ -269,3 +254,4 @@ void poblarContactos(contacto_t agenda[AGENDA_MAX]) {
     strcpy(agenda[24].email, "renata.gonzalez@example.com");
     strcpy(agenda[24].direccion, "Av. Libertador 200, Buenos Aires");
 }
+*/

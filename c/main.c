@@ -1,32 +1,38 @@
+#include <locale.h>
+#include <windows.h>
 #include <stdio.h>
 #include <stdint.h>
 #include <stdbool.h>
-#include <locale.h>
-#include <windows.h>
-#include "utilidades.c"
+#include "utilidades.h"
+#include "contactos.h"
 
 int main() {
   setlocale(LC_ALL, "es_ES.UTF-8");
   SetConsoleOutputCP(CP_UTF8);
 
-  enum opcionesMenu_t opcionSelecionada;
+  bool salir = false;
+
+  opcionesMenuPrincipal_t opcionSelecionada;
+
   dibujarTitulo();
 
-  opcionSelecionada = menuPrincipal();
+  do {
+    opcionSelecionada = menuPrincipal();
+    switch (opcionSelecionada) {
+    case MAIN_POMODORO:
+    printf("Acá iniciaría el módulo pomodoro");
+    esperarTecla(NULL);
+    break;
+    case MAIN_CONTACTOS:
+    contactosMain();
+    break;
+    case MAIN_SALIR:
+    salir = true;
+    break;
+    }
+  } while (salir == false);
 
-  switch (opcionSelecionada)
-  {
-  case POMODORO:
-  printf("Acá iniciaría el módulo pomodoro");
-  esperarTecla(NULL);
-  break;
-
-  case CONTACTOS:
-  printf("Acá iniciaría el módulo contactos");
-  esperarTecla(NULL);
-  break;
-  }
-
+  limpiarPantalla();
   esperarTecla("Fin de ejecución");
   return 0;
 }
