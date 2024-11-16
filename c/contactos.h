@@ -1,7 +1,6 @@
 #ifndef CONTACTOS_H
 #define CONTACTOS_H
 #include "utilidades.h"
-#define ALFABETO 26
 #define STRING_MAX 100
 
 typedef enum {
@@ -30,6 +29,7 @@ typedef contacto_t* Contactos;
 
 void poblarContactos(Contactos*, pContacto*, int*);
 void contactosMain(Contactos, pContacto, int*);
+void ordenarPorApellido(Contactos);
 void listadoCompleto(Contactos);
 void verContacto(pContacto);
 opcionesMenuContactos_t menuContactos();

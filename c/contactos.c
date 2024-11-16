@@ -118,7 +118,7 @@ void poblarContactos(Contactos* ListaDeContactos, pContacto* contacto_p, int* ge
     };
 
     for (int i = 0; i < num_contacts; i++) {
-        contacto_t* nuevoContacto = (contacto_t*)malloc(sizeof(contacto_t));
+        pContacto nuevoContacto = (pContacto)malloc(sizeof(contacto_t));
         if (nuevoContacto != NULL) {
             strcpy(nuevoContacto->datos.nombre, contactosIniciales[i].nombre);
             strcpy(nuevoContacto->datos.apellido, contactosIniciales[i].apellido);
@@ -139,5 +139,36 @@ void poblarContactos(Contactos* ListaDeContactos, pContacto* contacto_p, int* ge
 
             *generadorId = *generadorId + 1;
         }
+    }
+
+    ordenarPorApellido(*ListaDeContactos);
+}
+
+void ordenarPorApellido(Contactos ListadoDeContactos) {
+    if (!(ListadoDeContactos == NULL || ListadoDeContactos->siguiente == NULL)) {
+        bool cambiados;
+        pContacto nodoActual;
+        int tempId;
+
+        do {
+            cambiados = false;
+            nodoActual = ListadoDeContactos;
+
+            while (nodoActual->siguiente != NULL) {
+                if (strcmp(nodoActual->datos.apellido, nodoActual->siguiente->datos.apellido) > 0) {
+
+                    datosBasicosContacto_t tempDatos = nodoActual->datos;
+                    nodoActual->datos = nodoActual->siguiente->datos;
+                    nodoActual->siguiente->datos = tempDatos;
+
+                    tempId = nodoActual->id;
+                    nodoActual->id = nodoActual->siguiente->id;
+                    nodoActual->siguiente->id = tempId;
+
+                    cambiados = true;
+                }
+                nodoActual = nodoActual->siguiente;
+            }
+        } while (cambiados);
     }
 }
