@@ -13,11 +13,11 @@ int main() {
 
   bool salir = false;
   opcionesMenuPrincipal_t opcionSelecionada;
-  pContacto contacto_p;
+  pContacto ultimoElemento_p;
   Contactos ListaDeContactos = NULL;
   int* generadorId_p;
 
-  poblarContactos(&ListaDeContactos, &contacto_p, generadorId_p);
+  poblarContactos(&ListaDeContactos, &ultimoElemento_p, generadorId_p);
 
   dibujarTitulo();
 
@@ -27,13 +27,16 @@ int main() {
     case MAIN_POMODORO:
     printf("Acá iniciaría el módulo pomodoro");
     esperarTecla(NULL);
+
     break;
     case MAIN_CONTACTOS:
-    contactosMain(ListaDeContactos, contacto_p, generadorId_p);
+    contactosMain(ListaDeContactos, ultimoElemento_p, generadorId_p);
     break;
+
     case MAIN_SALIR:
     salir = true;
     break;
+
     }
   } while (salir == false);
 

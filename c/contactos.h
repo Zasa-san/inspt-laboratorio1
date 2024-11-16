@@ -22,6 +22,7 @@ typedef struct contacto {
   int id;
   datosBasicosContacto_t datos;
   struct contacto* siguiente;
+  struct contacto* anterior;
 } contacto_t;
 
 typedef contacto_t* pContacto;

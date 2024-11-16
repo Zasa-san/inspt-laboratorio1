@@ -4,7 +4,7 @@
 #include <string.h>
 #include "contactos.h"
 
-void contactosMain(Contactos ListaDeContactos, pContacto contacto_p, int* generadorId) {
+void contactosMain(Contactos ListaDeContactos, pContacto ultimoElemento_p, int* generadorId) {
     opcionesMenuContactos_t opcionMenu;
     bool salir = false;
 
@@ -58,11 +58,11 @@ opcionesMenuContactos_t menuContactos() {
 }
 
 void listadoCompleto(Contactos ListaDeContactos) {
-    pContacto current = ListaDeContactos;
+    pContacto contacto_p = ListaDeContactos, primeroEnPagina;
     int iterador, opcion, pagina = 0, maxPag = 10;
-    bool invalido = false, salir;
+    bool invalido = false, salir = false;
 
-    if (current == NULL) {
+    if (contacto_p == NULL) {
         limpiarPantalla();
         printf("**Listado de contactos**\n\n");
         printf("No existe ningún contacto");
@@ -72,46 +72,72 @@ void listadoCompleto(Contactos ListaDeContactos) {
         do {
             limpiarPantalla();
             printf("**Listado de contactos**\n\n");
-            printf("Pagina %i\n", pagina);
+            printf("Página %i\n", pagina);
 
             iterador = 0;
+            primeroEnPagina = contacto_p;
 
-            while (current->siguiente != NULL && iterador < maxPag) {
-                printf("%i) %s, %s (ID:%i)\n", iterador + 1, current->datos.apellido, current->datos.nombre, current->id);
-                current = current->siguiente;
+            while (contacto_p != NULL && iterador < maxPag) {
+                printf("%i) %s, %s (ID:%i)\n", iterador + 1, contacto_p->datos.apellido, contacto_p->datos.nombre, contacto_p->id);
+                contacto_p = contacto_p->siguiente;
                 iterador++;
             }
 
             if (invalido) {
                 printf("\n*Elija una opción válida*");
             }
-            printf("\n1 - Página siguiente");
+            printf("\n1 - Página anterior");
             printf("\n2 - Elegir de esta página");
+            printf("\n3 - Página siguiente");
             printf("\n0 - Salir\n");
             scanf("%i", &opcion);
 
             if (opcion < 0 || opcion > 3) {
                 invalido = true;
             }
+            else {
+                invalido = false;
+            }
 
             switch (opcion) {
-            case 0: salir = true;
-                break;
+            case 0:
+            salir = true;
+            break;
+
             case 1:
-            if (current->siguiente != NULL) {
-                pagina = pagina + 1;
+            if (pagina > 0 && primeroEnPagina->anterior != NULL) {
+                pagina--;
+                iterador = 0;
+                contacto_p = primeroEnPagina;
+
+                while (contacto_p->anterior != NULL && iterador < maxPag) {
+                    contacto_p = contacto_p->anterior;
+                    iterador++;
+                }
             }
             else {
-                pagina = 0;
-                current = ListaDeContactos;
+                contacto_p = primeroEnPagina;
+            }
+            break;
+
+            case 2:
+
+            break;
+
+            case 3:
+            if (contacto_p != NULL) {
+                pagina++;
+            }
+            else {
+                contacto_p = primeroEnPagina;
             }
             break;
             }
-        } while (salir == false);
+
+        } while (!salir);
     }
 }
-
-void poblarContactos(Contactos* ListaDeContactos, pContacto* contacto_p, int* generadorId) {
+void poblarContactos(Contactos* ListaDeContactos, pContacto* ultimoElemento_p, int* generadorId) {
     int num_contacts = 25;
 
     *generadorId = 0;
@@ -154,14 +180,16 @@ void poblarContactos(Contactos* ListaDeContactos, pContacto* contacto_p, int* ge
             strcpy(nuevoContacto->datos.direccion, contactosIniciales[i].direccion);
             nuevoContacto->id = *generadorId;
             nuevoContacto->siguiente = NULL;
+            nuevoContacto->anterior = NULL;
 
             if (*ListaDeContactos == NULL) {
                 *ListaDeContactos = nuevoContacto;
-                *contacto_p = nuevoContacto;
+                *ultimoElemento_p = nuevoContacto;
             }
             else {
-                (*contacto_p)->siguiente = nuevoContacto;
-                *contacto_p = nuevoContacto;
+                (*ultimoElemento_p)->siguiente = nuevoContacto;
+                nuevoContacto->anterior = *ultimoElemento_p;
+                *ultimoElemento_p = nuevoContacto;
             }
 
             *generadorId = *generadorId + 1;
@@ -174,8 +202,9 @@ void poblarContactos(Contactos* ListaDeContactos, pContacto* contacto_p, int* ge
 void ordenarPorApellido(Contactos ListadoDeContactos) {
     if (!(ListadoDeContactos == NULL || ListadoDeContactos->siguiente == NULL)) {
         bool cambiados;
-        pContacto nodoActual;
         int tempId;
+        pContacto nodoActual, tempNodo;
+        datosBasicosContacto_t tempDatos;
 
         do {
             cambiados = false;
@@ -184,7 +213,7 @@ void ordenarPorApellido(Contactos ListadoDeContactos) {
             while (nodoActual->siguiente != NULL) {
                 if (strcmp(nodoActual->datos.apellido, nodoActual->siguiente->datos.apellido) > 0) {
 
-                    datosBasicosContacto_t tempDatos = nodoActual->datos;
+                    tempDatos = nodoActual->datos;
                     nodoActual->datos = nodoActual->siguiente->datos;
                     nodoActual->siguiente->datos = tempDatos;
 
