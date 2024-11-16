@@ -18,16 +18,28 @@ void contactosMain(Contactos ListaDeContactos, pContacto ultimoElemento_p, int* 
         listadoCompleto(ListaDeContactos);
         break;
         case CON_CREAR:
-        printf("acá iriía la parte de crear");
+        printf("acá iría la parte de crear");
         esperarTecla(NULL);
         break;
         case CON_SALIR:
         salir = true;
         break;
-        default: printf("Saliendo...");
-            break;
         }
     } while (salir == false);
+}
+
+void verContacto(pContacto contacto) {
+    limpiarPantalla();
+    printf("Nombre:    \t%s\n", contacto->datos.nombre);
+    printf("Apellido:  \t%s\n", contacto->datos.apellido);
+    printf("Teléfono:  \t%s\n", contacto->datos.telefono);
+    printf("Email:     \t%s\n", contacto->datos.email);
+    printf("Dirección: \t%s\n", contacto->datos.direccion);
+    esperarTecla("Presione una tecla para volver");
+}
+
+void itemListaContacto(pContacto contacto, int indice) {
+    printf("%i) %s, %s (ID:%i)\n", indice + 1, contacto->datos.apellido, contacto->datos.nombre, contacto->id);
 }
 
 opcionesMenuContactos_t menuContactos() {
@@ -55,10 +67,6 @@ opcionesMenuContactos_t menuContactos() {
     } while (invalido == true);
 
     return opcion;
-}
-
-void itemListaContacto(pContacto contacto, int indice) {
-    printf("%i) %s, %s (ID:%i)\n", indice + 1, contacto->datos.apellido, contacto->datos.nombre, contacto->id);
 }
 
 void selecionarDeLista(pContacto contactoInicial, int cantidadDeItems) {
@@ -89,8 +97,16 @@ void selecionarDeLista(pContacto contactoInicial, int cantidadDeItems) {
         if (opcionElegida < 0 || opcionElegida > iterador) {
             invalido = true;
         }
+        else if (opcionElegida == 0) {
+            invalido = false;
+        }
         else {
             invalido = false;
+            inicioDeLista = contactoInicial;
+            for (int i = 1; i < opcionElegida; i++) {
+                inicioDeLista = inicioDeLista->siguiente;
+            }
+            verContacto(inicioDeLista);
         }
 
     } while (invalido == true || opcionElegida != 0);
@@ -139,50 +155,51 @@ void listadoCompleto(Contactos ListaDeContactos) {
 
             if (opcion < 0 || opcion > 3) {
                 invalido = true;
+                contacto_p = primeroEnPagina;
             }
             else {
                 invalido = false;
-            }
 
-            switch (opcion) {
-            case 0:
-            salir = true;
-            break;
+                switch (opcion) {
+                case 0:
+                salir = true;
+                break;
 
-            case 1:
-            if (pagina > 0 && primeroEnPagina->anterior != NULL) {
-                pagina--;
-                iterador = 0;
+                case 1:
+                if (pagina > 0 && primeroEnPagina->anterior != NULL) {
+                    pagina--;
+                    iterador = 0;
+                    contacto_p = primeroEnPagina;
+
+                    while (contacto_p->anterior != NULL && iterador < maxPag) {
+                        contacto_p = contacto_p->anterior;
+                        iterador++;
+                    }
+                }
+                else {
+                    contacto_p = primeroEnPagina;
+                }
+                break;
+
+                case 2:
+                selecionarDeLista(primeroEnPagina, maxPag);
                 contacto_p = primeroEnPagina;
+                break;
 
-                while (contacto_p->anterior != NULL && iterador < maxPag) {
-                    contacto_p = contacto_p->anterior;
-                    iterador++;
+                case 3:
+                if (contacto_p->siguiente != NULL) {
+                    pagina++;
+                }
+                else {
+                    contacto_p = primeroEnPagina;
+                }
+                break;
                 }
             }
-            else {
-                contacto_p = primeroEnPagina;
-            }
-            break;
-
-            case 2:
-            selecionarDeLista(primeroEnPagina, maxPag);
-            contacto_p = primeroEnPagina;
-            break;
-
-            case 3:
-            if (contacto_p->siguiente != NULL) {
-                pagina++;
-            }
-            else {
-                contacto_p = primeroEnPagina;
-            }
-            break;
-            }
-
         } while (!salir);
     }
 }
+
 void poblarContactos(Contactos* ListaDeContactos, pContacto* ultimoElemento_p, int* generadorId) {
     int num_contacts = 25;
 
