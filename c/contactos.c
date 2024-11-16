@@ -18,7 +18,7 @@ void contactosMain(Contactos ListaDeContactos, pContacto ultimoElemento_p, int* 
         listadoCompleto(ListaDeContactos);
         break;
         case CON_CREAR:
-        printf("acá iría la parte de crear");
+        crearContacto(&ListaDeContactos, &ultimoElemento_p, generadorId);
         esperarTecla(NULL);
         break;
         case CON_SALIR:
@@ -29,13 +29,11 @@ void contactosMain(Contactos ListaDeContactos, pContacto ultimoElemento_p, int* 
 }
 
 void verContacto(pContacto contacto) {
-    limpiarPantalla();
     printf("Nombre:    \t%s\n", contacto->datos.nombre);
     printf("Apellido:  \t%s\n", contacto->datos.apellido);
     printf("Teléfono:  \t%s\n", contacto->datos.telefono);
     printf("Email:     \t%s\n", contacto->datos.email);
     printf("Dirección: \t%s\n", contacto->datos.direccion);
-    esperarTecla("Presione una tecla para volver");
 }
 
 void itemListaContacto(pContacto contacto, int indice) {
@@ -69,7 +67,7 @@ opcionesMenuContactos_t menuContactos() {
     return opcion;
 }
 
-void selecionarDeLista(pContacto contactoInicial, int cantidadDeItems) {
+void selecionarDeLista(Contactos ListaDeContactos, pContacto contactoInicial, int cantidadDeItems) {
     int iterador, opcionElegida;
     bool invalido = false;
     pContacto inicioDeLista;
@@ -106,7 +104,9 @@ void selecionarDeLista(pContacto contactoInicial, int cantidadDeItems) {
             for (int i = 1; i < opcionElegida; i++) {
                 inicioDeLista = inicioDeLista->siguiente;
             }
+            limpiarPantalla();
             verContacto(inicioDeLista);
+            esperarTecla("Presione una tecla para volver");
         }
 
     } while (invalido == true || opcionElegida != 0);
@@ -182,7 +182,7 @@ void listadoCompleto(Contactos ListaDeContactos) {
                 break;
 
                 case 2:
-                selecionarDeLista(primeroEnPagina, maxPag);
+                selecionarDeLista(ListaDeContactos, primeroEnPagina, maxPag);
                 contacto_p = primeroEnPagina;
                 break;
 
@@ -290,4 +290,45 @@ void ordenarPorApellido(Contactos ListadoDeContactos) {
             }
         } while (cambiados);
     }
+}
+
+void crearContacto(Contactos* ListadoDeContactos, pContacto* ultimoItem, int* generadorDeId) {
+    bool valido = false;
+    char datoContacto[STRING_MAX];
+    pContacto nuevoContacto = (pContacto)malloc(sizeof(contacto_t));
+
+    strcpy(nuevoContacto->datos.apellido, "");
+    strcpy(nuevoContacto->datos.nombre, "");
+    strcpy(nuevoContacto->datos.email, "");
+    strcpy(nuevoContacto->datos.telefono, "");
+    strcpy(nuevoContacto->datos.direccion, "");
+
+    limpiarPantalla();
+    printf("**Creación de contacto**\n");
+    verContacto(nuevoContacto);
+
+    if (*ListadoDeContactos == NULL) {
+        nuevoContacto->anterior = NULL;
+        nuevoContacto->siguiente = NULL;
+        *ListadoDeContactos = nuevoContacto;
+    }
+    else {
+        nuevoContacto->anterior = *ultimoItem;
+        nuevoContacto->siguiente = NULL;
+        (*ultimoItem)->siguiente = nuevoContacto;
+    }
+
+    *ultimoItem = nuevoContacto;
+    nuevoContacto->id = (*generadorDeId)++;
+}
+
+void liberarContactos(Contactos* ListaDeContactos) {
+    pContacto actual = *ListaDeContactos;
+    pContacto siguiente;
+    while (actual != NULL) {
+        siguiente = actual->siguiente;
+        free(actual);
+        actual = siguiente;
+    }
+    *ListaDeContactos = NULL;
 }

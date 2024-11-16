@@ -42,7 +42,7 @@ int main() {
 
   limpiarPantalla();
   esperarTecla("Fin de ejecución");
-  free(ListaDeContactos);
+  liberarContactos(&ListaDeContactos);
   return 0;
 }
 
