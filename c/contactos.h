@@ -11,19 +11,24 @@ typedef enum {
   CON_MAX_OPCION = 2,
 } opcionesMenuContactos_t;
 
-typedef struct contacto {
+typedef struct datosBasicosContacto {
   char nombre[STRING_MAX];
   char apellido[STRING_MAX];
   char telefono[STRING_MAX];
   char email[STRING_MAX];
   char direccion[STRING_MAX];
+} datosBasicosContacto_t;
+
+typedef struct contacto {
+  int id;
+  datosBasicosContacto_t datos;
   struct contacto* siguiente;
 } contacto_t;
 
 typedef contacto_t* pContacto;
 typedef contacto_t* Contactos;
 
-void poblarContactos(Contactos*, pContacto*);
+void poblarContactos(Contactos*, pContacto*, int*);
 void listadoCompleto(Contactos);
 void verContacto(pContacto);
 void contactosMain(contacto_t*);

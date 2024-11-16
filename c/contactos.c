@@ -70,7 +70,7 @@ void listadoCompleto(Contactos ListaDeContactos) {
     }
     else {
         while (current != NULL && iterador < maxPag + 1) {
-            printf("%i) %s, %s\n", iterador, current->apellido, current->nombre);
+            printf("%i) %s, %s (ID:%i)\n", iterador, current->datos.apellido, current->datos.nombre, current->id);
             current = current->siguiente;
             iterador++;
         }
@@ -84,44 +84,48 @@ void listadoCompleto(Contactos ListaDeContactos) {
     esperarTecla("fin");
 }
 
-void poblarContactos(Contactos* ListaDeContactos, pContacto* contacto_p) {
+void poblarContactos(Contactos* ListaDeContactos, pContacto* contacto_p, int* generadorId) {
     int num_contacts = 25;
-    contacto_t contactosIniciales[] = {
-      {"Ana", "García", "1154782236", "ana.garcia@example.com", "Calle Falsa 456, Buenos Aires"},
-      {"Luis", "Martínez", "", "", "Av. Santa Fe 1234, Buenos Aires"},
-      {"Sofía", "Rodríguez", "1154782238", "", "Calle Córdoba 789, Buenos Aires"},
-      {"Martín", "Silva", "1154782239", "martin.silva@example.com", ""},
-      {"Julia", "Pérez", "1154782240", "", "Calle Avellaneda 234, Buenos Aires"},
-      {"Ricardo", "Fernández", "1154782241", "", "Calle Moreno 678, Buenos Aires"},
-      {"Carla", "Vega", "", "", "Av. Córdoba 890, Buenos Aires"},
-      {"Pedro", "Gómez", "1154782243", "pedro.gomez@example.com", "Calle San Juan 300, Buenos Aires"},
-      {"Natalia", "Vargas", "1154782244", "", "Av. San Martín 1500, Buenos Aires"},
-      {"Tomás", "Morales", "", "", ""},
-      {"Mónica", "Fernández", "1154782246", "", "Calle Sarmiento 250, Buenos Aires"},
-      {"Gustavo", "Martínez", "1154782247", "", "Av. 9 de Julio 700, Buenos Aires"},
-      {"Valeria", "Castro", "1154782248", "", "Calle Tucumán 600, Buenos Aires"},
-      {"Juan", "Salazar", "1154782249", "", "Av. Rivadavia 1000, Buenos Aires"},
-      {"Sandra", "Bravo", "1154782250", "", "Calle Chile 800, Buenos Aires"},
-      {"Emilio", "Gutiérrez", "1154782251", "", "Av. Santa Fe 900, Buenos Aires"},
-      {"Florencia", "Sosa", "1154782252", "", "Calle Montevideo 500, Buenos Aires"},
-      {"Álvaro", "Jiménez", "1154782253", "", "Av. Belgrano 1200, Buenos Aires"},
-      {"Carmen", "Rivas", "1154782254", "", "Calle Paraná 300, Buenos Aires"},
-      {"Jorge", "González", "1154782255", "", "Calle Lavalle 1200, Buenos Aires"},
-      {"Silvia", "Cruz", "1154782256", "", "Av. Corrientes 1500, Buenos Aires"},
-      {"Ricardo", "Vega", "1154782257", "", "Calle San Martín 2000, Buenos Aires"},
-      {"Gabriela", "Ramírez", "1154782258", "gabriela.ramirez@example.com", ""},
-      {"Tomás", "Fernández", "1154782259", "", "Calle Olavarría 123, Buenos Aires"},
-      {"Renata", "González", "1154782260", "renata.gonzalez@example.com", "Av. Libertador 200, Buenos Aires"}
+
+    *generadorId = 0;
+
+    datosBasicosContacto_t contactosIniciales[] = {
+     {"Ana", "García", "1154782236", "ana.garcia@example.com", "Calle Falsa 456, Buenos Aires"},
+     {"Luis", "Martínez", "", "", "Av. Santa Fe 1234, Buenos Aires"},
+     {"Sofía", "Rodríguez", "1154782238", "", "Calle Córdoba 789, Buenos Aires"},
+     {"Martín", "Silva", "1154782239", "martin.silva@example.com", ""},
+     {"Julia", "Pérez", "1154782240", "", "Calle Avellaneda 234, Buenos Aires"},
+     {"Ricardo", "Fernández", "1154782241", "", "Calle Moreno 678, Buenos Aires"},
+     {"Carla", "Vega", "", "", "Av. Córdoba 890, Buenos Aires"},
+     {"Pedro", "Gómez", "1154782243", "pedro.gomez@example.com", "Calle San Juan 300, Buenos Aires"},
+     {"Natalia", "Vargas", "1154782244", "", "Av. San Martín 1500, Buenos Aires"},
+     {"Tomás", "Morales", "", "", ""},
+     {"Mónica", "Fernández", "1154782246", "", "Calle Sarmiento 250, Buenos Aires"},
+     {"Gustavo", "Martínez", "1154782247", "", "Av. 9 de Julio 700, Buenos Aires"},
+     {"Valeria", "Castro", "1154782248", "", "Calle Tucumán 600, Buenos Aires"},
+     {"Juan", "Salazar", "1154782249", "", "Av. Rivadavia 1000, Buenos Aires"},
+     {"Sandra", "Bravo", "1154782250", "", "Calle Chile 800, Buenos Aires"},
+     {"Emilio", "Gutiérrez", "1154782251", "", "Av. Santa Fe 900, Buenos Aires"},
+     {"Florencia", "Sosa", "1154782252", "", "Calle Montevideo 500, Buenos Aires"},
+     {"Álvaro", "Jiménez", "1154782253", "", "Av. Belgrano 1200, Buenos Aires"},
+     {"Carmen", "Rivas", "1154782254", "", "Calle Paraná 300, Buenos Aires"},
+     {"Jorge", "González", "1154782255", "", "Calle Lavalle 1200, Buenos Aires"},
+     {"Silvia", "Cruz", "1154782256", "", "Av. Corrientes 1500, Buenos Aires"},
+     {"Ricardo", "Vega", "1154782257", "", "Calle San Martín 2000, Buenos Aires"},
+     {"Gabriela", "Ramírez", "1154782258", "gabriela.ramirez@example.com", ""},
+     {"Tomás", "Fernández", "1154782259", "", "Calle Olavarría 123, Buenos Aires"},
+     {"Renata", "González", "1154782260", "renata.gonzalez@example.com", "Av. Libertador 200, Buenos Aires"}
     };
 
     for (int i = 0; i < num_contacts; i++) {
         contacto_t* nuevoContacto = (contacto_t*)malloc(sizeof(contacto_t));
         if (nuevoContacto != NULL) {
-            strcpy(nuevoContacto->nombre, contactosIniciales[i].nombre);
-            strcpy(nuevoContacto->apellido, contactosIniciales[i].apellido);
-            strcpy(nuevoContacto->telefono, contactosIniciales[i].telefono);
-            strcpy(nuevoContacto->email, contactosIniciales[i].email);
-            strcpy(nuevoContacto->direccion, contactosIniciales[i].direccion);
+            strcpy(nuevoContacto->datos.nombre, contactosIniciales[i].nombre);
+            strcpy(nuevoContacto->datos.apellido, contactosIniciales[i].apellido);
+            strcpy(nuevoContacto->datos.telefono, contactosIniciales[i].telefono);
+            strcpy(nuevoContacto->datos.email, contactosIniciales[i].email);
+            strcpy(nuevoContacto->datos.direccion, contactosIniciales[i].direccion);
+            nuevoContacto->id = *generadorId;
             nuevoContacto->siguiente = NULL;
 
             if (*ListaDeContactos == NULL) {
@@ -132,6 +136,8 @@ void poblarContactos(Contactos* ListaDeContactos, pContacto* contacto_p) {
                 (*contacto_p)->siguiente = nuevoContacto;
                 *contacto_p = nuevoContacto;
             }
+
+            *generadorId = *generadorId + 1;
         }
     }
 }

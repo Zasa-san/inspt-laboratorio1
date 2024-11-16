@@ -15,8 +15,9 @@ int main() {
   opcionesMenuPrincipal_t opcionSelecionada;
   pContacto contacto_p;
   Contactos ListaDeContactos = NULL;
+  int* generadorId_p;
 
-  poblarContactos(&ListaDeContactos, &contacto_p);
+  poblarContactos(&ListaDeContactos, &contacto_p, generadorId_p);
 
   dibujarTitulo();
 
