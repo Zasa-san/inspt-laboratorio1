@@ -35,6 +35,7 @@ void listadoCompleto(Contactos);
 void verContacto(pContacto);
 void recorrerContactos(pContacto*, int);
 void selecionarDeLista(pContacto, int);
+void itemListaContacto(pContacto, int);
 opcionesMenuContactos_t menuContactos();
 
 #endif

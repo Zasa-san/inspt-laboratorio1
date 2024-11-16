@@ -57,26 +57,50 @@ opcionesMenuContactos_t menuContactos() {
     return opcion;
 }
 
+void itemListaContacto(pContacto contacto, int indice) {
+    printf("%i) %s, %s (ID:%i)\n", indice + 1, contacto->datos.apellido, contacto->datos.nombre, contacto->id);
+}
+
 void selecionarDeLista(pContacto contactoInicial, int cantidadDeItems) {
-    int iterador = 0;
+    int iterador, opcionElegida;
+    bool invalido = false;
+    pContacto inicioDeLista;
 
-    limpiarPantalla();
-    printf("**Listado de contactos**\n\n");
+    do {
+        inicioDeLista = contactoInicial;
+        iterador = 0;
 
-    while (contactoInicial->siguiente != NULL && iterador < cantidadDeItems) {
-        printf("%i) %s, %s (ID:%i)\n", iterador + 1, contactoInicial->datos.apellido, contactoInicial->datos.nombre, contactoInicial->id);
-        contactoInicial = contactoInicial->siguiente;
-        iterador++;
-    }
+        limpiarPantalla();
+        printf("**Listado de contactos**\n\n");
 
-    esperarTecla("yey");
+        while (inicioDeLista->siguiente != NULL && iterador < cantidadDeItems) {
+            itemListaContacto(inicioDeLista, iterador);
+            inicioDeLista = inicioDeLista->siguiente;
+            iterador++;
+        }
+
+        if (invalido == true) {
+            printf("\n*Debe elegir un número válido*");
+        }
+        printf("\nSeleccione el número de contacto");
+        printf("\n0 - Para volver\n");
+        scanf("%i", &opcionElegida);
+
+        if (opcionElegida < 0 || opcionElegida > iterador) {
+            invalido = true;
+        }
+        else {
+            invalido = false;
+        }
+
+    } while (invalido == true || opcionElegida != 0);
 
 }
 
 void recorrerContactos(pContacto* contactoInicial, int cantidadDeItems) {
     int iterador = 0;
     while ((*contactoInicial)->siguiente != NULL && iterador < cantidadDeItems) {
-        printf("%i) %s, %s (ID:%i)\n", iterador + 1, (*contactoInicial)->datos.apellido, (*contactoInicial)->datos.nombre, (*contactoInicial)->id);
+        itemListaContacto((*contactoInicial), iterador);
         *contactoInicial = (*contactoInicial)->siguiente;
         iterador++;
     }
