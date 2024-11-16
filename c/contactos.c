@@ -46,7 +46,6 @@ opcionesMenuContactos_t menuContactos() {
         printf("2 - Crear un nuevo contacto\n");
         printf("0 - Para salir de la agenda\n");
         scanf("%d", &opcion);
-        limpiarBuffer();
         if (opcion < CON_SALIR || opcion > CON_MAX_OPCION) {
             invalido = true;
         }
@@ -59,29 +58,57 @@ opcionesMenuContactos_t menuContactos() {
 }
 
 void listadoCompleto(Contactos ListaDeContactos) {
-    pContacto current = ListaDeContactos, anterior;
-    int pagAnterior, pagSiguiente, iterador, maxPag = 10;
-
-    limpiarPantalla();
-    printf("**Listado de contactos**\n");
+    pContacto current = ListaDeContactos;
+    int iterador, opcion, pagina = 0, maxPag = 10;
+    bool invalido = false, salir;
 
     if (current == NULL) {
+        limpiarPantalla();
+        printf("**Listado de contactos**\n\n");
         printf("No existe ningún contacto");
+        esperarTecla("Presione una tecla para salir");
     }
     else {
-        while (current != NULL && iterador < maxPag + 1) {
-            printf("%i) %s, %s (ID:%i)\n", iterador, current->datos.apellido, current->datos.nombre, current->id);
-            current = current->siguiente;
-            iterador++;
-        }
-        if (current->siguiente != NULL) {
-            printf("\n1 - Página anterior");
-            printf("\n2 - Página siguiente");
-            printf("\n3 - Elegir de esta página");
-        }
-    }
+        do {
+            limpiarPantalla();
+            printf("**Listado de contactos**\n\n");
+            printf("Pagina %i\n", pagina);
 
-    esperarTecla("fin");
+            iterador = 0;
+
+            while (current->siguiente != NULL && iterador < maxPag) {
+                printf("%i) %s, %s (ID:%i)\n", iterador + 1, current->datos.apellido, current->datos.nombre, current->id);
+                current = current->siguiente;
+                iterador++;
+            }
+
+            if (invalido) {
+                printf("\n*Elija una opción válida*");
+            }
+            printf("\n1 - Página siguiente");
+            printf("\n2 - Elegir de esta página");
+            printf("\n0 - Salir\n");
+            scanf("%i", &opcion);
+
+            if (opcion < 0 || opcion > 3) {
+                invalido = true;
+            }
+
+            switch (opcion) {
+            case 0: salir = true;
+                break;
+            case 1:
+            if (current->siguiente != NULL) {
+                pagina = pagina + 1;
+            }
+            else {
+                pagina = 0;
+                current = ListaDeContactos;
+            }
+            break;
+            }
+        } while (salir == false);
+    }
 }
 
 void poblarContactos(Contactos* ListaDeContactos, pContacto* contacto_p, int* generadorId) {
