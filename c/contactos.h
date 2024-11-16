@@ -33,6 +33,8 @@ void contactosMain(Contactos, pContacto, int*);
 void ordenarPorApellido(Contactos);
 void listadoCompleto(Contactos);
 void verContacto(pContacto);
+void recorrerContactos(pContacto*, int);
+void selecionarDeLista(pContacto, int);
 opcionesMenuContactos_t menuContactos();
 
 #endif

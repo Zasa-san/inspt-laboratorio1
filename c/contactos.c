@@ -57,6 +57,31 @@ opcionesMenuContactos_t menuContactos() {
     return opcion;
 }
 
+void selecionarDeLista(pContacto contactoInicial, int cantidadDeItems) {
+    int iterador = 0;
+
+    limpiarPantalla();
+    printf("**Listado de contactos**\n\n");
+
+    while (contactoInicial->siguiente != NULL && iterador < cantidadDeItems) {
+        printf("%i) %s, %s (ID:%i)\n", iterador + 1, contactoInicial->datos.apellido, contactoInicial->datos.nombre, contactoInicial->id);
+        contactoInicial = contactoInicial->siguiente;
+        iterador++;
+    }
+
+    esperarTecla("yey");
+
+}
+
+void recorrerContactos(pContacto* contactoInicial, int cantidadDeItems) {
+    int iterador = 0;
+    while ((*contactoInicial)->siguiente != NULL && iterador < cantidadDeItems) {
+        printf("%i) %s, %s (ID:%i)\n", iterador + 1, (*contactoInicial)->datos.apellido, (*contactoInicial)->datos.nombre, (*contactoInicial)->id);
+        *contactoInicial = (*contactoInicial)->siguiente;
+        iterador++;
+    }
+}
+
 void listadoCompleto(Contactos ListaDeContactos) {
     pContacto contacto_p = ListaDeContactos, primeroEnPagina;
     int iterador, opcion, pagina = 0, maxPag = 10;
@@ -77,11 +102,7 @@ void listadoCompleto(Contactos ListaDeContactos) {
             iterador = 0;
             primeroEnPagina = contacto_p;
 
-            while (contacto_p != NULL && iterador < maxPag) {
-                printf("%i) %s, %s (ID:%i)\n", iterador + 1, contacto_p->datos.apellido, contacto_p->datos.nombre, contacto_p->id);
-                contacto_p = contacto_p->siguiente;
-                iterador++;
-            }
+            recorrerContactos(&contacto_p, maxPag);
 
             if (invalido) {
                 printf("\n*Elija una opción válida*");
@@ -121,11 +142,12 @@ void listadoCompleto(Contactos ListaDeContactos) {
             break;
 
             case 2:
-
+            selecionarDeLista(primeroEnPagina, maxPag);
+            contacto_p = primeroEnPagina;
             break;
 
             case 3:
-            if (contacto_p != NULL) {
+            if (contacto_p->siguiente != NULL) {
                 pagina++;
             }
             else {
