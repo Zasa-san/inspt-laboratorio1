@@ -4,7 +4,7 @@
 #include <string.h>
 #include "contactos.h"
 
-void contactosMain(contacto_t* ListaDeContactos) {
+void contactosMain(Contactos ListaDeContactos, pContacto contacto_p, int* generadorId) {
     opcionesMenuContactos_t opcionMenu;
     bool salir = false;
 

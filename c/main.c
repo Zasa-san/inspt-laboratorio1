@@ -29,7 +29,7 @@ int main() {
     esperarTecla(NULL);
     break;
     case MAIN_CONTACTOS:
-    contactosMain(ListaDeContactos);
+    contactosMain(ListaDeContactos, contacto_p, generadorId_p);
     break;
     case MAIN_SALIR:
     salir = true;

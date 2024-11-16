@@ -29,9 +29,9 @@ typedef contacto_t* pContacto;
 typedef contacto_t* Contactos;
 
 void poblarContactos(Contactos*, pContacto*, int*);
+void contactosMain(Contactos, pContacto, int*);
 void listadoCompleto(Contactos);
 void verContacto(pContacto);
-void contactosMain(contacto_t*);
 opcionesMenuContactos_t menuContactos();
 
 #endif
