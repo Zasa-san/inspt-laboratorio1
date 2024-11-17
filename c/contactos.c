@@ -19,7 +19,7 @@ void contactosMain(Contactos* ListaDeContactos, pContacto* ultimoElemento_p, int
         break;
         case CON_CREAR:
         crearContacto(ListaDeContactos, ultimoElemento_p, generadorId);
-        esperarTecla(NULL);
+        ordenarPorApellido(*ListaDeContactos);
         break;
         case CON_SALIR:
         salir = true;
@@ -274,7 +274,7 @@ void ordenarPorApellido(Contactos ListadoDeContactos) {
             nodoActual = ListadoDeContactos;
 
             while (nodoActual->siguiente != NULL) {
-                if (strcmp(nodoActual->datos.apellido, nodoActual->siguiente->datos.apellido) > 0) {
+                if (_stricmp(nodoActual->datos.apellido, nodoActual->siguiente->datos.apellido) > 0) {
 
                     tempDatos = nodoActual->datos;
                     nodoActual->datos = nodoActual->siguiente->datos;
