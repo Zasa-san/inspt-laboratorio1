@@ -19,8 +19,8 @@ void contactosMain() {
         listadoCompleto();
         break;
         case CON_CREAR:
-        //crearContacto();
-        //ordenarPorApellido();
+        crearContacto();
+        ordenarPorApellido();
         break;
         case CON_SALIR:
         salir = true;
@@ -29,18 +29,7 @@ void contactosMain() {
     } while (!salir);
 }
 
-void verContacto(int idContacto) {
-    Contactos ListaDeContactos = getListaDeContactos();
-    pContacto contacto = NULL, resultado = ListaDeContactos;
-
-    while (resultado != NULL) {
-        if (resultado->id == idContacto) {
-            contacto = resultado;
-            break;
-        }
-        resultado = resultado->siguiente;
-    }
-
+void verContacto(pContacto contacto) {
     printf("Nombre:    \t%s\n", contacto->datos.nombre);
     printf("Apellido:  \t%s\n", contacto->datos.apellido);
     printf("Teléfono:  \t%s\n", contacto->datos.telefono);
@@ -117,7 +106,7 @@ void selecionarDeLista(pContacto contactoInicial, int cantidadDeItems) {
                 inicioDeLista = inicioDeLista->siguiente;
             }
             limpiarPantalla();
-            verContacto(inicioDeLista->id);
+            verContacto(inicioDeLista);
             esperarTecla("Presione una tecla para volver");
         }
 
@@ -313,14 +302,17 @@ void guardarDato(const char* campo, char* propiedad, pContacto contacto) {
     limpiarBuffer();
     limpiarPantalla();
     printf("**Creación de contacto**\n");
-    verContacto(contacto->id);
+    verContacto(contacto);
     printf("Ingrese el %s:\n", campo);
     fgets(datoContacto, STRING_MAX, stdin);
     datoContacto[strcspn(datoContacto, "\n")] = 0;
     strcpy(propiedad, datoContacto);
 }
 
-/*void crearContacto(Contactos* ListadoDeContactos, pContacto* ultimoItem, int* generadorDeId) {
+void crearContacto() {
+    Contactos* ListadoDeContactos = listaDeContactosSetter();
+    pContacto* ultimoItem = ultimoElementoSetter();
+    int* generadorDeId = getGeneradorId();
     bool valido = false;
     pContacto nuevoContacto = (pContacto)malloc(sizeof(contacto_t));
 
@@ -349,4 +341,4 @@ void guardarDato(const char* campo, char* propiedad, pContacto contacto) {
         *ultimoItem = nuevoContacto;
     }
     *generadorDeId = *generadorDeId + 1;
-}*/
+}

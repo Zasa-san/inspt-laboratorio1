@@ -29,11 +29,11 @@ typedef contacto_t* pContacto;
 typedef contacto_t* Contactos;
 
 void poblarContactos();
-//void crearContacto();
+void crearContacto();
 void contactosMain();
 void ordenarPorApellido();
 void listadoCompleto();
-void verContacto(int);
+void verContacto(pContacto);
 void recorrerContactos(pContacto*, int);
 void selecionarDeLista(pContacto, int);
 void itemListaContacto(pContacto, int);
