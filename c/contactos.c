@@ -3,8 +3,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include "contactos.h"
+#include "contactosApi.h"
 
-void contactosMain(Contactos* ListaDeContactos, pContacto* ultimoElemento_p, int* generadorId) {
+void contactosMain() {
     opcionesMenuContactos_t opcionMenu;
     bool salir = false;
 
@@ -15,11 +16,11 @@ void contactosMain(Contactos* ListaDeContactos, pContacto* ultimoElemento_p, int
 
         switch (opcionMenu) {
         case CON_LISTAR:
-        listadoCompleto(*ListaDeContactos);
+        listadoCompleto();
         break;
         case CON_CREAR:
-        crearContacto(ListaDeContactos, ultimoElemento_p, generadorId);
-        ordenarPorApellido(*ListaDeContactos);
+        //crearContacto();
+        //ordenarPorApellido();
         break;
         case CON_SALIR:
         salir = true;
@@ -28,7 +29,18 @@ void contactosMain(Contactos* ListaDeContactos, pContacto* ultimoElemento_p, int
     } while (!salir);
 }
 
-void verContacto(pContacto contacto) {
+void verContacto(int idContacto) {
+    Contactos ListaDeContactos = getListaDeContactos();
+    pContacto contacto = NULL, resultado = ListaDeContactos;
+
+    while (resultado != NULL) {
+        if (resultado->id == idContacto) {
+            contacto = resultado;
+            break;
+        }
+        resultado = resultado->siguiente;
+    }
+
     printf("Nombre:    \t%s\n", contacto->datos.nombre);
     printf("Apellido:  \t%s\n", contacto->datos.apellido);
     printf("Teléfono:  \t%s\n", contacto->datos.telefono);
@@ -67,7 +79,7 @@ opcionesMenuContactos_t menuContactos() {
     return opcion;
 }
 
-void selecionarDeLista(Contactos ListaDeContactos, pContacto contactoInicial, int cantidadDeItems) {
+void selecionarDeLista(pContacto contactoInicial, int cantidadDeItems) {
     int iterador, opcionElegida;
     bool invalido = false;
     pContacto inicioDeLista;
@@ -105,7 +117,7 @@ void selecionarDeLista(Contactos ListaDeContactos, pContacto contactoInicial, in
                 inicioDeLista = inicioDeLista->siguiente;
             }
             limpiarPantalla();
-            verContacto(inicioDeLista);
+            verContacto(inicioDeLista->id);
             esperarTecla("Presione una tecla para volver");
         }
 
@@ -115,15 +127,16 @@ void selecionarDeLista(Contactos ListaDeContactos, pContacto contactoInicial, in
 
 void recorrerContactos(pContacto* contactoInicial, int cantidadDeItems) {
     int iterador = 0;
-    while ((*contactoInicial) != NULL && iterador < cantidadDeItems) {
-        itemListaContacto((*contactoInicial), iterador);
+    while (contactoInicial != NULL && (*contactoInicial)->siguiente != NULL && iterador < cantidadDeItems) {
+        itemListaContacto(*contactoInicial, iterador);
         *contactoInicial = (*contactoInicial)->siguiente;
         iterador++;
     }
 }
 
-void listadoCompleto(Contactos ListaDeContactos) {
-    pContacto contacto_p = ListaDeContactos, primeroEnPagina;
+void listadoCompleto() {
+    pContacto contacto_p = getListaDeContactos();
+    pContacto primeroEnPagina;
     int iterador, opcion, pagina = 0, maxPag = 10;
     bool invalido = false, salir = false;
 
@@ -137,7 +150,7 @@ void listadoCompleto(Contactos ListaDeContactos) {
         do {
             limpiarPantalla();
             printf("**Listado de contactos**\n\n");
-            printf("Página %i\n", pagina);
+            printf("Página %i\n", pagina + 1);
 
             iterador = 0;
             primeroEnPagina = contacto_p;
@@ -182,7 +195,7 @@ void listadoCompleto(Contactos ListaDeContactos) {
                 break;
 
                 case 2:
-                selecionarDeLista(ListaDeContactos, primeroEnPagina, maxPag);
+                selecionarDeLista(primeroEnPagina, maxPag);
                 contacto_p = primeroEnPagina;
                 break;
 
@@ -200,10 +213,11 @@ void listadoCompleto(Contactos ListaDeContactos) {
     }
 }
 
-void poblarContactos(Contactos* ListaDeContactos, pContacto* ultimoElemento_p, int* generadorId) {
-    int num_contacts = 25;
-
-    *generadorId = 0;
+void poblarContactos() {
+    Contactos* ListaDeContactos = listaDeContactosSetter();
+    pContacto* ultimoElemento_p = ultimoElementoSetter();
+    int* generadorId = getGeneradorId();
+    int maxIniciales = 25;
 
     datosBasicosContacto_t contactosIniciales[] = {
      {"Ana", "García", "1154782236", "ana.garcia@example.com", "Calle Falsa 456, Buenos Aires"},
@@ -233,7 +247,7 @@ void poblarContactos(Contactos* ListaDeContactos, pContacto* ultimoElemento_p, i
      {"Renata", "González", "1154782260", "renata.gonzalez@example.com", "Av. Libertador 200, Buenos Aires"}
     };
 
-    for (int i = 0; i < num_contacts; i++) {
+    for (int i = 0; i < maxIniciales; i++) {
         pContacto nuevoContacto = (pContacto)malloc(sizeof(contacto_t));
         if (nuevoContacto != NULL) {
             strcpy(nuevoContacto->datos.nombre, contactosIniciales[i].nombre);
@@ -259,10 +273,12 @@ void poblarContactos(Contactos* ListaDeContactos, pContacto* ultimoElemento_p, i
         }
     }
 
-    ordenarPorApellido(*ListaDeContactos);
+    ordenarPorApellido();
 }
 
-void ordenarPorApellido(Contactos ListadoDeContactos) {
+void ordenarPorApellido() {
+    Contactos ListadoDeContactos = getListaDeContactos();
+
     if (!(ListadoDeContactos == NULL || ListadoDeContactos->siguiente == NULL)) {
         bool cambiados;
         int tempId;
@@ -297,14 +313,14 @@ void guardarDato(const char* campo, char* propiedad, pContacto contacto) {
     limpiarBuffer();
     limpiarPantalla();
     printf("**Creación de contacto**\n");
-    verContacto(contacto);
+    verContacto(contacto->id);
     printf("Ingrese el %s:\n", campo);
     fgets(datoContacto, STRING_MAX, stdin);
     datoContacto[strcspn(datoContacto, "\n")] = 0;
     strcpy(propiedad, datoContacto);
 }
 
-void crearContacto(Contactos* ListadoDeContactos, pContacto* ultimoItem, int* generadorDeId) {
+/*void crearContacto(Contactos* ListadoDeContactos, pContacto* ultimoItem, int* generadorDeId) {
     bool valido = false;
     pContacto nuevoContacto = (pContacto)malloc(sizeof(contacto_t));
 
@@ -333,15 +349,4 @@ void crearContacto(Contactos* ListadoDeContactos, pContacto* ultimoItem, int* ge
         *ultimoItem = nuevoContacto;
     }
     *generadorDeId = *generadorDeId + 1;
-}
-
-void liberarContactos(Contactos* ListaDeContactos) {
-    pContacto actual = *ListaDeContactos;
-    pContacto siguiente;
-    while (actual != NULL) {
-        siguiente = actual->siguiente;
-        free(actual);
-        actual = siguiente;
-    }
-    *ListaDeContactos = NULL;
-}
+}*/

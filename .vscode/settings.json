@@ -6,6 +6,7 @@
         "stdint-gcc.h": "c",
         "stdbool.h": "c",
         "locale.h": "c",
-        "windows.h": "c"
+        "windows.h": "c",
+        "contactos.h": "c"
     }
 }

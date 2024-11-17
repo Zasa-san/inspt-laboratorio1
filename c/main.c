@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include "utilidades.h"
 #include "contactos.h"
+#include "contactosApi.h"
 
 int main() {
   setlocale(LC_ALL, "es_ES.UTF-8");
@@ -13,11 +14,11 @@ int main() {
 
   bool salir = false;
   opcionesMenuPrincipal_t opcionSelecionada;
-  pContacto ultimoElemento_p = NULL;
-  Contactos ListaDeContactos = NULL;
-  int* generadorId_p;
+  listaDeContactosInit(NULL);
+  ultimoElementoInit(NULL);
+  generadorIdInit(0);
 
-  poblarContactos(&ListaDeContactos, &ultimoElemento_p, generadorId_p);
+  poblarContactos();
 
   dibujarTitulo();
 
@@ -30,7 +31,7 @@ int main() {
 
     break;
     case MAIN_CONTACTOS:
-    contactosMain(&ListaDeContactos, &ultimoElemento_p, generadorId_p);
+    contactosMain();
     break;
 
     case MAIN_SALIR:
@@ -42,7 +43,7 @@ int main() {
 
   limpiarPantalla();
   esperarTecla("Fin de ejecución");
-  liberarContactos(&ListaDeContactos);
+  liberarContactos();
   return 0;
 }
 
