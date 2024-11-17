@@ -30,7 +30,7 @@ typedef contacto_t* Contactos;
 
 void poblarContactos(Contactos*, pContacto*, int*);
 void crearContacto(Contactos*, pContacto*, int*);
-void contactosMain(Contactos, pContacto, int*);
+void contactosMain(Contactos*, pContacto*, int*);
 void ordenarPorApellido(Contactos);
 void listadoCompleto(Contactos);
 void verContacto(pContacto);
@@ -38,6 +38,7 @@ void recorrerContactos(pContacto*, int);
 void selecionarDeLista(Contactos, pContacto, int);
 void itemListaContacto(pContacto, int);
 void liberarContactos(Contactos*);
+void guardarDato(const char*, char*, pContacto);
 opcionesMenuContactos_t menuContactos();
 
 #endif

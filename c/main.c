@@ -13,7 +13,7 @@ int main() {
 
   bool salir = false;
   opcionesMenuPrincipal_t opcionSelecionada;
-  pContacto ultimoElemento_p;
+  pContacto ultimoElemento_p = NULL;
   Contactos ListaDeContactos = NULL;
   int* generadorId_p;
 
@@ -30,7 +30,7 @@ int main() {
 
     break;
     case MAIN_CONTACTOS:
-    contactosMain(ListaDeContactos, ultimoElemento_p, generadorId_p);
+    contactosMain(&ListaDeContactos, &ultimoElemento_p, generadorId_p);
     break;
 
     case MAIN_SALIR:
