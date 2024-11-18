@@ -34,6 +34,8 @@ void contactosMain();
 void ordenarPorApellido();
 void listadoCompleto();
 void verContacto(pContacto);
+void editarContacto(pContacto);
+void eliminarContacto(int);
 void recorrerContactos(pContacto*, int);
 void selecionarDeLista(pContacto, int);
 void itemListaContacto(pContacto, int);

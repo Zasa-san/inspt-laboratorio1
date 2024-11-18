@@ -68,6 +68,20 @@ opcionesMenuContactos_t menuContactos() {
     return opcion;
 }
 
+void recorrerContactos(pContacto* contactoInicial, int cantidadDeItems) {
+    int iterador = 0;
+    while ((*contactoInicial) != NULL && iterador < cantidadDeItems) {
+        itemListaContacto(*contactoInicial, iterador);
+        if ((*contactoInicial)->siguiente != NULL) {
+            *contactoInicial = (*contactoInicial)->siguiente;
+            iterador++;
+        }
+        else {
+            iterador = cantidadDeItems;
+        }
+    }
+}
+
 void selecionarDeLista(pContacto contactoInicial, int cantidadDeItems) {
     int iterador, opcionElegida;
     bool invalido = false;
@@ -80,10 +94,15 @@ void selecionarDeLista(pContacto contactoInicial, int cantidadDeItems) {
         limpiarPantalla();
         printf("**Listado de contactos**\n\n");
 
-        while (inicioDeLista->siguiente != NULL && iterador < cantidadDeItems) {
+        while (inicioDeLista != NULL && iterador < cantidadDeItems) {
             itemListaContacto(inicioDeLista, iterador);
-            inicioDeLista = inicioDeLista->siguiente;
-            iterador++;
+            if (inicioDeLista->siguiente) {
+                inicioDeLista = inicioDeLista->siguiente;
+                iterador++;
+            }
+            else {
+                iterador = cantidadDeItems;
+            }
         }
 
         if (invalido == true) {
@@ -106,28 +125,19 @@ void selecionarDeLista(pContacto contactoInicial, int cantidadDeItems) {
                 inicioDeLista = inicioDeLista->siguiente;
             }
             limpiarPantalla();
-            verContacto(inicioDeLista);
-            esperarTecla("Presione una tecla para volver");
+            editarContacto(inicioDeLista);
+            ordenarPorApellido();
         }
 
     } while (invalido == true || opcionElegida != 0);
 
 }
 
-void recorrerContactos(pContacto* contactoInicial, int cantidadDeItems) {
-    int iterador = 0;
-    while (contactoInicial != NULL && (*contactoInicial)->siguiente != NULL && iterador < cantidadDeItems) {
-        itemListaContacto(*contactoInicial, iterador);
-        *contactoInicial = (*contactoInicial)->siguiente;
-        iterador++;
-    }
-}
-
 void listadoCompleto() {
     pContacto contacto_p = getListaDeContactos();
     pContacto primeroEnPagina;
     int iterador, opcion, pagina = 0, maxPag = 10;
-    bool invalido = false, salir = false;
+    bool invalido = false, salir = false, reordenarContactos = false;
 
     if (contacto_p == NULL) {
         limpiarPantalla();
@@ -301,12 +311,14 @@ void guardarDato(const char* campo, char* propiedad, pContacto contacto) {
     char datoContacto[STRING_MAX];
     limpiarBuffer();
     limpiarPantalla();
-    printf("**Creación de contacto**\n");
+    printf("**Editor de contacto**\n");
     verContacto(contacto);
-    printf("Ingrese el %s:\n", campo);
+    printf("Ingrese el %s (o enter para dejar el valor actual):\n", campo);
     fgets(datoContacto, STRING_MAX, stdin);
     datoContacto[strcspn(datoContacto, "\n")] = 0;
-    strcpy(propiedad, datoContacto);
+    if (datoContacto[0] != '\0') {
+        strcpy(propiedad, datoContacto);
+    }
 }
 
 void crearContacto() {
@@ -341,4 +353,107 @@ void crearContacto() {
         *ultimoItem = nuevoContacto;
     }
     *generadorDeId = *generadorDeId + 1;
+}
+
+void editarContacto(pContacto contacto) {
+    bool invalido = false;
+    int opcionIngresada = 0;
+
+    do
+    {
+        limpiarPantalla();
+        printf("**Eitar contacto**\n");
+        verContacto(contacto);
+        if (invalido) {
+            printf("*Debe elegir una opción válida");
+        }
+        printf("\n1- Para editar");
+        printf("\n2- Para borrar");
+        printf("\n0- Para volver\n");
+        scanf("%i", &opcionIngresada);
+
+        if (opcionIngresada < 0 || opcionIngresada > 2) {
+            invalido = true;
+        }
+        else {
+            invalido = false;
+        }
+    } while (invalido == true);
+
+    switch (opcionIngresada)
+    {
+    case 1:
+    guardarDato("nombre", contacto->datos.nombre, contacto);
+    guardarDato("apellido", contacto->datos.apellido, contacto);
+    guardarDato("telefono", contacto->datos.telefono, contacto);
+    guardarDato("email", contacto->datos.email, contacto);
+    guardarDato("dirección", contacto->datos.direccion, contacto);
+    break;
+
+    case 2:
+    eliminarContacto(contacto->id);
+    default:
+    break;
+    }
+}
+
+void eliminarContacto(int idContacto) {
+    Contactos* ListadoDeContactos = listaDeContactosSetter();
+    pContacto* ultimoElemento = ultimoElementoSetter();
+    pContacto contactoABorrar = NULL;
+    pContacto anterior = NULL;
+    pContacto siguiente = NULL;
+    pContacto actual = *ListadoDeContactos;
+
+    limpiarPantalla();
+    printf("**Eliminar contacto**\n");
+
+    if (*ListadoDeContactos == NULL) {
+        esperarTecla("No hay contactos en la lista.");
+    }
+    else {
+        while (actual != NULL && contactoABorrar == NULL) {
+            if (actual->id == idContacto) {
+                contactoABorrar = actual;
+            }
+            else {
+                actual = actual->siguiente;
+            }
+        }
+        if (contactoABorrar == NULL) {
+            esperarTecla("No se encontró un contacto con ese ID.");
+        }
+        else {
+            anterior = contactoABorrar->anterior;
+            siguiente = contactoABorrar->siguiente;
+
+            if (siguiente == NULL) {
+                *ultimoElemento = anterior;
+                (*ultimoElemento)->siguiente = NULL;
+            }
+            else if (anterior == NULL) {
+                *ListadoDeContactos = siguiente;
+                siguiente->anterior = NULL;
+            }
+            else {
+                anterior->siguiente = contactoABorrar->siguiente;
+                siguiente->anterior = contactoABorrar->anterior;
+
+                while (actual != NULL) {
+                    if (actual->siguiente == NULL) {
+                        *ultimoElemento = actual;
+                    }
+                    actual = actual->siguiente;
+                }
+            }
+
+
+            printf("%s %s eliminado con éxito.\n", contactoABorrar->datos.nombre, contactoABorrar->datos.apellido);
+            free(contactoABorrar);
+
+            esperarTecla(NULL);
+
+            ordenarPorApellido();
+        }
+    }
 }
