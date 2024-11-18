@@ -82,7 +82,7 @@ void recorrerContactos(pContacto* contactoInicial, int cantidadDeItems) {
     }
 }
 
-void selecionarDeLista(pContacto contactoInicial, int cantidadDeItems) {
+void selecionarDeLista(pContacto contactoInicial, int cantidadDeItems, bool* resetLista) {
     int iterador, opcionElegida;
     bool invalido = false;
     pContacto inicioDeLista;
@@ -125,12 +125,14 @@ void selecionarDeLista(pContacto contactoInicial, int cantidadDeItems) {
                 inicioDeLista = inicioDeLista->siguiente;
             }
             limpiarPantalla();
-            editarContacto(inicioDeLista);
-            ordenarPorApellido();
+            (*resetLista) = editarContacto(inicioDeLista);
+            if ((*resetLista) == true) {
+                ordenarPorApellido();
+                opcionElegida = 0;
+            }
         }
 
     } while (invalido == true || opcionElegida != 0);
-
 }
 
 void listadoCompleto() {
@@ -171,6 +173,7 @@ void listadoCompleto() {
             }
             else {
                 invalido = false;
+                reordenarContactos = false;
 
                 switch (opcion) {
                 case 0:
@@ -194,7 +197,7 @@ void listadoCompleto() {
                 break;
 
                 case 2:
-                selecionarDeLista(primeroEnPagina, maxPag);
+                selecionarDeLista(primeroEnPagina, maxPag, &reordenarContactos);
                 contacto_p = primeroEnPagina;
                 break;
 
@@ -207,6 +210,11 @@ void listadoCompleto() {
                 }
                 break;
                 }
+            }
+
+            if (reordenarContactos == true) {
+                contacto_p = getListaDeContactos();
+                pagina = 0;
             }
         } while (!salir);
     }
@@ -355,8 +363,8 @@ void crearContacto() {
     *generadorDeId = *generadorDeId + 1;
 }
 
-void editarContacto(pContacto contacto) {
-    bool invalido = false;
+bool editarContacto(pContacto contacto) {
+    bool invalido = false, resetLista = true;
     int opcionIngresada = 0;
 
     do
@@ -393,8 +401,11 @@ void editarContacto(pContacto contacto) {
     case 2:
     eliminarContacto(contacto->id);
     default:
+    resetLista = false;
     break;
     }
+
+    return resetLista;
 }
 
 void eliminarContacto(int idContacto) {

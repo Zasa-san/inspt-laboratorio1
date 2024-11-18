@@ -1,5 +1,6 @@
 #ifndef CONTACTOS_H
 #define CONTACTOS_H
+#include "stdbool.h"
 #include "utilidades.h"
 #define STRING_MAX 100
 
@@ -34,10 +35,10 @@ void contactosMain();
 void ordenarPorApellido();
 void listadoCompleto();
 void verContacto(pContacto);
-void editarContacto(pContacto);
+bool editarContacto(pContacto);
 void eliminarContacto(int);
 void recorrerContactos(pContacto*, int);
-void selecionarDeLista(pContacto, int);
+void selecionarDeLista(pContacto, int, bool*);
 void itemListaContacto(pContacto, int);
 void guardarDato(const char*, char*, pContacto);
 opcionesMenuContactos_t menuContactos();
