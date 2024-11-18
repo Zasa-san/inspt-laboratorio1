@@ -1,37 +1,44 @@
 #include <stdbool.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include "contactos.h"
+#include "contactosApi.h"
 
 void contactosMain() {
     opcionesMenuContactos_t opcionMenu;
-    //int32_t indice[ALFABETO][2];
-    Contactos agendaContactos = NULL;
     bool salir = false;
-
-    //poblarContactos(agenda);
-    //ordenarPorApellido(agenda, indice);
 
     printf("**Agenda de contactos**");
 
-    do
-    {
+    do {
         opcionMenu = menuContactos();
+
         switch (opcionMenu) {
         case CON_LISTAR:
-        printf("acá iría el módulo para ver por apellido");
-        esperarTecla(NULL);
+        listadoCompleto();
         break;
         case CON_CREAR:
-        printf("acá iriía la parte de crear");
-        esperarTecla(NULL);
+        crearContacto();
+        ordenarPorApellido();
         break;
         case CON_SALIR:
         salir = true;
         break;
-        default: printf("Saliendo...");
-            break;
         }
-    } while (salir == false);
+    } while (!salir);
+}
+
+void verContacto(pContacto contacto) {
+    printf("Nombre:    \t%s\n", contacto->datos.nombre);
+    printf("Apellido:  \t%s\n", contacto->datos.apellido);
+    printf("Teléfono:  \t%s\n", contacto->datos.telefono);
+    printf("Email:     \t%s\n", contacto->datos.email);
+    printf("Dirección: \t%s\n", contacto->datos.direccion);
+}
+
+void itemListaContacto(pContacto contacto, int indice) {
+    printf("%i) %s, %s (ID:%i)\n", indice + 1, contacto->datos.apellido, contacto->datos.nombre, contacto->id);
 }
 
 opcionesMenuContactos_t menuContactos() {
@@ -50,7 +57,6 @@ opcionesMenuContactos_t menuContactos() {
         printf("2 - Crear un nuevo contacto\n");
         printf("0 - Para salir de la agenda\n");
         scanf("%d", &opcion);
-        limpiarBuffer();
         if (opcion < CON_SALIR || opcion > CON_MAX_OPCION) {
             invalido = true;
         }
@@ -62,196 +68,392 @@ opcionesMenuContactos_t menuContactos() {
     return opcion;
 }
 
-/*
-void ordenarPorApellido(contacto_t agenda[AGENDA_MAX], int32_t indice[ALFABETO][2]) {
-    uint32_t i, j, resultado;
-    contacto_t aux;
-
-    while (i < AGENDA_MAX) {
-        j = i;
-
-        if (strlen(agenda[j].apellido) == 0) {
-            break;
+void recorrerContactos(pContacto* contactoInicial, int cantidadDeItems) {
+    int iterador = 0;
+    while ((*contactoInicial) != NULL && iterador < cantidadDeItems) {
+        itemListaContacto(*contactoInicial, iterador);
+        if ((*contactoInicial)->siguiente != NULL) {
+            *contactoInicial = (*contactoInicial)->siguiente;
+            iterador++;
         }
-
-        while (j < AGENDA_MAX) {
-            resultado = strcmp(agenda[i].apellido, agenda[j].apellido);
-            if (resultado == 0) {
-                //Los strings son iguales
-            }
-            else if (resultado < 0) {
-                //El string 1 viene antes que el string 2
-            }
-            else {
-                //El string 1 viene después del string 2
-                aux = agenda[j];
-                agenda[j] = agenda[i];
-                agenda[i] = aux;
-            }
-            j++;
+        else {
+            iterador = cantidadDeItems;
         }
-        i++;
     }
 }
 
-void verPorApellido(contacto_t agenda[AGENDA_MAX], int32_t indice[ALFABETO][2]) {
-    uint32_t i = 0;
+void selecionarDeLista(pContacto contactoInicial, int cantidadDeItems) {
+    int iterador, opcionElegida;
+    bool invalido = false;
+    pContacto inicioDeLista;
+
     do {
-        printf("%s %s\n", agenda[i].apellido, agenda[i].nombre);
-        i++;
-    } while (strlen(agenda[i].apellido) != 0);
+        inicioDeLista = contactoInicial;
+        iterador = 0;
+
+        limpiarPantalla();
+        printf("**Listado de contactos**\n\n");
+
+        while (inicioDeLista != NULL && iterador < cantidadDeItems) {
+            itemListaContacto(inicioDeLista, iterador);
+            if (inicioDeLista->siguiente) {
+                inicioDeLista = inicioDeLista->siguiente;
+                iterador++;
+            }
+            else {
+                iterador = cantidadDeItems;
+            }
+        }
+
+        if (invalido == true) {
+            printf("\n*Debe elegir un número válido*");
+        }
+        printf("\nSeleccione el número de contacto");
+        printf("\n0 - Para volver\n");
+        scanf("%i", &opcionElegida);
+
+        if (opcionElegida < 0 || opcionElegida > iterador) {
+            invalido = true;
+        }
+        else if (opcionElegida == 0) {
+            invalido = false;
+        }
+        else {
+            invalido = false;
+            inicioDeLista = contactoInicial;
+            for (int i = 1; i < opcionElegida; i++) {
+                inicioDeLista = inicioDeLista->siguiente;
+            }
+            limpiarPantalla();
+            editarContacto(inicioDeLista);
+            ordenarPorApellido();
+        }
+
+    } while (invalido == true || opcionElegida != 0);
+
 }
 
+void listadoCompleto() {
+    pContacto contacto_p = getListaDeContactos();
+    pContacto primeroEnPagina;
+    int iterador, opcion, pagina = 0, maxPag = 10;
+    bool invalido = false, salir = false, reordenarContactos = false;
 
-void poblarContactos(contacto_t agenda[AGENDA_MAX]) {
-    strcpy(agenda[0].nombre, "Ana");
-    strcpy(agenda[0].apellido, "García");
-    strcpy(agenda[0].telefono, "1154782236");
-    strcpy(agenda[0].email, "ana.garcia@example.com");
-    strcpy(agenda[0].direccion, "Calle Falsa 456, Buenos Aires");
+    if (contacto_p == NULL) {
+        limpiarPantalla();
+        printf("**Listado de contactos**\n\n");
+        printf("No existe ningún contacto");
+        esperarTecla("Presione una tecla para salir");
+    }
+    else {
+        do {
+            limpiarPantalla();
+            printf("**Listado de contactos**\n\n");
+            printf("Página %i\n", pagina + 1);
 
-    strcpy(agenda[1].nombre, "Luis");
-    strcpy(agenda[1].apellido, "Martínez");
-    strcpy(agenda[1].telefono, "");
-    strcpy(agenda[1].email, "");
-    strcpy(agenda[1].direccion, "Av. Santa Fe 1234, Buenos Aires");
+            iterador = 0;
+            primeroEnPagina = contacto_p;
 
-    strcpy(agenda[2].nombre, "Sofía");
-    strcpy(agenda[2].apellido, "Rodríguez");
-    strcpy(agenda[2].telefono, "1154782238");
-    strcpy(agenda[2].email, "");
-    strcpy(agenda[2].direccion, "Calle Córdoba 789, Buenos Aires");
+            recorrerContactos(&contacto_p, maxPag);
 
-    strcpy(agenda[3].nombre, "Martín");
-    strcpy(agenda[3].apellido, "Silva");
-    strcpy(agenda[3].telefono, "1154782239");
-    strcpy(agenda[3].email, "martin.silva@example.com");
-    strcpy(agenda[3].direccion, "");
+            if (invalido) {
+                printf("\n*Elija una opción válida*");
+            }
+            printf("\n1 - Página anterior");
+            printf("\n2 - Elegir de esta página");
+            printf("\n3 - Página siguiente");
+            printf("\n0 - Salir\n");
+            scanf("%i", &opcion);
 
-    strcpy(agenda[4].nombre, "Julia");
-    strcpy(agenda[4].apellido, "Pérez");
-    strcpy(agenda[4].telefono, "1154782240");
-    strcpy(agenda[4].email, "");
-    strcpy(agenda[4].direccion, "Calle Avellaneda 234, Buenos Aires");
+            if (opcion < 0 || opcion > 3) {
+                invalido = true;
+                contacto_p = primeroEnPagina;
+            }
+            else {
+                invalido = false;
 
-    strcpy(agenda[5].nombre, "Ricardo");
-    strcpy(agenda[5].apellido, "Fernández");
-    strcpy(agenda[5].telefono, "1154782241");
-    strcpy(agenda[5].email, "");
-    strcpy(agenda[5].direccion, "Calle Moreno 678, Buenos Aires");
+                switch (opcion) {
+                case 0:
+                salir = true;
+                break;
 
-    strcpy(agenda[6].nombre, "Carla");
-    strcpy(agenda[6].apellido, "Vega");
-    strcpy(agenda[6].telefono, "");
-    strcpy(agenda[6].email, "");
-    strcpy(agenda[6].direccion, "Av. Córdoba 890, Buenos Aires");
+                case 1:
+                if (pagina > 0 && primeroEnPagina->anterior != NULL) {
+                    pagina--;
+                    iterador = 0;
+                    contacto_p = primeroEnPagina;
 
-    strcpy(agenda[7].nombre, "Pedro");
-    strcpy(agenda[7].apellido, "Gómez");
-    strcpy(agenda[7].telefono, "1154782243");
-    strcpy(agenda[7].email, "pedro.gomez@example.com");
-    strcpy(agenda[7].direccion, "Calle San Juan 300, Buenos Aires");
+                    while (contacto_p->anterior != NULL && iterador < maxPag) {
+                        contacto_p = contacto_p->anterior;
+                        iterador++;
+                    }
+                }
+                else {
+                    contacto_p = primeroEnPagina;
+                }
+                break;
 
-    strcpy(agenda[8].nombre, "Natalia");
-    strcpy(agenda[8].apellido, "Vargas");
-    strcpy(agenda[8].telefono, "1154782244");
-    strcpy(agenda[8].email, "");
-    strcpy(agenda[8].direccion, "Av. San Martín 1500, Buenos Aires");
+                case 2:
+                selecionarDeLista(primeroEnPagina, maxPag);
+                contacto_p = primeroEnPagina;
+                break;
 
-    strcpy(agenda[9].nombre, "Tomás");
-    strcpy(agenda[9].apellido, "Morales");
-    strcpy(agenda[9].telefono, "");
-    strcpy(agenda[9].email, "");
-    strcpy(agenda[9].direccion, "");
-
-    strcpy(agenda[10].nombre, "Mónica");
-    strcpy(agenda[10].apellido, "Fernández");
-    strcpy(agenda[10].telefono, "1154782246");
-    strcpy(agenda[10].email, "");
-    strcpy(agenda[10].direccion, "Calle Sarmiento 250, Buenos Aires");
-
-    strcpy(agenda[11].nombre, "Gustavo");
-    strcpy(agenda[11].apellido, "Martínez");
-    strcpy(agenda[11].telefono, "1154782247");
-    strcpy(agenda[11].email, "");
-    strcpy(agenda[11].direccion, "Av. 9 de Julio 700, Buenos Aires");
-
-    strcpy(agenda[12].nombre, "Valeria");
-    strcpy(agenda[12].apellido, "Castro");
-    strcpy(agenda[12].telefono, "1154782248");
-    strcpy(agenda[12].email, "");
-    strcpy(agenda[12].direccion, "Calle Tucumán 600, Buenos Aires");
-
-    strcpy(agenda[13].nombre, "Juan");
-    strcpy(agenda[13].apellido, "Salazar");
-    strcpy(agenda[13].telefono, "1154782249");
-    strcpy(agenda[13].email, "");
-    strcpy(agenda[13].direccion, "Av. Rivadavia 1000, Buenos Aires");
-
-    strcpy(agenda[14].nombre, "Sandra");
-    strcpy(agenda[14].apellido, "Bravo");
-    strcpy(agenda[14].telefono, "1154782250");
-    strcpy(agenda[14].email, "");
-    strcpy(agenda[14].direccion, "Calle Chile 800, Buenos Aires");
-
-    strcpy(agenda[15].nombre, "Emilio");
-    strcpy(agenda[15].apellido, "Gutiérrez");
-    strcpy(agenda[15].telefono, "1154782251");
-    strcpy(agenda[15].email, "");
-    strcpy(agenda[15].direccion, "Av. Santa Fe 900, Buenos Aires");
-
-    strcpy(agenda[16].nombre, "Florencia");
-    strcpy(agenda[16].apellido, "Sosa");
-    strcpy(agenda[16].telefono, "1154782252");
-    strcpy(agenda[16].email, "");
-    strcpy(agenda[16].direccion, "Calle Montevideo 500, Buenos Aires");
-
-    strcpy(agenda[17].nombre, "Álvaro");
-    strcpy(agenda[17].apellido, "Jiménez");
-    strcpy(agenda[17].telefono, "1154782253");
-    strcpy(agenda[17].email, "");
-    strcpy(agenda[17].direccion, "Av. Belgrano 1200, Buenos Aires");
-
-    strcpy(agenda[18].nombre, "Carmen");
-    strcpy(agenda[18].apellido, "Rivas");
-    strcpy(agenda[18].telefono, "1154782254");
-    strcpy(agenda[18].email, "");
-    strcpy(agenda[18].direccion, "Calle Paraná 300, Buenos Aires");
-
-    strcpy(agenda[19].nombre, "Jorge");
-    strcpy(agenda[19].apellido, "González");
-    strcpy(agenda[19].telefono, "1154782255");
-    strcpy(agenda[19].email, "");
-    strcpy(agenda[19].direccion, "Calle Lavalle 1200, Buenos Aires");
-
-    strcpy(agenda[20].nombre, "Silvia");
-    strcpy(agenda[20].apellido, "Cruz");
-    strcpy(agenda[20].telefono, "1154782256");
-    strcpy(agenda[20].email, "");
-    strcpy(agenda[20].direccion, "Av. Corrientes 1500, Buenos Aires");
-
-    strcpy(agenda[21].nombre, "Ricardo");
-    strcpy(agenda[21].apellido, "Vega");
-    strcpy(agenda[21].telefono, "1154782257");
-    strcpy(agenda[21].email, "");
-    strcpy(agenda[21].direccion, "Calle San Martín 2000, Buenos Aires");
-
-    strcpy(agenda[22].nombre, "Gabriela");
-    strcpy(agenda[22].apellido, "Ramírez");
-    strcpy(agenda[22].telefono, "1154782258");
-    strcpy(agenda[22].email, "gabriela.ramirez@example.com");
-    strcpy(agenda[22].direccion, "");
-
-    strcpy(agenda[23].nombre, "Tomás");
-    strcpy(agenda[23].apellido, "Fernández");
-    strcpy(agenda[23].telefono, "1154782259");
-    strcpy(agenda[23].email, "");
-    strcpy(agenda[23].direccion, "Calle Olavarría 123, Buenos Aires");
-
-    strcpy(agenda[24].nombre, "Renata");
-    strcpy(agenda[24].apellido, "González");
-    strcpy(agenda[24].telefono, "1154782260");
-    strcpy(agenda[24].email, "renata.gonzalez@example.com");
-    strcpy(agenda[24].direccion, "Av. Libertador 200, Buenos Aires");
+                case 3:
+                if (contacto_p->siguiente != NULL) {
+                    pagina++;
+                }
+                else {
+                    contacto_p = primeroEnPagina;
+                }
+                break;
+                }
+            }
+        } while (!salir);
+    }
 }
-*/
+
+void poblarContactos() {
+    Contactos* ListaDeContactos = listaDeContactosSetter();
+    pContacto* ultimoElemento_p = ultimoElementoSetter();
+    int* generadorId = getGeneradorId();
+    int maxIniciales = 25;
+
+    datosBasicosContacto_t contactosIniciales[] = {
+     {"Ana", "García", "1154782236", "ana.garcia@example.com", "Calle Falsa 456, Buenos Aires"},
+     {"Luis", "Martínez", "", "", "Av. Santa Fe 1234, Buenos Aires"},
+     {"Sofía", "Rodríguez", "1154782238", "", "Calle Córdoba 789, Buenos Aires"},
+     {"Martín", "Silva", "1154782239", "martin.silva@example.com", ""},
+     {"Julia", "Pérez", "1154782240", "", "Calle Avellaneda 234, Buenos Aires"},
+     {"Ricardo", "Fernández", "1154782241", "", "Calle Moreno 678, Buenos Aires"},
+     {"Carla", "Vega", "", "", "Av. Córdoba 890, Buenos Aires"},
+     {"Pedro", "Gómez", "1154782243", "pedro.gomez@example.com", "Calle San Juan 300, Buenos Aires"},
+     {"Natalia", "Vargas", "1154782244", "", "Av. San Martín 1500, Buenos Aires"},
+     {"Tomás", "Morales", "", "", ""},
+     {"Mónica", "Fernández", "1154782246", "", "Calle Sarmiento 250, Buenos Aires"},
+     {"Gustavo", "Martínez", "1154782247", "", "Av. 9 de Julio 700, Buenos Aires"},
+     {"Valeria", "Castro", "1154782248", "", "Calle Tucumán 600, Buenos Aires"},
+     {"Juan", "Salazar", "1154782249", "", "Av. Rivadavia 1000, Buenos Aires"},
+     {"Sandra", "Bravo", "1154782250", "", "Calle Chile 800, Buenos Aires"},
+     {"Emilio", "Gutiérrez", "1154782251", "", "Av. Santa Fe 900, Buenos Aires"},
+     {"Florencia", "Sosa", "1154782252", "", "Calle Montevideo 500, Buenos Aires"},
+     {"Álvaro", "Jiménez", "1154782253", "", "Av. Belgrano 1200, Buenos Aires"},
+     {"Carmen", "Rivas", "1154782254", "", "Calle Paraná 300, Buenos Aires"},
+     {"Jorge", "González", "1154782255", "", "Calle Lavalle 1200, Buenos Aires"},
+     {"Silvia", "Cruz", "1154782256", "", "Av. Corrientes 1500, Buenos Aires"},
+     {"Ricardo", "Vega", "1154782257", "", "Calle San Martín 2000, Buenos Aires"},
+     {"Gabriela", "Ramírez", "1154782258", "gabriela.ramirez@example.com", ""},
+     {"Tomás", "Fernández", "1154782259", "", "Calle Olavarría 123, Buenos Aires"},
+     {"Renata", "González", "1154782260", "renata.gonzalez@example.com", "Av. Libertador 200, Buenos Aires"}
+    };
+
+    for (int i = 0; i < maxIniciales; i++) {
+        pContacto nuevoContacto = (pContacto)malloc(sizeof(contacto_t));
+        if (nuevoContacto != NULL) {
+            strcpy(nuevoContacto->datos.nombre, contactosIniciales[i].nombre);
+            strcpy(nuevoContacto->datos.apellido, contactosIniciales[i].apellido);
+            strcpy(nuevoContacto->datos.telefono, contactosIniciales[i].telefono);
+            strcpy(nuevoContacto->datos.email, contactosIniciales[i].email);
+            strcpy(nuevoContacto->datos.direccion, contactosIniciales[i].direccion);
+            nuevoContacto->id = *generadorId;
+            nuevoContacto->siguiente = NULL;
+            nuevoContacto->anterior = NULL;
+
+            if (*ListaDeContactos == NULL) {
+                *ListaDeContactos = nuevoContacto;
+                *ultimoElemento_p = nuevoContacto;
+            }
+            else {
+                (*ultimoElemento_p)->siguiente = nuevoContacto;
+                nuevoContacto->anterior = *ultimoElemento_p;
+                *ultimoElemento_p = nuevoContacto;
+            }
+
+            *generadorId = *generadorId + 1;
+        }
+    }
+
+    ordenarPorApellido();
+}
+
+void ordenarPorApellido() {
+    Contactos ListadoDeContactos = getListaDeContactos();
+
+    if (!(ListadoDeContactos == NULL || ListadoDeContactos->siguiente == NULL)) {
+        bool cambiados;
+        int tempId;
+        pContacto nodoActual, tempNodo;
+        datosBasicosContacto_t tempDatos;
+
+        do {
+            cambiados = false;
+            nodoActual = ListadoDeContactos;
+
+            while (nodoActual->siguiente != NULL) {
+                if (_stricmp(nodoActual->datos.apellido, nodoActual->siguiente->datos.apellido) > 0) {
+
+                    tempDatos = nodoActual->datos;
+                    nodoActual->datos = nodoActual->siguiente->datos;
+                    nodoActual->siguiente->datos = tempDatos;
+
+                    tempId = nodoActual->id;
+                    nodoActual->id = nodoActual->siguiente->id;
+                    nodoActual->siguiente->id = tempId;
+
+                    cambiados = true;
+                }
+                nodoActual = nodoActual->siguiente;
+            }
+        } while (cambiados);
+    }
+}
+
+void guardarDato(const char* campo, char* propiedad, pContacto contacto) {
+    char datoContacto[STRING_MAX];
+    limpiarBuffer();
+    limpiarPantalla();
+    printf("**Editor de contacto**\n");
+    verContacto(contacto);
+    printf("Ingrese el %s (o enter para dejar el valor actual):\n", campo);
+    fgets(datoContacto, STRING_MAX, stdin);
+    datoContacto[strcspn(datoContacto, "\n")] = 0;
+    if (datoContacto[0] != '\0') {
+        strcpy(propiedad, datoContacto);
+    }
+}
+
+void crearContacto() {
+    Contactos* ListadoDeContactos = listaDeContactosSetter();
+    pContacto* ultimoItem = ultimoElementoSetter();
+    int* generadorDeId = getGeneradorId();
+    bool valido = false;
+    pContacto nuevoContacto = (pContacto)malloc(sizeof(contacto_t));
+
+    strcpy(nuevoContacto->datos.nombre, "");
+    strcpy(nuevoContacto->datos.apellido, "");
+    strcpy(nuevoContacto->datos.email, "");
+    strcpy(nuevoContacto->datos.telefono, "");
+    strcpy(nuevoContacto->datos.direccion, "");
+
+    guardarDato("nombre", nuevoContacto->datos.nombre, nuevoContacto);
+    guardarDato("apellido", nuevoContacto->datos.apellido, nuevoContacto);
+    guardarDato("telefono", nuevoContacto->datos.telefono, nuevoContacto);
+    guardarDato("email", nuevoContacto->datos.email, nuevoContacto);
+    guardarDato("dirección", nuevoContacto->datos.direccion, nuevoContacto);
+    nuevoContacto->id = *generadorDeId;
+    nuevoContacto->anterior = NULL;
+    nuevoContacto->siguiente = NULL;
+
+    if (*ListadoDeContactos == NULL) {
+        *ListadoDeContactos = nuevoContacto;
+        *ultimoItem = nuevoContacto;
+    }
+    else {
+        (*ultimoItem)->siguiente = nuevoContacto;
+        nuevoContacto->anterior = *ultimoItem;
+        *ultimoItem = nuevoContacto;
+    }
+    *generadorDeId = *generadorDeId + 1;
+}
+
+void editarContacto(pContacto contacto) {
+    bool invalido = false;
+    int opcionIngresada = 0;
+
+    do
+    {
+        limpiarPantalla();
+        printf("**Eitar contacto**\n");
+        verContacto(contacto);
+        if (invalido) {
+            printf("*Debe elegir una opción válida");
+        }
+        printf("\n1- Para editar");
+        printf("\n2- Para borrar");
+        printf("\n0- Para volver\n");
+        scanf("%i", &opcionIngresada);
+
+        if (opcionIngresada < 0 || opcionIngresada > 2) {
+            invalido = true;
+        }
+        else {
+            invalido = false;
+        }
+    } while (invalido == true);
+
+    switch (opcionIngresada)
+    {
+    case 1:
+    guardarDato("nombre", contacto->datos.nombre, contacto);
+    guardarDato("apellido", contacto->datos.apellido, contacto);
+    guardarDato("telefono", contacto->datos.telefono, contacto);
+    guardarDato("email", contacto->datos.email, contacto);
+    guardarDato("dirección", contacto->datos.direccion, contacto);
+    break;
+
+    case 2:
+    eliminarContacto(contacto->id);
+    default:
+    break;
+    }
+}
+
+void eliminarContacto(int idContacto) {
+    Contactos* ListadoDeContactos = listaDeContactosSetter();
+    pContacto* ultimoElemento = ultimoElementoSetter();
+    pContacto contactoABorrar = NULL;
+    pContacto anterior = NULL;
+    pContacto siguiente = NULL;
+    pContacto actual = *ListadoDeContactos;
+
+    limpiarPantalla();
+    printf("**Eliminar contacto**\n");
+
+    if (*ListadoDeContactos == NULL) {
+        esperarTecla("No hay contactos en la lista.");
+    }
+    else {
+        while (actual != NULL && contactoABorrar == NULL) {
+            if (actual->id == idContacto) {
+                contactoABorrar = actual;
+            }
+            else {
+                actual = actual->siguiente;
+            }
+        }
+        if (contactoABorrar == NULL) {
+            esperarTecla("No se encontró un contacto con ese ID.");
+        }
+        else {
+            anterior = contactoABorrar->anterior;
+            siguiente = contactoABorrar->siguiente;
+
+            if (siguiente == NULL) {
+                *ultimoElemento = anterior;
+                (*ultimoElemento)->siguiente = NULL;
+            }
+            else if (anterior == NULL) {
+                *ListadoDeContactos = siguiente;
+                siguiente->anterior = NULL;
+            }
+            else {
+                anterior->siguiente = contactoABorrar->siguiente;
+                siguiente->anterior = contactoABorrar->anterior;
+
+                while (actual != NULL) {
+                    if (actual->siguiente == NULL) {
+                        *ultimoElemento = actual;
+                    }
+                    actual = actual->siguiente;
+                }
+            }
+
+
+            printf("%s %s eliminado con éxito.\n", contactoABorrar->datos.nombre, contactoABorrar->datos.apellido);
+            free(contactoABorrar);
+
+            esperarTecla(NULL);
+
+            ordenarPorApellido();
+        }
+    }
+}

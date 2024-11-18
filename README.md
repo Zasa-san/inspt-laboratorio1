@@ -66,7 +66,7 @@ Ya que no se puede tener matrices con datos combinados, usamos números para rep
 ## Compilación
 Para compilar el código debe ejecturar el siguiente código en la carpeta `c`
 ```
-gcc -fdiagnostics-color=always -g main.c utilidades.c contactos.c -o main.exe
+gcc -fdiagnostics-color=always -g main.c utilidades.c contactos.c contactosApi.c -o main.exe
 ```
 ## Tipos de dato
 
@@ -74,33 +74,18 @@ gcc -fdiagnostics-color=always -g main.c utilidades.c contactos.c -o main.exe
 ```
 Lista de contacto_t
 ```
-Estructura de `contacto_t`:
+
+Estructura de `datosBasicosContacto_t`:
 | Nombre del dato  | Tipo de dato           | NULL
 | -------------    | -------------          | -------------
-| `nombre`         | char                   | No
-| `apellido`       | char                   | No
+| `apellido`       | char                   | Si
 | `telefono`       | char                   | Si
 | `email`          | char                   | Si
 | `dirección`      | char                   | Si
+
+Estructura de `contacto_t`:
+| Nombre del dato  | Tipo de dato           | NULL
+| -------------    | -------------          | -------------
+| `id`             | int                    | No
+| `datos`          | datosBasicosContacto_t | Si
 | `siguiente`      | contacto*              | Si
-
-### Índice alfabético 
-```
-int32_t indice[26][2]
-```
-| Nombre del dato  | Tipo de dato   | Descripción                                                           | ¿Vacio?   
-| -------------    | -------------  | -------------                                                         | -------------
-| `indice`         | Número         | indice en la agenda donde está el primer nombre para le letra elegida | No
-| `cantidad`       | Número         | canitdad de nombres con esa letra                                     | No
-
-El índice es inicializado en cantidades en `-1`, de esta forma se puede avisar que en una determinada letra no hay contactos. A medida que se construye el índice esos `-1` serán actualizados para reflejar la cantidad de contactos en determinada letra del alfabeto.
-
-Se usará una lógica de correspondencia entre número y letra del alfabeto
-```
-0 : a | A | á | Á
-1 : b | B
-2 : c | C
-3 : d | D
-...etc
-26: z | Z
-```

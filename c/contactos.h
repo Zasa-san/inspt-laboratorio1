@@ -1,7 +1,6 @@
 #ifndef CONTACTOS_H
 #define CONTACTOS_H
 #include "utilidades.h"
-#define ALFABETO 26
 #define STRING_MAX 100
 
 typedef enum {
@@ -11,22 +10,36 @@ typedef enum {
   CON_MAX_OPCION = 2,
 } opcionesMenuContactos_t;
 
-typedef struct contacto {
+typedef struct datosBasicosContacto {
   char nombre[STRING_MAX];
   char apellido[STRING_MAX];
   char telefono[STRING_MAX];
   char email[STRING_MAX];
   char direccion[STRING_MAX];
+} datosBasicosContacto_t;
+
+typedef struct contacto {
+  int id;
+  datosBasicosContacto_t datos;
   struct contacto* siguiente;
+  struct contacto* anterior;
 } contacto_t;
 
 typedef contacto_t* pContacto;
 typedef contacto_t* Contactos;
 
-//void poblarContactos(contacto_t[AGENDA_MAX]);
-//void ordenarPorApellido(contacto_t[AGENDA_MAX], int32_t[ALFABETO][2]);
-//void verPorApellido(contacto_t[AGENDA_MAX], int32_t[ALFABETO][2]);
+void poblarContactos();
+void crearContacto();
 void contactosMain();
+void ordenarPorApellido();
+void listadoCompleto();
+void verContacto(pContacto);
+void editarContacto(pContacto);
+void eliminarContacto(int);
+void recorrerContactos(pContacto*, int);
+void selecionarDeLista(pContacto, int);
+void itemListaContacto(pContacto, int);
+void guardarDato(const char*, char*, pContacto);
 opcionesMenuContactos_t menuContactos();
 
 #endif
