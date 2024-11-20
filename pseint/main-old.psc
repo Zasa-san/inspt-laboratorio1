@@ -12,26 +12,24 @@ Algoritmo funcionalidades_Oficina
 	Dimensionar con_indiceApellidos[27,2]
 	
 	//VARIABLE DEL MODULO CALENDARIO
-	Definir contadorTareas, cantidadDeContactos Como Entero
-	Definir Tareas como Cadena
-	Definir tareasRealizadas Como Logico
-	Dimensionar Tareas[10, 4] // 0: nombre, 1: día, 2: mes, 3: año
-    Dimensionar tareasRealizadas[10] // verdadero: realizada, falso: no realizada
+	Dimensionar tareas[32]
+    Dimensionar tareasRealizadas[32, 11] 
+    Dimensionar listaTareas[32, 11] 
+    Dimensionar contadorTareas[33]
 	
 	//ALGORITMOS DE INICIALIZACION DEL MODULO CONTACTO
 	con_poblarContactos(con_agenda, ID)	
 	con_ordenarPorApellido(con_agenda, con_indiceApellidos, AGENDA_MAX)
-	cantidadDeContactos = con_longitudArreglo(con_agenda, AGENDA_MAX)
 	
-	// Inicializar las matrices
-    InicializarMatrices(Tareas, tareasRealizadas)
-	
-	// Ejemplo de tareas predefinidas
-    contadorTareas <- 0
-    AgregarTarea(Tareas, tareasRealizadas, contadorTareas, "Reunión", 5, 11, 2024, Verdadero)
-    AgregarTarea(Tareas, tareasRealizadas, contadorTareas, "Entregar informe", 13, 11, 2024, Verdadero)
-	
-	
+	//ALGORITMOS DE INICIALIZACION DEL MODULO CALENDARIO
+    Para iteradorI <- 1 Hasta 31 Hacer
+        contadorTareas[iteradorI] <- 0
+        Para iteradorJ <- 1 Hasta 10 Hacer
+            listaTareas[iteradorI, iteradorJ] <- ""
+            tareasRealizadas[iteradorI, iteradorJ] <- "No"
+        Fin Para
+    Fin Para
+	cal_PrecargarTareas2024(listaTareas, tareasRealizadas, contadorTareas)
 	
 	main_Pantalla_Inicio
 	Repetir
@@ -41,7 +39,7 @@ Algoritmo funcionalidades_Oficina
 			Caso 1: 
 				con_ContactosMain(con_agenda, con_indiceApellidos, AGENDA_MAX, ID)
 			Caso 2: 
-				Calendario(con_agenda, cantidadDeContactos, AGENDA_MAX, tareas, tareasRealizadas, listaTareas, contadorTareas)
+				Calendario(con_agenda, AGENDA_MAX, tareas, tareasRealizadas, listaTareas, contadorTareas)
 			Caso 3: 
 				Pomodoro
 			De Otro Modo:
@@ -1117,232 +1115,206 @@ FinSubAlgoritmo
 //          |_____| (_)  \____\__,_|_|\___|_| |_|\__,_|\__,_|_|  |_|\___/         
 //--------------------------------------------------------------------------------------------------
 
-SubAlgoritmo Calendario(agenda, cantidadDeContactos, AGENDA_MAX, tareas, tareasRealizadas, listaTareas, contadorTareas)
-	// Definición de variables
-	Definir mes, año, diaInicio, diasMes, diaSeleccionado, opc, numTarea Como Entero
-	Definir nuevaTarea, nombreMes Como Cadena
-	Definir continuarPrograma, continuarSeleccionMes, continuarDias Como Logico
-	
-	// Inicializar las matrices
-	InicializarMatrices(Tareas, tareasRealizadas)
-	
-	// Ejemplo de tareas predefinidas
-	contadorTareas <- 0
-	AgregarTarea(Tareas, tareasRealizadas, contadorTareas, "Reunión", 5, 11, 2024, Verdadero)
-	AgregarTarea(Tareas, tareasRealizadas, contadorTareas, "Entregar avances", 13, 11, 2024, Verdadero)
-	AgregarTarea(Tareas, tareasRealizadas, contadorTareas, "Entregar Proyecto", 20, 11, 2024, Falso)
-	AgregarTarea(Tareas, tareasRealizadas, contadorTareas, "Analizar devoluciones", 25, 11, 2024, Falso)
-	AgregarTarea(Tareas, tareasRealizadas, contadorTareas, "Reunión de cierre", 30, 11, 2024, Falso)
-	
-	continuarPrograma <- Verdadero
-	
-	// Bucle principal del programa
-	Mientras continuarPrograma Hacer
-		Limpiar Pantalla
-		Escribir "Introduce el año (2020-2030 o 0 para salir): "
-		Leer año
-		Si (año = 0) Entonces
-			Escribir "Saliendo del programa..."
-			continuarPrograma <- Falso
-		Sino
-			Si (año < 2020 O año > 2030) Entonces
-				Escribir "El año debe estar entre 2020 y 2030."
-			Sino
-				continuarSeleccionMes <- Verdadero
-				Mientras continuarSeleccionMes Hacer
-					Limpiar Pantalla
-					Escribir "Introduce el mes (1-12 o 0 para volver): "
-					Leer mes
-					Si (mes = 0) Entonces
-						continuarSeleccionMes <- Falso
-					Sino
-						Si (mes < 1 O mes > 12) Entonces
-							Escribir "El mes debe estar entre 1 y 12."
-						Sino
-							diaInicio <- CalcularDiaInicio(1, mes, año)
-							diasMes <- CalcularDiasMes(mes, año, nombreMes)
-							cal_RenderCalendario(diaInicio, diasMes, nombreMes, mes, año, contadorTareas, Tareas)
+SubAlgoritmo Calendario(con_agenda, AGENDA_MAX, tareas, tareasRealizadas, listaTareas, contadorTareas)
+    Definir mes, año, diaInicio, diasMes, diaSeleccionado, opc, numTarea Como Entero
+    Definir nombreMes, nuevaTarea Como Cadena
+    Definir continuarPrograma, continuarSeleccionMes Como Logico
+    continuarPrograma <- Verdadero
+
+    cal_Pantalla_inicio
+    // BUCLE PRINCIPAL
+    Mientras continuarPrograma Hacer
+		
+        Limpiar Pantalla
+        Escribir "Introduce el año (2020-2030 o 0 para salir): "
+        Leer año
+        Si (año = 0) Entonces
+            Escribir "Saliendo del programa..."
+            continuarPrograma <- Falso
+        Sino
+            Si (año < 2020 O año > 2030) Entonces
+                Escribir "El año debe estar entre 2020 y 2030."
+            Sino
+                continuarSeleccionMes <- Verdadero
+                Mientras continuarSeleccionMes Hacer
+                    Limpiar Pantalla
+                    Escribir "Introduce el mes (1-12 o 0 para volver a seleccionar el año): "
+                    Leer mes
+                    Si (mes = 0) Entonces
+                        continuarSeleccionMes <- Falso
+                    Sino
+                        Si (mes < 1 O mes > 12) Entonces
+                            Escribir "El mes debe estar entre 1 y 12."
+                        Sino
+                            // Calculo del primer día del mes (fórmula de Zeller)
+                            d <- 1
+                            m <- mes
+                            a <- año
+                            
+                            Si (mes = 1 O mes = 2) Entonces
+                                m <- m + 12
+                                a <- año - 1
+                            Fin Si
+                            
+                            k <- a % 100
+                            t <- trunc(a / 100)
+                            diaInicio <- ((d + trunc(13 * (m + 1) / 5) + k + trunc(k / 4) + trunc(t / 4) + (5 * t)) % 7) - 1
+                            Si diaInicio = 0 Entonces
+                                diaInicio <- 7 
+                            Fin Si
+                            
+                            // Definición de días de los meses
+                            Segun mes Hacer
+                                1: nombreMes <- "Enero"; diasMes <- 31
+                                2: nombreMes <- "Febrero"
+                                    Si (año % 4 = 0 Y (año % 100 <> 0 O año % 400 = 0)) Entonces
+                                        diasMes <- 29
+                                    Sino
+                                        diasMes <- 28
+                                    Fin Si
+                                3: nombreMes <- "Marzo"; diasMes <- 31
+                                4: nombreMes <- "Abril"; diasMes <- 30
+                                5: nombreMes <- "Mayo"; diasMes <- 31
+                                6: nombreMes <- "Junio"; diasMes <- 30
+                                7: nombreMes <- "Julio"; diasMes <- 31
+                                8: nombreMes <- "Agosto"; diasMes <- 31
+                                9: nombreMes <- "Septiembre"; diasMes <- 30
+                                10: nombreMes <- "Octubre"; diasMes <- 31
+                                11: nombreMes <- "Noviembre"; diasMes <- 30
+                                12: nombreMes <- "Diciembre"; diasMes <- 31
+                            Fin Segun
 							
-							// Selección de días y acciones
-							continuarDias <- Verdadero
-							Mientras continuarDias Hacer
-								Limpiar Pantalla
-								cal_RenderCalendario(diaInicio, diasMes, nombreMes, mes, año, contadorTareas, Tareas)
-								Escribir "Introduce el día para ver/agregar tareas (0 para volver): "
-								Leer diaSeleccionado
-								Si (diaSeleccionado = 0) Entonces
-									continuarDias <- Falso
-								Sino
-									Si (diaSeleccionado >= 1 Y diaSeleccionado <= diasMes) Entonces
-										cal_MenuAccionesDia(diaSeleccionado, mes, año, Tareas, tareasRealizadas, contadorTareas, agenda, cantidadDeContactos, AGENDA_MAX)
-									Sino
-										Escribir "Día no válido."
-									Fin Si
-								Fin Si
-							Fin Mientras
-						Fin Si
-					Fin Si
-				Fin Mientras
-			Fin Si
-		Fin Si
-	Fin Mientras
+                            // Mostrar el calendario por primera vez
+                            cal_RenderCalendario(diaInicio, diasMes, nombreMes, año, contadorTareas)
+                            
+                            // Selección del día y menú de acciones
+                            continuarDias <- Verdadero
+                            Mientras continuarDias Hacer
+                                Limpiar Pantalla
+                                Escribir "Mes seleccionado: ", nombreMes, " ", año
+                                cal_RenderCalendario(diaInicio, diasMes, nombreMes, año, contadorTareas)
+                                Escribir "Introduce el día para ver o agregar tareas (0 para volver a seleccionar el mes): "
+                                Leer diaSeleccionado
+                                Si (diaSeleccionado = 0) Entonces
+                                    Escribir "Volviendo a la selección del mes..."
+                                    continuarDias <- Falso
+                                Sino
+                                    Si (diaSeleccionado >= 1 Y diaSeleccionado <= diasMes) Entonces
+                                        // Llamada al subalgoritmo para el menú de acciones en el día seleccionado
+                                        cal_MenuAccionesDia(diaSeleccionado, nombreMes, año, listaTareas, tareasRealizadas, contadorTareas, diasMes, 10, diaInicio, con_agenda, AGENDA_MAX)
+                                    Sino
+                                        Escribir "Día no válido."
+                                    Fin Si
+                                Fin Si
+                            Fin Mientras
+                        Fin Si
+                    Fin Si
+                Fin Mientras
+            Fin Si
+        Fin Si
+    Fin Mientras
 Fin SubAlgoritmo
 
-// Subalgoritmo para inicializar matrices
-Subalgoritmo InicializarMatrices(Tareas Por Referencia, tareasRealizadas Por Referencia)
-	Para i <- 0 Hasta 9 Hacer
-		Para j <- 0 Hasta 3 Hacer
-			Tareas[i, j] <- ""
-		Fin Para
-		tareasRealizadas[i] <- Falso
-	Fin Para
-Fin Subalgoritmo
 
-// Subalgoritmo para agregar tareas
-Subalgoritmo AgregarTarea(Tareas Por Referencia, tareasRealizadas Por Referencia, contadorTareas Por Referencia, nuevaTarea, dia, mes, año, realizada)
-	Tareas[contadorTareas, 0] <- nuevaTarea
-	Tareas[contadorTareas, 1] <- ConvertirATexto(dia)
-	Tareas[contadorTareas, 2] <- ConvertirATexto(mes)
-	Tareas[contadorTareas, 3] <- ConvertirATexto(año)
-	tareasRealizadas[contadorTareas] <- realizada
-	contadorTareas <- contadorTareas + 1
-Fin Subalgoritmo
+//--------------- SUBALGORITMOS --------------- 
 
-// Subalgoritmo para calcular el primer día del mes
-Funcion diaInicio <- CalcularDiaInicio(d, m, a)
-	Si (m = 1 O m = 2) Entonces
-		m <- m + 12
-		a <- a - 1
-	Fin Si
-	k <- a % 100
-	t <- trunc(a / 100)
-	diaInicio <- ((d + trunc(13 * (m + 1) / 5) + k + trunc(k / 4) + trunc(t / 4) + (5 * t)) % 7) - 1
-	Si diaInicio = 0 Entonces
-		diaInicio <- 7
-	Fin Si
-FinFuncion
-
-
-// Subalgoritmo para calcular los días del mes
-Funcion diasMes <- CalcularDiasMes(mes, año, nombreMes)
-    Segun mes Hacer
-        1: nombreMes <- "Enero"; diasMes= 31
-        2: nombreMes <- "Febrero"
-            Si (año % 4 = 0 Y (año % 100 <> 0 O año % 400 = 0)) Entonces
-                diasMes = 29
-            Sino
-                diasMes = 28
-            Fin Si
-        3: nombreMes <- "Marzo"; diasMes = 31
-        4: nombreMes <- "Abril"; diasMes = 30
-        5: nombreMes <- "Mayo"; diasMes = 31
-        6: nombreMes <- "Junio"; diasMes = 30
-        7: nombreMes <- "Julio"; diasMes = 31
-        8: nombreMes <- "Agosto"; diasMes = 31
-        9: nombreMes <- "Septiembre"; diasMes = 30
-        10: nombreMes <- "Octubre"; diasMes = 31
-        11: nombreMes <- "Noviembre"; diasMes = 30
-        12: nombreMes <- "Diciembre"; diasMes = 31
-    Fin Segun
-Fin Subalgoritmo
-
-
-// Subalgoritmo para manejar las acciones del día
-Subalgoritmo cal_MenuAccionesDia(diaSeleccionado, mes, año, Tareas Por Referencia, tareasRealizadas Por Referencia, contadorTareas Por Referencia, agenda, cantidadDeContactos, AGENDA_MAX)
+Subalgoritmo cal_MenuAccionesDia(diaSeleccionado, nombreMes, año, listaTareas, tareasRealizadas, contadorTareas, maxDias, maxTareas, diaInicio, agenda, AGENDA_MAX)
+	Definir cantidadDeContactos, indiceContactoElegido, iterador Como Entero
 	Definir idContactoElegido Como Caracter
-	Definir continuarDia, hayTareas Como Logico
-    Definir j, auxI, numTarea, indiceContactoElegido Como Entero
-    Dimensionar auxI[10] // cambiar por número máximo
-    continuarDia <- Verdadero
-    j <- 0 
-    hayTareas <- Falso
+	
+    continuarDia <- Verdadero	
+	cantidadDeContactos = con_longitudArreglo(agenda, AGENDA_MAX)
+	
     Mientras continuarDia Hacer
         Limpiar Pantalla
-        Escribir "Tareas para el día ", diaSeleccionado, "/", mes, "/", año
-        // Mostrar tareas del día
-        Para i <- 0 Hasta contadorTareas - 1 Con Paso 1 Hacer
-            Si Tareas[i, 1] = ConvertirATexto(diaSeleccionado) Y Tareas[i, 2] = ConvertirATexto(mes) Y Tareas[i, 3] = ConvertirATexto(año) Entonces
-                Escribir j + 1, ") ", Tareas[i, 0] Sin Saltar
-                Si tareasRealizadas[i] = Verdadero Entonces
-                    Escribir " --Realizada--"
+        Escribir "Fecha seleccionada: ", diaSeleccionado, " de ", nombreMes, " de ", año
+        Escribir "Tareas para el día"
+        
+        Si (contadorTareas[diaSeleccionado] = 0) Entonces
+            Escribir "No hay tareas para el día ", diaSeleccionado
+        Sino
+            Para i <- 1 Hasta contadorTareas[diaSeleccionado] Hacer
+                Si tareasRealizadas[diaSeleccionado, i] = "Si" Entonces
+                    Escribir i, ". ", listaTareas[diaSeleccionado, i], " --Realizada--"
                 Sino
-                    Escribir " --Pendiente--"
+                    Escribir i, ". ", listaTareas[diaSeleccionado, i]
                 Fin Si
-                Escribir ""
-                hayTareas <- Verdadero
-                auxI[j] <- i // se guardan los Ids de cada tarea (para poder marcarla como realizada)
-                j <- j + 1
-            Fin Si
-        Fin Para
-        Si hayTareas = Falso Entonces
-            Escribir "No hay tareas para el día ", diaSeleccionado, "/", mes, "/", año
+            Fin Para
         Fin Si
-		
-        Escribir "1. Agregar tarea"
-        Escribir "2. Marcar tarea como realizada"
-        Escribir "3. Volver"
-        Escribir "4. Asignar participantes a tareas"
+        
+        Escribir "Selecciona una opción: "
+        Escribir "1. Agregar una nueva tarea"
+        Escribir "2. Volver al mes"
+        Escribir "3. Marcar tarea como realizada"
+        Escribir "4. Asignar participantes a una tarea"
         Leer opc
-		
+        
         Segun opc Hacer
-            1:
-                Si contadorTareas < 10 Entonces
-                    Escribir "Nueva tarea: "
-                    Leer nuevaTarea
-                    Tareas[contadorTareas, 0] <- nuevaTarea
-                    Tareas[contadorTareas, 1] <- ConvertirATexto(diaSeleccionado)
-                    Tareas[contadorTareas, 2] <- ConvertirATexto(mes)
-                    Tareas[contadorTareas, 3] <- ConvertirATexto(año)
-                    tareasRealizadas[contadorTareas] <- Falso
-                    contadorTareas <- contadorTareas + 1
-                    Escribir "Tarea agregada."
+            1: 
+                Limpiar Pantalla
+                Escribir "Introduce la nueva tarea: "
+                Leer nuevaTarea
+                contadorTareas[diaSeleccionado] <- contadorTareas[diaSeleccionado] + 1
+                listaTareas[diaSeleccionado, contadorTareas[diaSeleccionado]] <- nuevaTarea
+                tareasRealizadas[diaSeleccionado, contadorTareas[diaSeleccionado]] <- "No"
+                Escribir "Tarea agregada."
+                
+            2: 
+                continuarDia <- Falso
+                cal_RenderCalendario(diaInicio, maxDias, nombreMes, año, contadorTareas) // Renderizar calendario
+                
+            3: 
+                Limpiar Pantalla
+                Si (contadorTareas[diaSeleccionado] = 0) Entonces
+                    Escribir "No hay tareas para marcar como realizadas."
                 Sino
-                    Escribir "Límite de tareas alcanzado para este día."
-                Fin Si
-            2:
-                Si hayTareas Entonces
-                    Escribir "Selecciona el número de la tarea a marcar como realizada: "
+                    Escribir "Selecciona el número de la tarea que deseas marcar como realizada (0 para volver): "
                     Leer numTarea
-                    Si numTarea >= 1 Y numTarea <= j Entonces
-                        tareasRealizadas[auxI[numTarea - 1]] <- Verdadero
+                    Si (numTarea > 0 Y numTarea <= contadorTareas[diaSeleccionado]) Entonces
+                        tareasRealizadas[diaSeleccionado, numTarea] <- "Si"
                         Escribir "Tarea marcada como realizada."
                     Sino
                         Escribir "Número de tarea no válido."
                     Fin Si
-                Sino
-                    Escribir "No hay tareas para marcar."
                 Fin Si
-            3:
-                continuarDia <- Falso
-				cal_RenderCalendario(diaInicio, diasMes, nombreMes, mes, año, contadorTareas, Tareas)
+                
             4:
                 Limpiar Pantalla
-                Si contadorTareas = 0 Entonces
+                Si (contadorTareas[diaSeleccionado] = 0) Entonces
                     Escribir "No hay tareas para asignar participantes."
                 Sino
-                    Escribir "Fecha seleccionada: ", diaSeleccionado, " de ", nombreMes, " de ", año
-                    Escribir "Tareas para el día"
-                    Para i <- 0 Hasta contadorTareas - 1 Con Paso 1 Hacer
-                        Si Tareas[i, 1] = ConvertirATexto(diaSeleccionado) Y Tareas[i, 2] = ConvertirATexto(mes) Y Tareas[i, 3] = ConvertirATexto(año) Entonces
-                            Escribir i + 1, ". ", Tareas[i, 0]
-                        Fin Si
-                    Fin Para
+					Escribir "Fecha seleccionada: ", diaSeleccionado, " de ", nombreMes, " de ", año
+					Escribir "Tareas para el día"
+					
+					Si (contadorTareas[diaSeleccionado] = 0) Entonces
+						Escribir "No hay tareas para el día ", diaSeleccionado
+					Sino
+						Para i <- 1 Hasta contadorTareas[diaSeleccionado] Hacer
+							Si tareasRealizadas[diaSeleccionado, i] = "Si" Entonces
+								Escribir i, ". ", listaTareas[diaSeleccionado, i], " --Realizada--"
+							Sino
+								Escribir i, ". ", listaTareas[diaSeleccionado, i]
+							Fin Si
+						Fin Para
+					Fin Si
+					Escribir ""
                     Escribir "Selecciona el número de la tarea a la que deseas asignar participantes (0 para volver): "
                     Leer numTarea
-                    Si numTarea > 0 Y numTarea <= contadorTareas Entonces
-                        idContactoElegido <- cal_listaDeContactos(agenda, cantidadDeContactos, AGENDA_MAX)
-                        Para iterador <- 0 Hasta cantidadDeContactos Con Paso 1 Hacer
-                            Si agenda[iterador, 0] = idContactoElegido Entonces
-                                indiceContactoElegido <- iterador
-                                iterador <- cantidadDeContactos
-                            Fin Si
-                        Fin Para
+                    Si (numTarea > 0 Y numTarea <= contadorTareas[diaSeleccionado]) Entonces
+						idContactoElegido = cal_listaDeContactos(agenda, cantidadDeContactos, AGENDA_MAX)											
+						Para iterador<-0 Hasta cantidadDeContactos Con Paso 1 Hacer
+							Si agenda[iterador, 0] == idContactoElegido Entonces
+								indiceContactoElegido = iterador
+								iterador = cantidadDeContactos
+							FinSi
+						Fin Para					
 						Si agenda[indiceContactoElegido, 0] <> "" Entonces
-							Tareas[auxI[numTarea - 1],0] <- Tareas[auxI[numTarea - 1], 0] + " - "+ agenda[indiceContactoElegido, 1]+ " "+ agenda[indiceContactoElegido, 2]
+							listaTareas[diaSeleccionado, numTarea] <- listaTareas[diaSeleccionado, numTarea] + " - " + agenda[indiceContactoElegido, 1] + " " + agenda[indiceContactoElegido, 2]
 							Escribir "Contacto asignado."
 						Sino
 							Escribir "Número de contacto no válido."
 						Fin Si
+						Escribir "Introduce el número del contacto que deseas asignar (0 para terminar): "
                     Sino
                         Escribir "Número de tarea no válido."
                     Fin Si
@@ -1353,36 +1325,18 @@ Subalgoritmo cal_MenuAccionesDia(diaSeleccionado, mes, año, Tareas Por Referenci
     Fin Mientras
 Fin Subalgoritmo
 
-// Subalgoritmo para renderizar el calendario
-Subalgoritmo cal_RenderCalendario(diaInicio, diasMes, nombreMes, mes, año, contadorTareas, Tareas)
-    Definir i, dia Como Entero
-    Definir auxTareasDias Como Logico
-    Dimensionar auxTareasDias[31]
-	
-    // Inicializar auxTareasDias
-    Para i <- 0 Hasta 30 Hacer
-        auxTareasDias[i] <- Falso
-    Fin Para
-	
-    // Marcar días con tareas
-    Para i <- 0 Hasta contadorTareas - 1 Hacer
-        Si Tareas[i, 2] = ConvertirATexto(mes) Y Tareas[i, 3] = ConvertirATexto(año) Entonces
-            auxTareasDias[ConvertirANumero(Tareas[i, 1]) - 1] <- Verdadero
-        Fin Si
-    Fin Para
-	
-    // Mostrar el calendario
+Subalgoritmo cal_RenderCalendario(diaInicio, diasMes, nombreMes, año, contadorTareas)
     Escribir "Calendario de ", nombreMes, " ", año
     Escribir "  L      M      X      J      V      S      D  " // Encabezado de la semana
     Para i <- 1 Hasta diaInicio - 1 Hacer
         Escribir "       " Sin Saltar
     Fin Para
     Para dia <- 1 Hasta diasMes Hacer
-        Si dia > 0 Y auxTareasDias[dia - 1] = Verdadero Entonces
+        Si contadorTareas[dia] > 0 Entonces
             Si dia < 10 Entonces
                 Escribir " [ ", dia, " ] " Sin Saltar // Días con tareas resaltados con espacios adicionales
             Sino
-                Escribir "  [", dia, "] " Sin Saltar
+                Escribir "[", dia, "] " Sin Saltar
             Fin Si
         Sino
             Si dia < 10 Entonces
@@ -1397,96 +1351,6 @@ Subalgoritmo cal_RenderCalendario(diaInicio, diasMes, nombreMes, mes, año, conta
     Fin Para
     Escribir ""
 Fin Subalgoritmo
-
-// Función para listar contactos y seleccionar uno
-Funcion idContactoElegido <- cal_listaDeContactos(agenda, cantidadDeContactos, AGENDA_MAX)
-	Definir eleccion Como Caracter
-	Definir salir Como Logico
-	Definir iterador, pagina, maxPagina, opcionElegida, tope Como Entero
-	
-	salir <- Falso
-	pagina <- 0
-	maxPagina <- 10
-	
-	Repetir    
-		tope <- (pagina * 10 + maxPagina)
-		
-		Si tope > cantidadDeContactos Entonces
-			tope <- cantidadDeContactos
-		Fin Si
-		
-		Limpiar Pantalla
-		Escribir "Lista de Contactos"
-		
-		Para iterador <- pagina * 10 Hasta tope - 1 Con Paso 1 Hacer
-			Escribir iterador + 1, ") ", agenda[iterador, 2], " ", agenda[iterador, 1]
-		Fin Para
-		
-		Escribir "Página ", pagina + 1
-		Escribir "0 - Salir"
-		Escribir "1 - Página anterior"
-		Escribir "2 - Página siguiente"
-		Escribir "3 - Elegir contacto de esta página"
-		
-		Leer opcionElegida
-		
-		Segun opcionElegida Hacer
-			0:
-				salir <- Verdadero
-			1:
-				Si pagina > 0 Entonces
-					pagina <- pagina - 1
-				Fin Si                
-			2:
-				Si tope < cantidadDeContactos Entonces
-					pagina <- pagina + 1                
-				Fin Si
-			3:
-				eleccion <- cal_elegirContacto(agenda, tope, pagina, AGENDA_MAX)
-				salir <- Verdadero
-		Fin Segun
-		
-	Mientras Que salir = Falso
-	
-	idContactoElegido = eleccion
-Fin Funcion
-
-// Función para elegir un contacto de la lista
-Funcion idContactoElegido <- cal_elegirContacto(agenda, tope, pagina, AGENDA_MAX)
-	Definir eleccion Como Caracter
-	Definir iterador, opcionElegida, indiceContacto, listadoMin Como Entero
-	
-	listadoMin <- pagina * 10 + 1
-	
-	Limpiar Pantalla
-	Escribir "Use las teclas numéricas para elegir un contacto"
-	Escribir "o 0 para salir"
-	
-	Para iterador <- pagina * 10 Hasta tope - 1 Con Paso 1 Hacer
-		Escribir iterador + 1, ") ", agenda[iterador, 2], " ", agenda[iterador, 1]
-	Fin Para
-	
-	Leer opcionElegida    
-	
-	Si opcionElegida > 0 Entonces        
-		Mientras opcionElegida > tope O opcionElegida < listadoMin
-			Limpiar Pantalla
-			Escribir "*El número elegido no corresponde a ningún contacto listado*"
-			Escribir "Elija un número de la siguiente lista"
-			Escribir "Para salir, escriba 0"
-			Para iterador <- pagina * 10 Hasta tope - 1 Con Paso 1 Hacer
-				Escribir iterador + 1, ") ", agenda[iterador, 2], " ", agenda[iterador, 1]
-			Fin Para
-			Leer opcionElegida
-		Fin Mientras        
-		Si opcionElegida > 0 Entonces
-			indiceContacto <- opcionElegida - 1
-			eleccion <- agenda[indiceContacto, 0]
-		Fin Si
-	Fin Si
-	
-	idContactoElegido = eleccion
-Fin Funcion
 
 Subalgoritmo cal_Pantalla_inicio
 	Escribir "                                                                                "
@@ -1507,7 +1371,124 @@ Subalgoritmo cal_Pantalla_inicio
 	Esperar Tecla
 FinSubProceso
 
+Subalgoritmo cal_PrecargarTareas2024(listaTareas, tareasRealizadas, contadorTareas)
+    // Precarga de tareas para noviembre de 2024
+    contadorTareas[5] <- 1
+    listaTareas[5, 1] <- "Reunion"
+    tareasRealizadas[5, 1] <- "Si"
+	
+    contadorTareas[8] <- 1
+    listaTareas[8, 1] <- "Entregar informe"
+    tareasRealizadas[8, 1] <- "Si"
+	
+    contadorTareas[15] <- 1
+    listaTareas[15, 1] <- "Status de objetivos"
+    tareasRealizadas[15, 1] <- "No"
+	
+    contadorTareas[20] <- 1
+    listaTareas[20, 1] <- "Entrega de proyecto final"
+    tareasRealizadas[20, 1] <- "No"
+	
+    contadorTareas[25] <- 1
+    listaTareas[25, 1] <- "Reunion con gerencia"
+    tareasRealizadas[25, 1] <- "No"
+	
+    contadorTareas[30] <- 1
+    listaTareas[30, 1] <- "Entregar informes mensuales"
+    tareasRealizadas[30, 1] <- "No"
+Fin Subalgoritmo
 
+Funcion idContactoElegido <- cal_listaDeContactos(agenda, cantidadDeContactos, AGENDA_MAX)
+	Definir salir Como Logico
+	Definir iterador, pagina, maxPagina, opcionElegida, tope Como Entero
+	
+	salir = Falso
+	pagina = 0
+	maxPagina = 10
+	
+	Repetir	
+		tope = (pagina * 10 + maxPagina)
+		
+		Si tope > cantidadDeContactos Entonces
+			tope = cantidadDeContactos
+		FinSi
+		
+		con_tituloListarTodos
+		
+		Si opcionElegida < 0 O opcionElegida > 3 Entonces
+			Escribir "Debe elegir una opción válida"
+			con_hacerLinea
+		FinSi
+		
+		Escribir "Pagina " pagina + 1
+		Escribir "0 - Salir"
+		Escribir "1 - Página anterior"
+		Escribir "2 - Página siguiente"
+		Escribir "3 - Elegir contacto de esta página"
+		
+		con_hacerLinea
+		
+		Para iterador <- pagina * 10 Hasta tope - 1 Con Paso 1 Hacer
+			Escribir iterador + 1, ") ",  agenda[iterador, 2], " ", agenda[iterador, 1]
+		Fin Para
+		
+		Leer opcionElegida
+		
+		Segun opcionElegida Hacer
+			0:
+				salir = Verdadero
+			1:
+				Si pagina > 1 Entonces
+					pagina = pagina - 1
+				SiNo
+					pagina = 0
+				FinSi				
+			2:
+				Si tope < cantidadDeContactos Entonces
+					pagina = pagina + 1				
+				FinSi
+			3:
+				idContactoElegido = cal_elegirContacto(agenda, tope, pagina, AGENDA_MAX)
+				salir = Verdadero
+		Fin Segun
+		
+	Mientras Que salir == Falso
+FinFuncion
+
+Funcion idContactoElegido <- cal_elegirContacto(agenda, tope, pagina, AGENDA_MAX)
+	Definir iterador, opcionElegida, indiceContacto, listadoMin Como Entero
+	
+	listadoMin = pagina * 10 + 1
+	
+	con_tituloListarTodos
+	
+	Escribir "Use las teclas numéricas para elegir un contacto"
+	Escribir "o 0 para salir"
+	
+	Para iterador <- pagina * 10 Hasta tope - 1 Con Paso 1 Hacer
+		Escribir iterador + 1, ") ",  agenda[iterador, 2], " ", agenda[iterador, 1]
+	Fin Para
+	
+	Leer opcionElegida	
+	
+	Si opcionElegida > 0 Entonces		
+		Mientras opcionElegida > tope O opcionElegida < listadoMin
+			Limpiar Pantalla
+			con_tituloListarTodos
+			Escribir "*El número elegido no corresponde a ningún contacto listado*"
+			Escribir "Elija un número de la siguiente lista"
+			Escribir "Para salir, escriba 0"
+			Para iterador <- pagina * 10 Hasta tope - 1 Con Paso 1 Hacer
+				Escribir iterador + 1, ") ",  agenda[iterador, 2], " ", agenda[iterador, 1]
+			Fin Para
+			Leer opcionElegida
+		FinMientras		
+		Si opcionElegida > 0 Entonces
+			indiceContacto = opcionElegida - 1
+			idContactoElegido = agenda[indiceContacto, 0]
+		FinSi
+	FinSi
+FinFuncion
 
 //FUENTE: IVRIT. Tomado de https://patorjk.com/
 //--------------------------------------------------------------------------------------------------
