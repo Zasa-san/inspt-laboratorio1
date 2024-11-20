@@ -1338,10 +1338,10 @@ Subalgoritmo cal_MenuAccionesDia(diaSeleccionado, mes, año, Tareas Por Referenci
                             Fin Si
                         Fin Para
 						Si agenda[indiceContactoElegido, 0] <> "" Entonces
-						Tareas[auxI[numTarea - 1],0] <- Tareas[auxI[numTarea - 1], 0] + " - "+ agenda[indiceContactoElegido, 1]+ " "+ agenda[indiceContactoElegido, 2]
-						Escribir "Contacto asignado."
+							Tareas[auxI[numTarea - 1],0] <- Tareas[auxI[numTarea - 1], 0] + " - "+ agenda[indiceContactoElegido, 1]+ " "+ agenda[indiceContactoElegido, 2]
+							Escribir "Contacto asignado."
 						Sino
-						Escribir "Número de contacto no válido."
+							Escribir "Número de contacto no válido."
 						Fin Si
                     Sino
                         Escribir "Número de tarea no válido."
