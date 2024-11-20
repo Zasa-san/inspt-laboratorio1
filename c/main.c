@@ -7,6 +7,7 @@
 #include "utilidades.h"
 #include "contactos.h"
 #include "contactosApi.h"
+#include "pomodoro.h"
 
 int main() {
   setlocale(LC_ALL, "es_ES.UTF-8");
@@ -26,8 +27,7 @@ int main() {
     opcionSelecionada = menuPrincipal();
     switch (opcionSelecionada) {
     case MAIN_POMODORO:
-    printf("Acá iniciaría el módulo pomodoro");
-    esperarTecla(NULL);
+    iniciarPomodoro();
 
     break;
     case MAIN_CONTACTOS:

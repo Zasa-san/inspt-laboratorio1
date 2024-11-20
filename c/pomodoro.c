@@ -2,32 +2,15 @@
 #include <stdlib.h>
 #include <windows.h>
 #include <time.h>
-
-// DEFINICIONES ------------------------------------------------------------------------------------------------
-#define MIN_POMODORO 1    // Minutos mínimos para el pomodoro
-#define MAX_POMODORO 59   // Minutos máximos para el pomodoro
-#define MIN_PAUSA 1       // Minutos mínimos para la pausa
-#define MAX_PAUSA 30      // Minutos máximos para la pausa
-
-// FUNCIONES ------------------------------------------------------------------------------------------------
-void mostrarTitulo();
-void iniciarPomodoro();
-void mostrarHora(int minutosPomodoro, int minutosPausa);
-void temporizador(int minutos, const char* mensaje);
-void esperarTecla(const char* mensaje);
-
-int main() {
-    iniciarPomodoro();
-    printf("¡Pomodoro terminado!\n");
-    return 0;
-}
+#include "pomodoro.h"
+#include "utilidades.h"
 
 // DESARROLLO FUNCIONES ------------------------------------------------------------------------------------------------
 
 // Función para mostrar la hora actual y la hora de finalización según los minutos adicionales
 void mostrarHora(int minutosPomodoro, int minutosPausa) {
     time_t ahora;
-    struct tm *horaLocal;
+    struct tm* horaLocal;
     time(&ahora);
     horaLocal = localtime(&ahora);
 
@@ -56,13 +39,6 @@ void temporizador(int minutos, const char* mensaje) {
         printf("Tiempo restante: %02d:%02d\n", i / 60, i % 60);
         Sleep(1000); // Pausa de 1 segundo
     }
-}
-
-// Función para esperar la entrada de una tecla para continuar
-void esperarTecla(const char* mensaje) {
-    printf("%s", mensaje);
-    getchar();
-    getchar(); // Captura el Enter adicional
 }
 
 // Función principal del Pomodoro
