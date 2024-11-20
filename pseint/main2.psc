@@ -1249,8 +1249,9 @@ Fin Subalgoritmo
 
 // Subalgoritmo para manejar las acciones del día
 Subalgoritmo cal_MenuAccionesDia(diaSeleccionado, mes, año, Tareas Por Referencia, tareasRealizadas Por Referencia, contadorTareas Por Referencia, agenda, cantidadDeContactos, AGENDA_MAX)
+	Definir idContactoElegido Como Caracter
 	Definir continuarDia, hayTareas Como Logico
-    Definir j, auxI, numTarea, idContactoElegido, indiceContactoElegido Como Entero
+    Definir j, auxI, numTarea, indiceContactoElegido Como Entero
     Dimensionar auxI[10] // cambiar por número máximo
     continuarDia <- Verdadero
     j <- 0 
@@ -1330,18 +1331,18 @@ Subalgoritmo cal_MenuAccionesDia(diaSeleccionado, mes, año, Tareas Por Referenci
                     Leer numTarea
                     Si numTarea > 0 Y numTarea <= contadorTareas Entonces
                         idContactoElegido <- cal_listaDeContactos(agenda, cantidadDeContactos, AGENDA_MAX)
-                        Para iterador <- 0 Hasta cantidadDeContactos - 1 Con Paso 1 Hacer
+                        Para iterador <- 0 Hasta cantidadDeContactos Con Paso 1 Hacer
                             Si agenda[iterador, 0] = idContactoElegido Entonces
                                 indiceContactoElegido <- iterador
                                 iterador <- cantidadDeContactos
                             Fin Si
                         Fin Para
-						//Si agenda[idContactoElegido, 0] <> "" Entonces
-						//	Tareas[auxI[numTarea - 1],0] <- Tareas[auxI[numTarea - 1], 0] + " - "+ agenda[indiceContactoElegido, 1]+ " "+ agenda[indiceContactoElegido, 2]
-						//	Escribir "Contacto asignado."
-						//Sino
-						//	Escribir "Número de contacto no válido."
-						//Fin Si
+						Si agenda[indiceContactoElegido, 0] <> "" Entonces
+						Tareas[auxI[numTarea - 1],0] <- Tareas[auxI[numTarea - 1], 0] + " - "+ agenda[indiceContactoElegido, 1]+ " "+ agenda[indiceContactoElegido, 2]
+						Escribir "Contacto asignado."
+						Sino
+						Escribir "Número de contacto no válido."
+						Fin Si
                     Sino
                         Escribir "Número de tarea no válido."
                     Fin Si
@@ -1399,7 +1400,7 @@ Fin Subalgoritmo
 
 // Función para listar contactos y seleccionar uno
 Funcion idContactoElegido <- cal_listaDeContactos(agenda, cantidadDeContactos, AGENDA_MAX)
-	Definir resultado Como Caracter
+	Definir eleccion Como Caracter
 	Definir salir Como Logico
 	Definir iterador, pagina, maxPagina, opcionElegida, tope Como Entero
 	
@@ -1441,16 +1442,18 @@ Funcion idContactoElegido <- cal_listaDeContactos(agenda, cantidadDeContactos, A
 					pagina <- pagina + 1                
 				Fin Si
 			3:
-				resultado <- cal_elegirContacto(agenda, tope, pagina, AGENDA_MAX)
+				eleccion <- cal_elegirContacto(agenda, tope, pagina, AGENDA_MAX)
 				salir <- Verdadero
 		Fin Segun
 		
 	Mientras Que salir = Falso
-	idContactoElegido = ConvertirANumero(resultado)
+	
+	idContactoElegido = eleccion
 Fin Funcion
 
 // Función para elegir un contacto de la lista
 Funcion idContactoElegido <- cal_elegirContacto(agenda, tope, pagina, AGENDA_MAX)
+	Definir eleccion Como Caracter
 	Definir iterador, opcionElegida, indiceContacto, listadoMin Como Entero
 	
 	listadoMin <- pagina * 10 + 1
@@ -1478,9 +1481,11 @@ Funcion idContactoElegido <- cal_elegirContacto(agenda, tope, pagina, AGENDA_MAX
 		Fin Mientras        
 		Si opcionElegida > 0 Entonces
 			indiceContacto <- opcionElegida - 1
-			idContactoElegido <- agenda[indiceContacto, 0]
+			eleccion <- agenda[indiceContacto, 0]
 		Fin Si
 	Fin Si
+	
+	idContactoElegido = eleccion
 Fin Funcion
 
 Subalgoritmo cal_Pantalla_inicio
