@@ -1254,9 +1254,9 @@ Subalgoritmo cal_MenuAccionesDia(diaSeleccionado, mes, año, Tareas Por Referenci
     Definir j, auxI, numTarea, indiceContactoElegido Como Entero
     Dimensionar auxI[10] // cambiar por número máximo
     continuarDia <- Verdadero
-    j <- 0 
     hayTareas <- Falso
     Mientras continuarDia Hacer
+		j <- 0 
         Limpiar Pantalla
         Escribir "Tareas para el día ", diaSeleccionado, "/", mes, "/", año
         // Mostrar tareas del día
@@ -1270,8 +1270,8 @@ Subalgoritmo cal_MenuAccionesDia(diaSeleccionado, mes, año, Tareas Por Referenci
                 Fin Si
                 Escribir ""
                 hayTareas <- Verdadero
-                auxI[j] <- i // se guardan los Ids de cada tarea (para poder marcarla como realizada)
-                j <- j + 1
+				auxI[j] <- i // se guardan los Ids de cada tarea (para poder marcarla como realizada)
+				j <- j + 1
             Fin Si
         Fin Para
         Si hayTareas = Falso Entonces
