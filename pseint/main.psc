@@ -1322,9 +1322,11 @@ Subalgoritmo cal_MenuAccionesDia(diaSeleccionado, mes, año, Tareas Por Referenci
                 Sino
                     Escribir "Fecha seleccionada: ", diaSeleccionado, " de ", nombreMes, " de ", año
                     Escribir "Tareas para el día"
+					j = 0
                     Para i <- 0 Hasta contadorTareas - 1 Con Paso 1 Hacer
                         Si Tareas[i, 1] = ConvertirATexto(diaSeleccionado) Y Tareas[i, 2] = ConvertirATexto(mes) Y Tareas[i, 3] = ConvertirATexto(año) Entonces
-                            Escribir i + 1, ". ", Tareas[i, 0]
+                            Escribir j + 1, ". ", Tareas[i, 0]
+							j = j + 1
                         Fin Si
                     Fin Para
                     Escribir "Selecciona el número de la tarea a la que deseas asignar participantes (0 para volver): "
